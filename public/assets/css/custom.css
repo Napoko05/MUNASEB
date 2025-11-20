@@ -1,0 +1,120 @@
+/* Insert Your Custom CSS Here */
+
+/*
+*tile start
+*/
+
+/*.open > .dropdown-menu{
+    left: -125px;
+}*/
+
+/*
+    begin header
+}*/
+
+.input-group .select2-container {
+    flex: 1 !important; /* Ensures Select2 takes full width */
+}
+.input-group .select2-selection {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+.select2-selection__clear {
+    position: absolute !important;
+    right: 3px !important;
+}
+.select2-container .select2-results__option[aria-disabled=true] {
+    display: none;
+}
+
+input[type="text"]:disabled, textarea:disabled, input[type="text"]:read-only, textArea:read-only {
+    background: #f6f6f6 !important;
+}
+
+.left-menu-icon{
+    width: 22px !important;
+}
+/*
+    end header
+}*/
+.no-padding{
+    padding: 0;
+}
+.ac {
+    text-align: center !important;
+}
+.al {
+    text-align: left !important;
+}
+
+.ar{
+    text-align: right !important;
+}
+
+.aj{
+    text-align: justify !important;
+}
+
+.vat {
+    vertical-align: top !important;
+}
+.vam {
+    vertical-align: middle !important;
+}
+
+.vab{
+    vertical-align: bottom !important;
+}
+
+.vaba{
+    vertical-align: baseline !important;
+}
+.hide {
+    display: none !important;
+}
+.fr {
+    float: right !important;
+}
+.fl {
+    float: left !important;
+}
+input[type=radio]:hover, input[type=checkbox]:hover{
+    cursor: pointer;
+}
+
+.width-5 {
+    width: 5% !important;
+}
+.width-15 {
+    width: 15% !important;
+}
+.width-25 {
+    width: 25% !important;
+}
+.width-35 {
+    width: 35% !important;
+}
+.width-45 {
+    width: 45% !important;
+}
+.width-55 {
+    width: 55% !important;
+}
+.width-65 {
+    width: 65% !important;
+}
+.width-75 {
+    width: 75% !important;
+}
+.width-85 {
+    width: 85% !important;
+}
+.width-95 {
+    width: 95% !important;
+}
+
+.fc-blue{
+    color: #236E9B !important;
+}
+
+

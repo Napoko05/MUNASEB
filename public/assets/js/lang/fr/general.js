@@ -1,0 +1,18 @@
+lang = {
+    not_found: "Donnée / Infos. introuvable !",
+    msg_preview_denied: "impossible d'afficher ce fichier !",
+    msg_required: "Veuillez fournir une valeur !",
+    msg_data_imcomplet: "Données imcompletes ...!",
+    msg_cancel: "Annuler",
+    msg_confirm: "Confirmer",
+    msg_toconfirm: "Veillez confirmer !",
+    msg_save_succes: "Operation terminer avec succès",
+    msg_save_fail: "Operation Echouer",
+    msg_fail_not_empty: "Operation Echouer: contenu no vide!",
+    msg_scode_desig_is_used: "Dupplication donnée: Ce code / désignation est déjà utilisé !",
+    invalid_ug:"Profile utilisateur invalide / Désactivé !",
+    invalid_user_pwd:"Mot de passe ou nom utilisateur invalide",
+    user_inactif: "Votre compte utilisateur a été désactivé !",
+    user_pwd_404: "Veuillez saisir le nom d'utilisateur et le mot passe correctement.",
+    server_error: "Le serveur a du mal à traiter votre demande. Si ce problème persiste reporter nous votre souci ou consulter votre administrateur pour plus d'information.",
+};

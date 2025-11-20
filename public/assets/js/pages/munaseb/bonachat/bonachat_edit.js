@@ -1,0 +1,320 @@
+"use strict";
+var mylocal = new Map([['fr', FormValidation.locales.fr_FR], ['en', FormValidation.locales.en_US], ['ar', FormValidation.locales.ar_MA]]);
+var validator;
+var table_fj;
+
+function prepend_option_nature(id, txt_option) {
+    prepend_option('#lst_expediteur', id, txt_option);
+}
+
+function handleSubmit(form, e, button, options = {}) {
+    e.preventDefault();
+
+    if (!(validator && $('#__idAdherant').val() > 0)) {
+        return notify("blablabla", "error");
+    }
+
+    validator.validate().then(function (status) {
+        if (status !== 'Valid') {
+            return notify(lang.msg_data_imcomplet, "error");
+        }
+
+        Swal.fire({
+            title: lang.msg_toconfirm,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: lang.msg_confirm,
+            cancelButtonText: lang.msg_cancel,
+            closeOnConfirm: true,
+            buttonsStyling: false,
+            customClass: {
+                confirmButton: "btn btn-primary",
+                cancelButton: "btn btn-secondary"
+            }
+        }).then(function (result) {
+            if (!result.isConfirmed)
+                return;
+
+            // Common
+            set_fname_by_selector('#tbl_fichier_joint .fichierjoint', 'fichierjoint[]');
+            set_fname_by_selector('.metadonne', 'metadonne[]');
+
+            // Specific option
+            if (options.setInit)
+                $('#__hasInit').val('1');
+            else
+                $('#__hasInit').val('0');
+            
+            KTApp.showPageLoading();
+            axios.post($(form).data('url'), new FormData(form))
+                    .then(response => {
+                        KTApp.hidePageLoading();
+                        switch (response.data.status) {
+                            case 'success':
+                                notify(lang.msg_save_succes, "success");
+                                $('#btn_new_bonachat_cancel').click();
+                                break;
+                            default:
+                                button.disabled = false;
+                                notify(lang.msg_save_fail, "error");
+                                break;
+                        }
+                    })
+                    .catch(error => {
+                        notify(error, "error");
+                        KTApp.hidePageLoading();
+                    });
+        });
+    });
+}
+
+
+var KSMain = function () {
+    var submitButton;
+    var submitButtonInit;
+    var form;
+    let fieldIndex = 0;
+    let fname;
+
+    $("#btn_new_bonachat_cancel").click(function () {
+        $('#menu_item_40').click();
+    });
+
+    $(".btn_add_product").click(function () {
+        
+        if (!$("#lst_produits").val() || $("#tr_" + $("#lst_produits").val()).length) {
+            notify("Veuillez sélectionner un produit valide", "error");
+            return;
+        }
+        if (!$("#quantite").val() > 0) {
+            notify("Veuillez entrer une quantité valide", "error");
+            return;
+        }
+
+        $("#tbl_produit tbody").append(
+                `<tr id="tr_${$("#lst_produits").val()}">
+                        <td>${$('#lst_produits option:selected').text()} <input type="hidden" name="idUm[]" value="${$("#lst_produits option:selected").attr('data-um')}" /><input type="hidden" name="produits[]" value="${$("#lst_produits").val()}" /></td>
+                        <td><input type="text" class="form-control form-control-solid text-center" readonly name="quantites[]" value="${$("#quantite").val()}" /></td>
+                        <td><input type="text" class="form-control form-control-solid" name="remarques[]" readonly value="${$("#_observation").val()}" /></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-warning" onclick="tbl_remove_row(this)">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>`
+                );
+
+        // Réinitialiser les champs après l'ajout
+        $("#lst_produits").val("").trigger("change");
+        $("#quantite").val("");
+        $("#_observation").val("");
+    });
+    
+    $(".btn_add_examen").click(function () {
+        if (!$("#lst_examen").val() || $("#trex_" + $("#lst_examen").val()).length) {
+            notify("Veuillez sélectionner un examen valide", "error");
+            return;
+        }
+        if (!$("#quantiteExamen").val() > 0) {
+            notify("Veuillez entrer une quantité valide", "error");
+            return;
+        }
+
+        $("#tbl_examen tbody").append(
+                `<tr id="trex_${$("#lst_examen").val()}">
+                        <td>${$('#lst_examen option:selected').text()} <input type="hidden" name="natureExamen[]" value="${$("#lst_examen").val()}" /></td>
+                        <td><input type="text" class="form-control form-control-solid text-center" readonly name="qteExamen[]" value="${$("#quantiteExamen").val()}" /></td>
+                        <td><input type="text" class="form-control form-control-solid" name="remarqueExamen[]" readonly value="${$("#_observationExamen").val()}" /></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-warning" onclick="tbl_remove_row(this)">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>`
+                );
+
+        // Réinitialiser les champs après l'ajout
+        $("#lst_examen").val("").trigger("change");
+        $("#quantiteExamen").val("");
+        $("#_observationExamen").val("");
+    });
+    
+    $(".btn_add_autre").click(function () {
+        if ($("#txt_autre").val() == '') {
+            notify("Veuillez sélectionner un examen valide", "error");
+            return;
+        }
+        if (!$("#quantiteAutre").val() > 0) {
+            notify("Veuillez entrer une quantité valide", "error");
+            return;
+        }
+
+        $("#tbl_autre tbody").append(
+                `<tr>
+                        <td><textarea rows="1" class="form-control form-control-solid" name="designationAutre[]">${$('#txt_autre').val()}</textarea></td>
+                        <td><input type="text" class="form-control form-control-solid text-center" readonly name="qteAutre[]" value="${$("#quantiteAutre").val()}" /></td>
+                        <td><input type="text" class="form-control form-control-solid" name="remarqueAutre[]" readonly value="${$("#_observationAutre").val()}" /></td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-warning" onclick="tbl_remove_row(this)">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>`
+                );
+
+        // Réinitialiser les champs après l'ajout
+        $("#txt_autre, #quantiteAutre, #_observationAutre").val("");
+
+    });
+    
+    $(".btn_fj_add").click(function () {
+        let fname = 'fj_' + fieldIndex;
+        $('#' + $(this).data('tname')).append(
+                '<tr>' +
+                '<td class="text-left fv-row fv-plugins-icon-container"><input onchange="set_fname(this)" class="form-control form-control-solid fichierjoint" type="file" id="' + fname + '" name="' + fname + '"></td>' +
+                '<td class="text-left"><input class="form-control form-control-solid fname" type="text" name="fname[]"></td>' +
+                '<td class="text-center"><button onclick="tbl_remove_row_with_validator(this)" type="button" class="btn btn-sm btn-warning"><i class="fa fa-times"></i></button></td>' +
+                '</tr>');
+        validator.addField(fname, {
+            validators: {
+                notEmpty: {
+                    message: lang.msg_required,
+                },
+            },
+        });
+        fieldIndex++;
+    });
+    
+    $('.btn-refresh-right').click(function () {
+        ks_load_view($(this).data('url'));
+    });
+
+    $("#btn_new_courrier_cancel").click(function () {
+        $('#menu_item_40').click();
+    });
+    
+    var handleFJDelete = (m) => {
+        $(m).click(function () {
+            var id = $(this).data('id');
+            var fname = $(this).data('fname');
+            var url = $(table_fj).data('delete-url');
+            var me = $(this);
+            Swal.fire({
+                title: lang.msg_toconfirm,
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: lang.msg_confirm,
+                cancelButtonText: lang.msg_cancel,
+                closeOnConfirm: true,
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                    cancelButton: "btn btn-secondary"
+                }
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    KTApp.showPageLoading();
+                    axios.post(url, {id: id, fname: fname})
+                            .then(response => {
+                                KTApp.hidePageLoading();
+                                switch (response.data.status) {
+                                    case 'success':
+                                        notify(lang.msg_save_succes, "success");
+                                        tbl_remove_row(me);
+                                        break;
+                                    case 'fail':
+                                        notify(lang.msg_save_fail, "error");
+                                        break;
+                                    default:
+                                        notify(lang.msg_save_fail, "error");
+                                        break;
+                                }
+                            })
+                            .catch(error => {
+                                notify(error, "error");
+                                KTApp.hidePageLoading();
+                            });
+                }
+            });
+        });
+    };
+    
+    var handlePreview = (m) => {
+            $(m).click(function () {
+                ks_displays_file($(this).data('path'));
+            });
+        };
+    
+    var handleForm = function () {
+        validator = FormValidation.formValidation(
+                form,
+                {
+                    localization: mylocal.get(currentLanguage),
+                    fields: {
+                        'datebon': {
+                            validators: {
+                                notEmpty: {
+                                }
+                            }
+                        },
+                        'medecin': {
+                            validators: {
+                                notEmpty: {
+                                }
+                            }
+                        },
+                        'natureBon': {
+                            validators: {
+                                notEmpty: {
+                                }
+                            }
+                        },
+                    },
+                    plugins: {
+                        trigger: new FormValidation.plugins.Trigger(),
+                        bootstrap: new FormValidation.plugins.Bootstrap5({
+                            rowSelector: '.fv-row',
+                            eleInvalidClass: '',
+                            eleValidClass: ''
+                        })
+                    }
+                }
+        );
+
+        submitButton.addEventListener('click', e => handleSubmit(form, e, submitButton));
+        submitButtonInit.addEventListener('click', e => handleSubmit(form, e, submitButtonInit, {setInit: true}));
+    };
+
+    return {
+        init: function () {
+            form = document.querySelector('#frm_bonachat_new');
+            submitButton = document.querySelector('#btn_new_bonachat_submit');
+            submitButtonInit = document.querySelector('#btn_new_bonachat_submit_init');
+            table_fj = document.querySelector('#tbl_fichier_joint');
+            $('#frm_bonachat_new .fselect2').select2({allowClear: true});
+            $('#frm_bonachat_new .mfselect2').select2({allowClear: true, minimumInputLength: 2});
+
+            $('.datepicker').flatpickr({
+                locale: currentLanguage,
+                altInput: true,
+                altFormat: "d F Y",
+                dateFormat: "Y-m-d",
+            });
+            $('.datetimepicker').flatpickr({
+                locale: currentLanguage,
+                altInput: true,
+                enableTime: true,
+                altFormat: "d F Y H:i",
+                dateFormat: "Y-m-d H:i",
+            });
+            handlePreview('#tbl_fichier_joint .preview');
+            handleFJDelete('#tbl_fichier_joint .delete_row');
+            handleForm();
+        }
+    };
+}();
+
+KTUtil.onDOMContentLoaded(function () {
+    KSMain.init();
+    KTMenu.init();
+});
