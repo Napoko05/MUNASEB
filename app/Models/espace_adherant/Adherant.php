@@ -1,13 +1,8 @@
 <?php
-
 namespace App\Models\espace_adherant;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\espace_adherant\Profil;
-use App\Models\espace_adherant\Universite;
-use App\Models\espace_adherant\Filiere;
-use App\Models\espace_adherant\AddEnfant;
 
 class Adherant extends Model
 {
@@ -15,39 +10,13 @@ class Adherant extends Model
 
     protected $table = 'adherant';
 
-    protected $primaryKey = 'id';
-    public $incrementing = true;
-    protected $keyType = 'int';
-
     protected $fillable = [
-        'ine',
-        'nom',
-        'prenom',
-        'sexe',
-        'dateNaiss',
-        'lieuNaiss',
-        'typedoc',
-        'numdoc',
-        'tel1',
-        'tel2',
-        'email',
-        'idUniversite',
-        'idFiliere',
-        'type_adherant',
-        'profil_id',
-        'numero_adhesion',
-        'date_adhesion',
-        'commentaire',
-        // 'document_justificatif', // supprimé
+        'ine','nom','prenom','sexe','dateNaiss','lieuNaiss','typedoc','numdoc',
+        'tel1','tel2','email','idUniversite','idFiliere','type_adherant','numero_adhesion',
+        'date_adhesion','commentaire'
     ];
 
-    // 🔗 Relations
-
-    public function profil()
-    {
-        return $this->belongsTo(Profil::class);
-    }
-
+    // Relations
     public function universite()
     {
         return $this->belongsTo(Universite::class, 'idUniversite');
@@ -63,11 +32,13 @@ class Adherant extends Model
         return $this->hasMany(AddEnfant::class, 'parent_id');
     }
 
-    // 🔗 Relation avec les documents
+    public function conjoints()
+    {
+        return $this->hasMany(AddConjoint::class, 'parent_id');
+    }
+
     public function dossier()
     {
-        return $this->hasOne(DossierAdherant::class);
+        return $this->hasOne(DossierAdherant::class, 'adherant_id');
     }
 }
-
-

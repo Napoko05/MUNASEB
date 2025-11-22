@@ -17,9 +17,13 @@ class DossierAdherant extends Model
         'document_cni',
         'document_attestation',
         'document_recu',
+        'statut', // Ajouté pour gérer le statut du dossier
     ];
 
-    // 🔗 Relation inverse vers Adherant
+    /**
+     * 🔗 Relation inverse vers Adherant
+     * Chaque dossier appartient à un adhérent
+     */
     public function adherant()
     {
         return $this->belongsTo(Adherant::class);

@@ -9,13 +9,14 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Dashboard\EtudiantController;
 use App\Http\Controllers\Dashboard\DirecteurController;
-use App\Http\Controllers\Dashboard\RegieRecetteController;
+use App\Http\Controllers\Dashboard\RegieController;
 use App\Http\Controllers\Dashboard\LiquidationController;
 use App\Http\Controllers\Dashboard\TresorierController;
 use App\Http\Controllers\Dashboard\AdhesionController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\munaseb\AdherantController;
 use App\Http\Controllers\munaseb\ReabonnementController;
+use App\Http\Controllers\CarteAdhesionController;   
 
 // Page d'accueil
 Route::get('/', fn() => view('espace_munaseb.index'));
@@ -35,8 +36,7 @@ Route::middleware('auth')->group(function () {
     // Dashboards selon les rôles
     Route::get('/dashboard/etudiant', [EtudiantController::class, 'index'])->name('dashboard.etudiant');
     Route::get('/dashboard/directeur', [DirecteurController::class, 'index'])->name('dashboard.directeur');
-    Route::get('/dashboard/regie_recette', [RegieRecetteController::class, 'index'])->name('dashboard.regie');
-    
+    Route::get('/dashboard/regie_recette', [RegieController::class, 'index'])->name('dashboard.regie');
 });
 
 // Routes Directeur
@@ -53,19 +53,60 @@ Route::middleware(['auth', 'role:directeur'])
         Route::post('/adhesion/traiter/{id}', [DirecteurController::class, 'traiter'])->name('cartes.traiter');
     });
 
-// Routes Régie Recette
-Route::middleware(['auth', 'role:regie_recette'])
-    ->prefix('dashboard/regie_recette')
-    ->name('regie.')
-    ->group(function () {
-        Route::get('/', [RegieRecetteController::class, 'index'])->name('dashboard');
-        Route::get('/reabonnement/en-cours', [RegieRecetteController::class, 'reabonnementEnCours'])->name('reabonnement.en_cours');
-        Route::get('/adhesion/traitees', [RegieRecetteController::class, 'adhesionsTraitees'])->name('adhesion.traites');
-        Route::get('/cartes', [RegieRecetteController::class, 'cartes'])->name('cartes');
-        Route::get('/stats', [RegieRecetteController::class, 'stats'])->name('stats');
-        Route::get('/adhesion/{id}', [RegieRecetteController::class, 'detailAdhesion'])->name('adhesion.detail');
-        Route::post('/adhesion/traiter/{id}', [RegieRecetteController::class, 'traiter'])->name('adhesion.traiter');
-    });
+/// Routes Régie Recette
+Route::prefix('regie')->name('regie.')->middleware('auth')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [RegieController::class, 'dashboard'])->name('dashboard');
+
+    /* =========================
+       ADHERANTS
+    ========================= */
+    Route::get('/adherants/non-valide', [RegieController::class, 'adherantsNonValides'])->name('adherants.non_valide');
+    Route::get('/adherant/{id}/detail', [RegieController::class, 'detailAdherant'])->name('adherant.detail');
+    Route::post('/adherant/{id}/valider', [RegieController::class, 'validerAdherant'])->name('adherant.valider');
+    Route::post('/adherant/{id}/rejeter', [RegieController::class, 'rejeterAdherant'])->name('adherant.rejeter');
+    Route::get('/regie/dossier/{id}/document', [RegieController::class, 'voirDocument'])->name('regie.dossier.voirDocument');
+    /* =========================
+       ENFANTS
+    ========================= */
+    Route::get('/enfants/non-valide', [RegieController::class, 'enfantsNonValides'])->name('enfants.non_valide');
+    Route::get('/enfant/{id}/detail', [RegieController::class, 'detailEnfant'])->name('enfant.detail');
+    Route::post('/enfant/{id}/valider', [RegieController::class, 'validerEnfant'])->name('enfant.valider');
+    Route::post('/enfant/{id}/rejeter', [RegieController::class, 'rejeterEnfant'])->name('enfant.rejeter');
+
+    /* =========================
+       CONJOINTS
+    ========================= */
+    Route::get('/conjoints/non-valide', [RegieController::class, 'conjointsNonValides'])->name('conjoints.non_valide');
+    Route::get('/conjoint/{id}/detail', [RegieController::class, 'detailConjoint'])->name('conjoint.detail');
+    Route::post('/conjoint/{id}/valider', [RegieController::class, 'validerConjoint'])->name('conjoint.valider');
+    Route::post('/conjoint/{id}/rejeter', [RegieController::class, 'rejeterConjoint'])->name('conjoint.rejeter');
+
+
+  // Liste des adhérents traités
+    Route::get('/adhesions/traitees', [RegieController::class, 'adhesionsTraitees'])->name('adherants.traitees');
+
+    // Modifier un adhérent traité
+    Route::get('/adherant/{id}/modifier', [RegieController::class, 'modifierAdherant'])
+        ->name('adherant.modifier');
+
+    // Créer la carte pour un adhérent validé
+    Route::get('/adherant/{id}/creer-carte', [RegieController::class, 'creerCarte'])
+        ->name('adherant.creer_carte');
+
+});
+
+// Routes Cartes d'adhésion
+
+// Génération PDF recto-verso
+Route::get('/adherant/{id}/carte/generate', [CarteAdhesionController::class, 'generate'])
+    ->name('adherant.carte.generate');
+
+// Création de carte avec numéro unique
+Route::get('/adherant/{id}/carte/create', [CarteAdhesionController::class, 'createCarte'])
+    ->name('adherant.carte.create');
+
+
 
 // Routes Liquidation
 Route::middleware(['auth', 'role:liquidation_production'])->group(function () {
@@ -137,7 +178,6 @@ Route::prefix('munaseb/adherant')->name('munaseb.adherant.')->group(function () 
         Route::get('stepc3', [AdherantController::class, 'showConjointStep3'])->name('add_conjointstep3');
         Route::post('stepc3', [AdherantController::class, 'postConjointStep3'])->name('postConjointStep3');
     });
-
 }); // ← FIN du groupe adhérant
 
 
@@ -155,4 +195,3 @@ Route::prefix('munaseb/reabonnement')->name('munaseb.reabonnement.')->group(func
     Route::get('step3', [ReabonnementController::class, 'step3'])->name('reabonnementStep3');
     Route::post('step3', [ReabonnementController::class, 'postStep3'])->name('postStep3');
 });
-

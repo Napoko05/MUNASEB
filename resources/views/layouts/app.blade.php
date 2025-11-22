@@ -21,7 +21,10 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard/regie.css') }}">
     <!--Styles spécifiques pour l'etudiant-->
      <link rel="stylesheet" href="{{ asset('assets/css/dashboard_etudiant.css') }}">
+ <link rel="stylesheet" href="{{ asset('assets/css/regie_recette/form_regie.css') }}">
 
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/aj
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>

@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +14,10 @@ return new class extends Migration
             $table->string('document_cni')->nullable();
             $table->string('document_attestation')->nullable();
             $table->string('document_recu')->nullable();
+
+            // ✅ Statut à l’intérieur du closure
+            $table->enum('statut', ['en_attente', 'valide', 'rejete'])->default('en_attente');
+
             $table->timestamps();
         });
     }

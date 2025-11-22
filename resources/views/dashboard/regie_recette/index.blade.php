@@ -1,58 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid py-4">
 
-    <!-- MENU HORIZONTAL -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow rounded-3 mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-white" href="#">💼 Régie Recette</a>
+<div class="sidebar shadow-sm">
+    <h4 class="fw-bold">💼 Régie Recette</h4>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarRegie" aria-controls="navbarRegie" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <a href="" {{ route('regie.dashboard') }}"">🏠 Accueil</a>
 
-            <div class="collapse navbar-collapse" id="navbarRegie">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    {{-- Accueil --}}
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ route('regie.dashboard') }}">
-                            🏠 Accueil
-                        </a>
-                    </li>
-                    <!-- Adhésions non traitées -->
-                    <li class="nav-item dropdown mx-2">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="adhesionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            🟢 Adhésions non traitées
-                        </a>
-                        <ul class="dropdown-menu shadow-lg">
-                            <li><a class="dropdown-item" href="#">➕ Nouvelle adhésion</a></li>
-                            <li><a class="dropdown-item" href="#">🔁 Réabonnement</a></li>
-                        </ul>
-                    </li>
+    <!-- Adhésions -->
+    <a data-bs-toggle="collapse" href="#adhesionsSubmenu" role="button" aria-expanded="false" aria-controls="adhesionsSubmenu">
+        🟢 Adhésions non traitées
+    </a>
+    <div class="collapse submenu" id="adhesionsSubmenu">
+        <a href="{{ route('regie.adherants.non_valide') }}">➕ Adhérents</a>
+        <a href="{{ route('regie.enfants.non_valide') }}">👶 Enfants</a>
+        <a href="{{ route('regie.conjoints.non_valide') }}">💑 Conjoints</a>
+    </div>
 
-                    <!-- Autres liens -->
-                    <li class="nav-item mx-2">
-                        <a class="nav-link text-white" href="#">🟡 Adhésions traitées</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link text-white" href="#">💳 Cartes</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link text-white" href="#">📊 Statistiques</a>
-                    </li>
-                </ul>
+    <a href="{{ route('regie.adherants.traitees') }}">🟡 Adhésions traitées</a>
 
-                <!-- Déconnexion -->
-                <form action="{{ route('logout') }}" method="POST" class="d-flex">
-                    @csrf
-                    <button class="btn btn-outline-light btn-sm fw-semibold">🔴 Déconnexion</button>
-                </form>
-            </div>
-        </div>
-    </nav>
+    <!-- Cartes -->
+    <a data-bs-toggle="collapse" href="#cartesSubmenu" role="button" aria-expanded="false" aria-controls="cartesSubmenu">
+        💳 Cartes
+    </a>
+    <div class="collapse submenu" id="cartesSubmenu">
+        <a href="#">🟡 Cartes non validées</a>
+        <a href="#">🟢 Cartes validées</a>
+    </div>
 
-    <!-- CONTENU PRINCIPAL -->
+    <a href="#">📊 Statistiques</a>
+
+    <form method="POST" action="{{ route('logout') }}" class="mt-3 px-3">
+        @csrf
+        <button class="btn btn-danger w-100">🔴 Déconnexion</button>
+    </form>
+</div>
+
+{{-- CONTENU PRINCIPAL --}}
+<div class="content-area">
+
+    {{-- Tableau dynamique selon type --}}
     <div class="card border-0 shadow-lg rounded-4">
         <div class="card-header bg-gradient text-white" style="background: linear-gradient(90deg, #007bff, #6610f2);">
             <h4 class="mb-0 fw-bold">{{ $titre ?? '📋 Tableau de bord' }}</h4>
@@ -72,21 +59,25 @@
                     <tbody>
                         @forelse($dossiers as $dossier)
                         <tr>
-                            <td>{{ $dossier->profil->nom }}</td>
-                            <td>{{ $dossier->profil->prenom }}</td>
-                            <td>
+                            <td>{{ $dossier->adherant?->nom ?? 'Non défini' }}</td>
+                            <td>{{ $dossier->adherant?->prenom ?? 'Non défini' }}</td>
+                            <td class="text-center">
                                 @if($dossier->statut === 'en_attente')
-                                <span class="badge bg-warning text-dark">En attente</span>
+                                <span class="badge bg-warning text-dark">Non validée</span>
                                 @elseif($dossier->statut === 'valide')
-                                <span class="badge bg-success">Validé</span>
+                                <span class="badge bg-success">Validée</span>
                                 @elseif($dossier->statut === 'rejete')
-                                <span class="badge bg-danger">Rejeté</span>
+                                <span class="badge bg-danger">Rejetée</span>
                                 @endif
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('regie.adhesion.detail', $dossier->id) }}" class="btn btn-sm btn-outline-primary me-2">
-                                    📄 Voir détail
-                                </a>
+                                @if($dossier->statut === 'en_attente')
+                                <a href="{{ route('regie.adherant.detail', $dossier->id) }}" class="btn btn-sm btn-outline-primary me-2">📄 Détail</a>
+                                <a href="{{ route('regie.adherant.valider', $dossier->id) }}" class="btn btn-sm btn-success me-1">✔ Valider</a>
+                                <a href="{{ route('regie.adherant.rejeter', $dossier->id) }}" class="btn btn-sm btn-danger">❌ Rejeter</a>
+                                @else
+                                <a href="{{ route('adherant.detail', $dossier->id) }}" class="btn btn-sm btn-warning text-white">✏ Modifier</a>
+                                @endif
                             </td>
                         </tr>
                         @empty
@@ -95,10 +86,11 @@
                         </tr>
                         @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>
     </div>
-</div>
 
+</div>
 @endsection

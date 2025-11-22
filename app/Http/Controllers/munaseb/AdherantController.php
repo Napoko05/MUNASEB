@@ -100,13 +100,13 @@ class AdherantController extends Controller
         $dossier->adherant_id = $adherant->id;
 
         if ($request->hasFile('document_cni')) {
-            $dossier->document_cni = $request->file('document_cni')->store('documents/cni', 'public');
+            $dossier->document_cni = $request->file('document_cni')->store('documents/CNIB', 'public');
         }
         if ($request->hasFile('document_attestation')) {
-            $dossier->document_attestation = $request->file('document_attestation')->store('documents/attestation', 'public');
+            $dossier->document_attestation = $request->file('document_attestation')->store('documents/Attestation', 'public');
         }
         if ($request->hasFile('document_recu')) {
-            $dossier->document_recu = $request->file('document_recu')->store('documents/recu', 'public');
+            $dossier->document_recu = $request->file('document_recu')->store('documents/Reçu', 'public');
         }
         $dossier->save();
 
@@ -231,11 +231,11 @@ class AdherantController extends Controller
 
         if ($request->hasFile('doc_extrait')) {
             $dossier->document_extrait_naissance =
-                $request->file('doc_extrait')->store('documents/enfants', 'public');
+                $request->file('doc_extrait')->store('documents/Extrait_enfants', 'public');
         }
         if ($request->hasFile('doc_cni_parent')) {
             $dossier->document_cni_parent =
-                $request->file('doc_cni_parent')->store('documents/parents', 'public');
+                $request->file('doc_cni_parent')->store('documents/CNIB_parents', 'public');
         }
 
         $dossier->save();

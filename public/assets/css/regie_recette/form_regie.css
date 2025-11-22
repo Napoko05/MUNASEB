@@ -1,0 +1,41 @@
+/* ----- SIDEBAR FIXE ----- */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 240px;
+        height: 100vh;
+        background-color: #0d6efd;
+        color: white;
+        padding-top: 70px;
+        /* si tu as un header fixe */
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .sidebar h4 {
+        padding: 15px 20px;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 12px 20px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .sidebar a:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar .submenu a {
+        padding-left: 40px;
+        font-size: 0.95rem;
+    }
+
+    /* ----- CONTENU À DROITE ----- */
+    .content-area {
+        margin-left: 150px;
+        /* largeur de la sidebar + marge */
+        padding: 50px;
+    }
