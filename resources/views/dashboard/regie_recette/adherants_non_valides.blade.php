@@ -12,7 +12,7 @@
         {{-- Contenu principal --}}
         <div class="col-md-9">
             <div class="card shadow-lg rounded-4">
-                <div class="card-header bg-primary text-white fw-bold">
+                <div class="card-header bg-primary text-white fw-bold" style="text-align: center;">
                     Adhérents non validés
                 </div>
                 <div class="card-body">

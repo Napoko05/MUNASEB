@@ -1,0 +1,59 @@
+/* ======== NAVBAR ======== */
+.custom-navbar {
+    background-color: #007bff !important; /* bleu */
+    padding: 200px 15px;
+}
+
+/* Container (garde le bleu partout) */
+.custom-navbar-container {
+    background-color: #007bff !important;
+}
+
+/* Liens toujours blancs */
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+    color: #fff !important;
+    font-weight: 500;
+}
+
+/* Hover */
+.custom-navbar .nav-link:hover {
+    color: #eaeaea !important;
+}
+
+/* Active link */
+.custom-navbar .nav-link.active {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+/* ======== DROPDOWN ======== */
+.custom-navbar .dropdown-menu {
+    background-color: #007bff !important;
+    border: none;
+}
+
+.custom-navbar .dropdown-item {
+    color: #fff !important;
+}
+
+.custom-navbar .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ======== TOGGLER ======== */
+.custom-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.custom-navbar .navbar-toggler-icon {
+    filter: invert(1); /* hamburger blanc */
+}
+
+/* ======== RESPONSIVE ======== */
+@media (max-width: 992px) {
+    .custom-navbar .nav-link {
+        padding: 10px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+}

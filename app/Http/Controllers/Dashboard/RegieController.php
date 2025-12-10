@@ -10,6 +10,8 @@ use App\Models\espace_adherant\DossierAdherant;
 use App\Models\espace_adherant\DossierEnfant;
 use App\Models\espace_adherant\DossierConjoint;
 use App\Http\Controllers\Controller;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class RegieController extends Controller
 {
@@ -146,11 +148,11 @@ class RegieController extends Controller
     public function adhesionsTraitees()
     {
         // Récupérer tous les adhérents dont le dossier est valide ou rejeté
-        $adherants = Adherant::with('dossier')
+        $adherant = Adherant::with('dossier')
             ->whereHas('dossier', fn($q) => $q->whereIn('statut', ['valide', 'rejete']))
             ->get();
 
-        return view('dashboard.regie_recette.adherants_traiter', compact('adherants'));
+        return view('dashboard.regie_recette.adherants_traiter', compact('adherant'));
     }
 
     /* Modifier un adhérent traité */
@@ -160,16 +162,5 @@ class RegieController extends Controller
         return view('dashboard.regie_recette.adherant_modifier', compact('adherant'));
     }
 
-    /* Créer la carte pour un adhérent validé */
-    public function creerCarte($id)
-    {
-        $adherant = Adherant::with('dossier')->findOrFail($id);
-
-        if ($adherant->dossier->statut != 'valide') {
-            return redirect()->back()->with('error', 'Impossible de créer la carte pour un adhérent non validé.');
-        }
-
-        // Logique de création de carte ici
-        return view('dashboard.regie_recette.creer_carte', compact('adherant'));
-    }
+    
 }

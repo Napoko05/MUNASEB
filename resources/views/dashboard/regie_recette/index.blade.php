@@ -3,36 +3,28 @@
 @section('content')
 
 <div class="sidebar shadow-sm">
-    <h4 class="fw-bold">💼 Régie Recette</h4>
+    <h4 class="fw-bold">Régie Recette</h4>
 
-    <a href="" {{ route('regie.dashboard') }}"">🏠 Accueil</a>
+    <a href="" {{ route('regie.dashboard') }}""> Accueil</a>
 
     <!-- Adhésions -->
     <a data-bs-toggle="collapse" href="#adhesionsSubmenu" role="button" aria-expanded="false" aria-controls="adhesionsSubmenu">
-        🟢 Adhésions non traitées
+         Adhésions non traitées
     </a>
     <div class="collapse submenu" id="adhesionsSubmenu">
-        <a href="{{ route('regie.adherants.non_valide') }}">➕ Adhérents</a>
-        <a href="{{ route('regie.enfants.non_valide') }}">👶 Enfants</a>
-        <a href="{{ route('regie.conjoints.non_valide') }}">💑 Conjoints</a>
+        <a href="{{ route('regie.adherants.non_valide') }}">Adhérents</a>
+        <a href="{{ route('regie.enfants.non_valide') }}"> Enfants</a>
+        <a href="{{ route('regie.conjoints.non_valide') }}"> Conjoints</a>
     </div>
 
-    <a href="{{ route('regie.adherants.traitees') }}">🟡 Adhésions traitées</a>
+    <a href="{{ route('regie.adherants.traitees') }}"> Adhésions traitées</a>
 
-    <!-- Cartes -->
-    <a data-bs-toggle="collapse" href="#cartesSubmenu" role="button" aria-expanded="false" aria-controls="cartesSubmenu">
-        💳 Cartes
-    </a>
-    <div class="collapse submenu" id="cartesSubmenu">
-        <a href="#">🟡 Cartes non validées</a>
-        <a href="#">🟢 Cartes validées</a>
-    </div>
 
-    <a href="#">📊 Statistiques</a>
+    <a href="#">Statistiques</a>
 
     <form method="POST" action="{{ route('logout') }}" class="mt-3 px-3">
         @csrf
-        <button class="btn btn-danger w-100">🔴 Déconnexion</button>
+        <button class="btn btn-danger w-100">Déconnexion</button>
     </form>
 </div>
 
@@ -41,9 +33,10 @@
 
     {{-- Tableau dynamique selon type --}}
     <div class="card border-0 shadow-lg rounded-4">
-        <div class="card-header bg-gradient text-white" style="background: linear-gradient(90deg, #007bff, #6610f2);">
-            <h4 class="mb-0 fw-bold">{{ $titre ?? '📋 Tableau de bord' }}</h4>
+        <div class="card-header bg-blue text-white" style="background: linear-gradient(90deg, #007bff, #6610f2);">
+            <h4 class="mb-0 fw-bold text-center">{{ $titre ?? ' Tableau de bord' }}</h4>
         </div>
+
 
         <div class="card-body bg-light">
             <div class="table-responsive">
@@ -73,10 +66,10 @@
                             <td class="text-center">
                                 @if($dossier->statut === 'en_attente')
                                 <a href="{{ route('regie.adherant.detail', $dossier->id) }}" class="btn btn-sm btn-outline-primary me-2">📄 Détail</a>
-                                <a href="{{ route('regie.adherant.valider', $dossier->id) }}" class="btn btn-sm btn-success me-1">✔ Valider</a>
-                                <a href="{{ route('regie.adherant.rejeter', $dossier->id) }}" class="btn btn-sm btn-danger">❌ Rejeter</a>
+                                <a href="{{ route('regie.adherant.valider', $dossier->id) }}" class="btn btn-sm btn-success me-1"> Valider</a>
+                                <a href="{{ route('regie.adherant.rejeter', $dossier->id) }}" class="btn btn-sm btn-danger"> Rejeter</a>
                                 @else
-                                <a href="{{ route('adherant.detail', $dossier->id) }}" class="btn btn-sm btn-warning text-white">✏ Modifier</a>
+                                <a href="{{ route('adherant.detail', $dossier->id) }}" class="btn btn-sm btn-warning text-white">Modifier</a>
                                 @endif
                             </td>
                         </tr>

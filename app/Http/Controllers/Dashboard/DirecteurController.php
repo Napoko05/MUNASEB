@@ -4,128 +4,124 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Dashboard\Regie\Adhesion;
-use App\Models\Dashboard\Regie\Reabonnement;
+
+use App\Models\espace_adherant\Adherant;
 use App\Models\Dashboard\Regie\Profil;
+use App\Models\Dashboard\Regie\Adhesion;
+use App\Models\espace_adherant\DossierAdherant;
 use App\Models\Dashboard\Regie\Dossier;
 
 class DirecteurController extends Controller
 {
     /**
-     * Nouvelle adhésion en cours
+     * Dashboard directeur
+     * Affiche les dossiers VALIDÉS par la régie
      */
     public function index()
-{
-    // 🔒 Appel désactivé temporairement (cause d'erreur SQL)
-    // $dossiers = Dossier::with('profil')
-    //     ->where('statut', 'en_attente')
-    //     ->get();
-
-    // ✅ Données fictives pour tester ton tableau de bord
-    $dossiers = [
-        (object)[
-            'id' => 1,
-            'statut' => 'en_attente',
-            'profil' => (object)[
-                'nom' => 'Ouédraogo',
-                'prenom' => 'Lamine'
-            ]
-        ],
-        (object)[
-            'id' => 2,
-            'statut' => 'en_attente',
-            'profil' => (object)[
-                'nom' => 'Zongo',
-                'prenom' => 'Aminata'
-            ]
-        ],
-    ];
-
-    return view('dashboard.directeur.index', [
-        'titre' => 'Adhésions non traitées',
-        'dossiers' => $dossiers
-    ]);
-}
-
-
-    /**
-     * Réabonnement en cours
-     */
-    public function reabonnementEnCours()
     {
-        $dossiers = Reabonnement::where('statut', 'en_attente')
-            ->with('profil.user')
+        $dossiers = DossierAdherant::with('adherant') // récupère adhérent lié au dossier
+            ->where('statut', 'valide')
             ->get();
-        $titre = "Réabonnements en cours";
-        return view('dashboard.directeur.index', compact('dossiers', 'titre'));
-    }
 
-    /**
-     * Afficher les détails du profil
-     */
-    public function detailProfil($profilId)
-    {
-        $profil = Profil::with('user', 'adhesions', 'reabonnements')->findOrFail($profilId);
-        return view('dashboard.directeur.detail_profil', compact('profil'));
-    }
-
-    /**
-     * Afficher les détails de l'adhésion ou du réabonnement
-     */
-    public function detailAdhesion($dossierId)
-    {
-        $dossier = Adhesion::with('profil')->find($dossierId);
-
-        if (!$dossier) {
-            $dossier = Reabonnement::with('profil')->findOrFail($dossierId);
-        }
-
-        return view('dashboard.direcreur.detail_adhesion', compact('dossier'));
-    }
-
-    /**
-     * Traiter un dossier (valider / rejeter)
-     */
-    public function traiter(Request $request, $dossierId)
-    {
-        $request->validate([
-            'statut' => 'required|in:valide,rejete',
-            'commentaire' => 'nullable|string|max:500'
+        return view('dashboard.directeur.index', [
+            'titre'    => 'Dossiers validés par la régie',
+            'dossiers' => $dossiers
         ]);
+    }
 
-        $dossier = Adhesion::find($dossierId);
 
-        if (!$dossier) {
-            $dossier = Reabonnement::findOrFail($dossierId);
-        }
+    /**
+     * Détail du profil
+     */
+    public function detailProfil($id)
+    {
+        $profil = Profil::with([
+            'adherant',
+            'adhesions',
+            'reabonnements'
+        ])->findOrFail($id);
 
-        $dossier->statut = $request->statut;
-        $dossier->commentaire = $request->commentaire;
-        $dossier->save();
-
-        return redirect()->back()->with('success', 'Dossier traité avec succès.');
+        return view('dashboard.directeur.profil', compact('profil'));
     }
 
     /**
      * Liste des adhésions traitées
      */
-    public function adhesionsTraiter()
+    public function adhesionsTraitees()
     {
-        $dossiers = Adhesion::whereIn('statut', ['valide', 'rejete'])
-            ->with('profil.user')
+        $adherants = Adherant::with('dossier')
+            ->whereHas('dossier', function ($q) {
+                $q->where('statut', 'valide');
+            })
             ->get();
-        $titre = "Adhésions traitées";
-        return view('dashboard.directeur.index', compact('dossiers', 'titre'));
+
+        $titre = 'Adhésions traitées';
+
+        return view(
+            'dashboard.directeur.adhesions_traitees',
+            compact('adherants', 'titre')
+        );
     }
 
     /**
-     * Liste des cartes générées
+     * Cartes validées
      */
-    public function cartes()
+    public function cartesNonTraite()
     {
-        $cartes = Adhesion::where('statut', 'valide')->with('profil.user')->get();
-        $titre = "Cartes des adhérents";
-        return view('dashboard.directeur.cartes', compact('cartes', 'titre'));
+        $adherants = Adherant::with('dossier')
+            ->whereHas('dossier', fn($q) => $q->where('statut', 'valide'))
+            ->get();
+
+        return view('dashboard.directeur.cartes_valider', compact('adherants'));
+    }
+
+
+    /**
+     * Créer la carte pour un adhérent validé
+     */
+    public function creerCarte($id)
+    {
+        $adherant = Adherant::with(['universites', 'filieres', 'dossier'])
+            ->whereHas('dossier', function ($q) {
+                $q->where('statut', 'valide');
+            })
+            ->findOrFail($id);
+
+        $agent = auth()->user();
+
+        // Génération numéro carte
+        if (empty($adherant->numeroCarte)) {
+            $annee  = date('y');
+            $random = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+            $adherant->numeroCarte = $random . '-' . $annee;
+        }
+
+        $adherant->date_adhesion = now();
+        $adherant->date_validite = now()->addYear();
+        $adherant->signature_directeur = 'signatures/directeur.png';
+        $adherant->save();
+
+        // Génération QR Code
+        $qrFileName = 'qr_adherant_' . $adherant->id . '.svg';
+        $qrPath     = 'qr/' . $qrFileName;
+
+        $qrDir = storage_path('app/public/qr');
+        if (!file_exists($qrDir)) {
+            mkdir($qrDir, 0755, true);
+        }
+
+        \QrCode::format('svg')
+            ->size(200)
+            ->generate(
+                route('regie.adherant.detail', $adherant->id),
+                storage_path('app/public/' . $qrPath)
+            );
+
+        return view('dashboard.directeur.carte_adhesion', [
+            'adherant' => $adherant,
+            'agent'    => $agent,
+            'qrPath'   => $qrPath
+        ]);
     }
 
     /**
@@ -133,10 +129,10 @@ class DirecteurController extends Controller
      */
     public function stats()
     {
-        $total = Adhesion::count();
-        $valide = Adhesion::where('statut', 'valide')->count();
-        $rejete = Adhesion::where('statut', 'rejete')->count();
-        $enAttente = Adhesion::where('statut', 'en_attente')->count();
+        $total      = Adhesion::count();
+        $valide     = Adhesion::where('statut', 'valide')->count();
+        $rejete     = Adhesion::where('statut', 'rejete')->count();
+        $enAttente  = Adhesion::where('statut', 'en_attente')->count();
 
         $pourcentageValide = $total ? round(($valide / $total) * 100, 2) : 0;
         $pourcentageRejete = $total ? round(($rejete / $total) * 100, 2) : 0;

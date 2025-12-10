@@ -4,7 +4,7 @@
 <div class="container mt-4">
     <h2>Modifier mon profil</h2>
 
-    <form action="{{ route('profile.update') }}" method="POST">
+    <form action="{{ route('etudiant.profile.update') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="name" class="form-label">Nom</label>

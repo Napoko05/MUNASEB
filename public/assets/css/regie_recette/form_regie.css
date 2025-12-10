@@ -6,7 +6,7 @@
         width: 240px;
         height: 100vh;
         background-color: #0d6efd;
-        color: white;
+        color: rgb(255, 255, 255);
         padding-top: 70px;
         /* si tu as un header fixe */
         overflow-y: auto;
@@ -20,12 +20,12 @@
     .sidebar a {
         display: block;
         padding: 12px 20px;
-        color: white;
+        color: rgb(255, 255, 255);
         text-decoration: none;
     }
 
     .sidebar a:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(136, 206, 15, 0.2);
     }
 
     .sidebar .submenu a {
@@ -38,4 +38,6 @@
         margin-left: 150px;
         /* largeur de la sidebar + marge */
         padding: 50px;
-    }
+    }*
+
+    

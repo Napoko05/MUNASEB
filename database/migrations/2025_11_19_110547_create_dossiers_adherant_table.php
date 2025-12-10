@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,14 +10,20 @@ return new class extends Migration
     {
         Schema::create('dossiers_adherant', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('adherant_id')->constrained('adherant')->cascadeOnDelete();
+
+            // 🔗 Relation vers la table adherants
+            $table->foreignId('adherant_id')
+                  ->constrained('adherant')
+                  ->cascadeOnDelete();
+
             $table->string('photo')->nullable();
             $table->string('document_cni')->nullable();
             $table->string('document_attestation')->nullable();
             $table->string('document_recu')->nullable();
 
-            // ✅ Statut à l’intérieur du closure
-            $table->enum('statut', ['en_attente', 'valide', 'rejete'])->default('en_attente');
+            // 🟢 Ajout direct du statut
+            $table->enum('statut', ['en_attente', 'valide', 'rejete'])
+                  ->default('en_attente');
 
             $table->timestamps();
         });

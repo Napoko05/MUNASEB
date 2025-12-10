@@ -16,7 +16,7 @@ use App\Http\Controllers\Dashboard\AdhesionController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\munaseb\AdherantController;
 use App\Http\Controllers\munaseb\ReabonnementController;
-use App\Http\Controllers\CarteAdhesionController;   
+use App\Http\Controllers\Dashboard\CarteAdhesionController;
 
 // Page d'accueil
 Route::get('/', fn() => view('espace_munaseb.index'));
@@ -41,16 +41,28 @@ Route::middleware('auth')->group(function () {
 
 // Routes Directeur
 Route::middleware(['auth', 'role:directeur'])
-    ->prefix('dashboard/directeur')
-    ->name('directeur.')
+    ->prefix('directeur')->name('directeur.')
     ->group(function () {
+
         Route::get('/', [DirecteurController::class, 'index'])->name('dashboard');
         Route::get('/carte/en-cours', [DirecteurController::class, 'CarteNonValide'])->name('carte.en_cours');
         Route::get('/adhesion/traitees', [DirecteurController::class, 'adhesionsTraitees'])->name('adhesion.traites');
         Route::get('/cartes', [DirecteurController::class, 'cartesValides'])->name('cartes');
         Route::get('/stats', [DirecteurController::class, 'stats'])->name('stats');
-        Route::get('/adhesion/{id}', [DirecteurController::class, 'detailCartes'])->name('adhesion.detail');
-        Route::post('/adhesion/traiter/{id}', [DirecteurController::class, 'traiter'])->name('cartes.traiter');
+        Route::get('/adhesion/{id}', [DirecteurController::class, 'detailProfil'])->name('adhesion.detail');
+        
+        Route::get('/directeur/cartes/traiter', [DirecteurController::class, 'cartesNonTraite'])
+            ->name('cartes.traiter');
+
+        // Créer la carte pour un adhérent validé
+        Route::get(
+            '/adherant/{id}/creer-carte',
+            [DirecteurController::class, 'creerCarte']
+        )->name('adherants.creer_carte');
+
+        Route::get('/dossier/{id}/document', [DirecteurController::class, 'voirDocument'])->name('dossier.voirDocument');
+        Route::get('directeur/cartes', [DirecteurController::class, 'listeCartes'])
+            ->name('directeur.cartes');
     });
 
 /// Routes Régie Recette
@@ -83,30 +95,13 @@ Route::prefix('regie')->name('regie.')->middleware('auth')->group(function () {
     Route::post('/conjoint/{id}/rejeter', [RegieController::class, 'rejeterConjoint'])->name('conjoint.rejeter');
 
 
-  // Liste des adhérents traités
+    // Liste des adhérents traités
     Route::get('/adhesions/traitees', [RegieController::class, 'adhesionsTraitees'])->name('adherants.traitees');
 
     // Modifier un adhérent traité
     Route::get('/adherant/{id}/modifier', [RegieController::class, 'modifierAdherant'])
         ->name('adherant.modifier');
-
-    // Créer la carte pour un adhérent validé
-    Route::get('/adherant/{id}/creer-carte', [RegieController::class, 'creerCarte'])
-        ->name('adherant.creer_carte');
-
 });
-
-// Routes Cartes d'adhésion
-
-// Génération PDF recto-verso
-Route::get('/adherant/{id}/carte/generate', [CarteAdhesionController::class, 'generate'])
-    ->name('adherant.carte.generate');
-
-// Création de carte avec numéro unique
-Route::get('/adherant/{id}/carte/create', [CarteAdhesionController::class, 'createCarte'])
-    ->name('adherant.carte.create');
-
-
 
 // Routes Liquidation
 Route::middleware(['auth', 'role:liquidation_production'])->group(function () {

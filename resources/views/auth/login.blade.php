@@ -19,6 +19,15 @@
     <link rel="stylesheet" href="{{ asset('storage/assets/fonts/material.css') }}" />
     <link rel="stylesheet" href="{{ asset('storage/assets/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('storage/assets/css/style-preset.css') }}" />
+    <style>
+        .logo-login {
+            max-width: 120px;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+    </style>
+
 </head>
 
 <body data-pc-header="header-1" data-pc-preset="preset-1" data-pc-sidebar-theme="light" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme="light">
@@ -38,7 +47,7 @@
                 <div class="card my-5">
                     <div class="card-body">
                         <div class="text-center">
-                            <img src="{{ asset('storage/assets/images/logo-dark.svg') }}" alt="logo" class="img-fluid mb-4" />
+                            <img src="{{ asset('storage/assets/images/logo1.jpg') }}" alt="logo" class="img-fluid mb-4" />
                         </div>
                         @if(session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">

@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Models\espace_adherant;
 
 use Illuminate\Database\Eloquent\Model;

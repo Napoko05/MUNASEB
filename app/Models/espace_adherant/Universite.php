@@ -18,6 +18,6 @@ class Universite extends Model
     // 🔗 Relation avec les filières
     public function filieres()
     {
-        return $this->hasMany(Filieres::class, 'idUniversite');
+        return $this->hasMany(Filiere::class, 'idUniversite');
     }
 }
