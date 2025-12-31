@@ -9,25 +9,13 @@
     <a href="#">Agents</a>
 
     <!-- Cartes -->
-    <a data-bs-toggle="collapse"
-        href="#cartesSubmenu"
-        role="button"
-        aria-expanded="false"
-        aria-controls="cartesSubmenu">
-        Cartes
-    </a>
-
-    <div class="collapse submenu" id="cartesSubmenu">
-        <a href="{{ route('directeur.cartes.traiter') }}" class="btn btn-sm btn-primary">
+    
+        <a href="{{ route('directeur.cartes.a_creer') }}" class="btn btn-sm btn-primary">
             Créer sa carte
         </a>
+        <a href="{{ route('directeur.cartes.listecarte') }}">Liste Cartes</a>
 
-
-
-        <a href="#">Liste Cartes</a>
-    </div>
-
-    <a href="#">Statistiques</a>
+    <a href="{{ route('directeur.stats') }}">Statistiques</a>
 
     <form method="POST" action="{{ route('logout') }}" class="mt-3 px-3">
         @csrf
@@ -37,7 +25,6 @@
 
 {{-- CONTENU PRINCIPAL --}}
 <div class="content-area">
-
     <div class="card border-0 shadow-lg rounded-4">
         <div class="card-header text-white"
             style="background: linear-gradient(90deg, #007bff, #6610f2);">
@@ -48,8 +35,8 @@
 
         <div class="card-body bg-light">
             <div class="table-responsive">
-                <table class="table align-middle table-hover">
-                    <thead class="table-primary text-center">
+                <table class="table align-middle table-hover text-center">
+                    <thead class="table-primary">
                         <tr>
                             <th>Nom</th>
                             <th>Prénom</th>
@@ -60,31 +47,33 @@
                     <tbody>
                         @forelse($dossiers as $dossier)
                         <tr>
-                            <td>{{ $dossier->adherant->nom }}</td>
-                            <td>{{ $dossier->adherant->prenom }}</td>
-                            <td class="text-center">
-                                @if($dossier->statut === 'en_attente')
-                                <span class="badge bg-warning text-dark">En attente</span>
-                                @elseif($dossier->statut === 'valide')
+                            <td>{{ $dossier->adherant->nom ?? 'N/A' }}</td>
+                            <td>{{ $dossier->adherant->prenom ?? 'N/A' }}</td>
+                            <td>
                                 <span class="badge bg-success">Validé</span>
-                                @elseif($dossier->statut === 'rejete')
-                                <span class="badge bg-danger">Rejeté</span>
-                                @endif
                             </td>
-                            <td class="text-center">
-                                <a href="{{ route('directeur.adhesion.detail', $dossier->id) }}"
-                                    class="btn btn-info btn-sm">Voir profil</a>
+                            <td>
+                                {{-- Voir détails dossier --}}
+                                <a href="{{ route('directeur.dossier.voirDocument', $dossier->id) }}"
+                                    class="btn btn-sm btn-info">
+                                    Détail
+                                </a>
 
-                                @if($dossier->statut === 'valide')
-                                <a href="{{ route('directeur.adherants.creer_carte', $dossier->id) }}"
-                                    class="btn btn-success btn-sm">Créer carte</a>
-                                @endif
+                                {{-- Créer carte --}}
+                                <form method="POST"
+                                    action="{{ route('directeur.cartes.creer', $dossier->adherant->id) }}"
+                                    class="d-inline">
+                                    @csrf
+                                    <button class="btn btn-sm btn-success">
+                                        Créer carte
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         @empty
                         <tr>
                             <td colspan="4" class="text-center text-muted">
-                                Aucun dossier trouvé.
+                                Aucun adhérent en attente de carte.
                             </td>
                         </tr>
                         @endforelse
@@ -93,6 +82,5 @@
             </div>
         </div>
     </div>
-
 </div>
 @endsection

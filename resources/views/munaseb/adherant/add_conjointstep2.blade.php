@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form action="{{ route('munaseb.adherant.postConjointStep2') }}" method="POST">
+                    <form action="{{ route('conjoint.post.step2') }}" method="POST">
                         @csrf
 
                         {{-- Type de document & numéro enfant --}}
@@ -44,13 +44,13 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Numéro d'acte de mariage</label>
-                                <input type="text" name="numact" class="form-control" required>
+                                <label class="form-label fw-semibold">N° CNIB</label>
+                                <input type="text" name="numact" class="form-control" required  placeholder="numero CNIB du conjint(e)en adhesion">
                             </div>
                             {{-- N° Carte parent --}}
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">N° Carte conjoint(e)</label>
-                                <input type="number" name="numero" class="form-control" placeholder="Numero de carte conjoint(e) mutualiste" required>
+                                <input type="text" name="numero" class="form-control" placeholder="Numero de carte conjoint(e) mutualiste" required>
                             </div>
                         </div>
 
@@ -84,13 +84,13 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Lien</label>
-                                <input type="text" name="lienPersonnecasdebesoin" class="form-control" required>
+                                <input type="tel" name="lienPersonnecasdebesoin" class="form-control" required>
                             </div>
                         </div>
 
                         {{-- Boutons --}}
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ route('munaseb.adherant.adhesionstep1') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('conjoint.step1') }}" class="btn btn-outline-secondary">
                                 <i class="fa fa-arrow-left me-1"></i> Précédent
                             </a>
                             <button type="submit" class="btn btn-primary">

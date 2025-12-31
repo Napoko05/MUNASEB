@@ -1,0 +1,25 @@
+.footer-bf {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    margin-top: auto;
+    width: 100%;
+    background-color: #079037;
+    color: #fff;
+    text-align: center;
+    font-size: 13px;        /* texte plus petit */
+    padding: 8px 5px;       /* réduit l’espace intérieur */
+    height: 100px;           /* fixe une hauteur plus basse */
+    line-height: 20px;      /* ajuste l’espacement du texte */
+    z-index: 1000;
+}
+.footer-bf a {
+    color: #04a34f;
+    text-decoration: none;
+    margin: 0 6px;
+    font-weight: 600;
+}
+.footer-bf a:hover {
+    text-decoration: underline;
+    color: #06c35f;
+}

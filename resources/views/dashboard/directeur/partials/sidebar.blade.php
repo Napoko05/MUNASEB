@@ -7,20 +7,12 @@
     <!-- Agents -->
     <a href="#">Agents</a>
 
-    <!-- Cartes -->
-    <a data-bs-toggle="collapse"
-        href="#cartesSubmenu"
-        role="button"
-        aria-expanded="false"
-        aria-controls="cartesSubmenu">
-        Cartes
+    <a href="{{ route('directeur.cartes.a_creer') }}">
+        Créer sa cartes</a>
+    <a href="{{ route('directeur.cartes.listecarte') }}" class="btn btn-sm btn-primary">
+        Liste Cartes
     </a>
-    <div class="collapse submenu" id="cartesSubmenu">
-        <a href="{{ route('directeur.cartes.traiter') }}" class="btn btn-sm btn-primary">
-            Créer sa carte
-        </a>
-        <a href="#">Liste Cartes</a>
-    </div>
+
 
     <!-- Statistiques -->
     <a href="#">Statistiques</a>

@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form action="{{ route('munaseb.adherant.postEnfantStep3') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('enfant.step3') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         {{-- Documents Parent --}}
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ route('munaseb.adherant.adhesionstep2') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('enfant.step2') }}" class="btn btn-outline-secondary">
                                 <i class="fa fa-arrow-left me-1"></i> Précédent
                             </a>
                             <button type="submit" class="btn btn-success">

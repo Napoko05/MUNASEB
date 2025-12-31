@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form action="{{ route('munaseb.adherant.postEnfantStep1') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('enfant.post.step1') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="row mb-4">

@@ -46,7 +46,7 @@
                                 <i class="fa fa-arrow-left me-1"></i> Précédent
                             </a>
                             <button type="submit" class="btn btn-success">
-                                Soumettre <i class="fa fa-check ms-1"></i>
+                                enregistrer <i class="fa fa-check ms-1"></i>
                             </button>
                         </div>
 

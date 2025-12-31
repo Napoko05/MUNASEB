@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form action="{{ route('munaseb.adherant.postConjointStep3') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('conjoint.post.step3') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mb-3">
@@ -43,11 +43,11 @@
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ route('munaseb.adherant.postStep2') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('conjoint.step2') }}" class="btn btn-outline-secondary">
                                 <i class="fa fa-arrow-left me-1"></i> Précédent
                             </a>
                             <button type="submit" class="btn btn-success">
-                                Soumettre <i class="fa fa-check ms-1"></i>
+                                enregistrer<i class="fa fa-check ms-1"></i>
                             </button>
                         </div>
 

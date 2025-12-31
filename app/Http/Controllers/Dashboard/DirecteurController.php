@@ -4,22 +4,22 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\espace_adherant\Adherant;
 use App\Models\Dashboard\Regie\Profil;
 use App\Models\Dashboard\Regie\Adhesion;
 use App\Models\espace_adherant\DossierAdherant;
 use App\Models\Dashboard\Regie\Dossier;
+use App\Models\espace_adherant\Carte;
+ use Barryvdh\DomPDF\Facade\Pdf;
 
 class DirecteurController extends Controller
 {
     /**
-     * Dashboard directeur
-     * Affiche les dossiers VALIDÉS par la régie
+     * Tableau de bord : dossiers validés par la régie
      */
     public function index()
     {
-        $dossiers = DossierAdherant::with('adherant') // récupère adhérent lié au dossier
+        $dossiers = DossierAdherant::with('adherant')
             ->where('statut', 'valide')
             ->get();
 
@@ -29,9 +29,8 @@ class DirecteurController extends Controller
         ]);
     }
 
-
     /**
-     * Détail du profil
+     * Détail du profil d’un adhérent
      */
     public function detailProfil($id)
     {
@@ -45,84 +44,76 @@ class DirecteurController extends Controller
     }
 
     /**
-     * Liste des adhésions traitées
+     * Liste des adhésions validées (traitées par la régie)
      */
     public function adhesionsTraitees()
-    {
-        $adherants = Adherant::with('dossier')
-            ->whereHas('dossier', function ($q) {
-                $q->where('statut', 'valide');
-            })
-            ->get();
-
-        $titre = 'Adhésions traitées';
-
-        return view(
-            'dashboard.directeur.adhesions_traitees',
-            compact('adherants', 'titre')
-        );
-    }
-
-    /**
-     * Cartes validées
-     */
-    public function cartesNonTraite()
     {
         $adherants = Adherant::with('dossier')
             ->whereHas('dossier', fn($q) => $q->where('statut', 'valide'))
             ->get();
 
-        return view('dashboard.directeur.cartes_valider', compact('adherants'));
-    }
-
-
-    /**
-     * Créer la carte pour un adhérent validé
-     */
-    public function creerCarte($id)
-    {
-        $adherant = Adherant::with(['universites', 'filieres', 'dossier'])
-            ->whereHas('dossier', function ($q) {
-                $q->where('statut', 'valide');
-            })
-            ->findOrFail($id);
-
-        $agent = auth()->user();
-
-        // Génération numéro carte
-        if (empty($adherant->numeroCarte)) {
-            $annee  = date('y');
-            $random = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
-            $adherant->numeroCarte = $random . '-' . $annee;
-        }
-
-        $adherant->date_adhesion = now();
-        $adherant->date_validite = now()->addYear();
-        $adherant->signature_directeur = 'signatures/directeur.png';
-        $adherant->save();
-
-        // Génération QR Code
-        $qrFileName = 'qr_adherant_' . $adherant->id . '.svg';
-        $qrPath     = 'qr/' . $qrFileName;
-
-        $qrDir = storage_path('app/public/qr');
-        if (!file_exists($qrDir)) {
-            mkdir($qrDir, 0755, true);
-        }
-
-        \QrCode::format('svg')
-            ->size(200)
-            ->generate(
-                route('regie.adherant.detail', $adherant->id),
-                storage_path('app/public/' . $qrPath)
-            );
-
-        return view('dashboard.directeur.carte_adhesion', [
-            'adherant' => $adherant,
-            'agent'    => $agent,
-            'qrPath'   => $qrPath
+        return view('dashboard.directeur.adhesions_traitees', [
+            'adherants' => $adherants,
+            'titre'     => 'Adhésions validées'
         ]);
     }
+
+    /**
+     * Adhérents validés mais sans carte
+     */
+    public function cartesNonTraite()
+    {
+        $dossiers = DossierAdherant::with('adherant')
+            ->where('statut', 'valide')
+            ->whereDoesntHave('adherant.carte') // 🔑 exclut ceux qui ont déjà une carte
+            ->get();
+
+        return view('dashboard.directeur.cartes_valider', compact('dossiers'))
+            ->with('titre', 'Adhérents validés sans carte');
+    }
+
+    /**
+     * Liste des cartes déjà créées
+     */
+    public function listeCartes()
+    {
+        $cartes = Carte::with('adherant')->get();
+        return view('dashboard.directeur.listecarte', compact('cartes'));
+    }
+
+    /**
+     * Rejeter un adhérent avec motif
+     */
+    public function rejeterAdherant(Request $request, $id)
+    {
+        $request->validate([
+            'motif_rejet' => 'required|min:5'
+        ]);
+
+        $dossier = DossierAdherant::where('adherant_id', $id)->firstOrFail();
+        $dossier->statut = 'rejete';
+        $dossier->motif_rejet = $request->motif_rejet;
+        $dossier->save();
+
+        // Migration automatique vers la liste des rejetés
+        return redirect()->route('directeur.adhesion.traites')
+            ->with('success', 'Dossier adhérent rejeté avec motif.');
+    }
+    /**
+     * Voir la carte d’un adhérent au format PDF
+     */
+
+    public function voirCarte($id)
+    {
+        $adherant = Adherant::with(['carte', 'universites', 'filieres'])->findOrFail($id);
+
+        // Générer le PDF à partir de la vue Blade
+        $pdf = Pdf::loadView('dashboard.directeur.carte_adhesion ', compact('adherant'));
+
+        // Afficher directement dans le navigateur
+        return $pdf->stream('carte_' . $adherant->nom . '.pdf');
+    }
+
 
     /**
      * Statistiques
@@ -145,5 +136,14 @@ class DirecteurController extends Controller
             'pourcentageValide',
             'pourcentageRejete'
         ));
+    }
+
+    /**
+     * Voir les documents liés à un dossier
+     */
+    public function voirDocument($id)
+    {
+        $dossier = DossierAdherant::findOrFail($id);
+        return view('dashboard.directeur.adherant_detail', compact('dossier'));
     }
 }

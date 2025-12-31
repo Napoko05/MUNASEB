@@ -1,59 +1,268 @@
-/* ======== NAVBAR ======== */
-.custom-navbar {
-    background-color: #007bff !important; /* bleu */
-    padding: 200px 15px;
+/* ===== RESET ===== */
+* {
+    box-sizing: border-box;
 }
 
-/* Container (garde le bleu partout) */
-.custom-navbar-container {
-    background-color: #007bff !important;
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
 }
 
-/* Liens toujours blancs */
-.custom-navbar .navbar-brand,
-.custom-navbar .nav-link {
+a {
+    text-decoration: none;
+}
+
+/* ===== MENU ===== */
+.menu-dynamic {
+    width: 100%;
+    /* occupe toute la largeur */
+    background-color: #fff;
+    /* fond blanc */
+    border-bottom: 1px solid #ddd;
+    padding: 10px 20px;
+}
+
+/* Logo arrondi */
+.menu-logo {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Liens verts avec bordure rouge */
+.dynamic-link {
     color: #fff !important;
+    /* texte blanc */
+    background-color: #045f2e;
+    /* fond vert */
+    border: 2px solid #dc3545;
+    /* bordure rouge */
+    font-weight: 600;
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    /* arrondi léger */
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.dynamic-link:hover {
+    background-color: #067a3b;
+    /* vert plus foncé au survol */
+    transform: scale(1.05);
+}
+
+/* Dropdown */
+.dynamic-dropdown {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.dynamic-drop-item {
+    color: #045f2e !important;
     font-weight: 500;
 }
 
-/* Hover */
-.custom-navbar .nav-link:hover {
-    color: #eaeaea !important;
+.dynamic-drop-item:hover {
+    background-color: #e0f2f1;
+    color: #045f2e !important;
 }
 
-/* Active link */
-.custom-navbar .nav-link.active {
-    color: #ffffff !important;
-    font-weight: 600;
+/* Bouton déconnexion */
+.logout-btn {
+    background: hsl(0, 91%, 50%);
+    color: #fff;
+    border: 2px solid hsl(88, 93%, 32%);
+    /* cohérence avec bordure rouge */
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background 0.3s ease;
 }
 
-/* ======== DROPDOWN ======== */
-.custom-navbar .dropdown-menu {
-    background-color: #007bff !important;
+.logout-btn:hover {
+    background: #cc0000;
+}
+/* ===== DRAPEAU TRIANGLE ===== */
+.flag-triangle {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+    /* triangle rectangle : coin haut gauche, coin haut droit, coin bas gauche */
+    border: 2px solid #dc3545;
+    /* contour rouge */
+}
+
+
+/* ===== BURGER ===== */
+.navbar-toggler {
     border: none;
 }
 
-.custom-navbar .dropdown-item {
-    color: #fff !important;
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%280,69,46,1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
-.custom-navbar .dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* ======== TOGGLER ======== */
-.custom-navbar .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.5) !important;
-}
-
-.custom-navbar .navbar-toggler-icon {
-    filter: invert(1); /* hamburger blanc */
-}
-
-/* ======== RESPONSIVE ======== */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 992px) {
-    .custom-navbar .nav-link {
-        padding: 10px 15px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    .navbar-nav {
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-top: 15px;
+        width: 100%;
+        /* occupe toute la largeur en mobile */
+    }
+
+    .dynamic-link {
+        display: block;
+        text-align: center;
+        width: 100%;
     }
 }
+
+
+/* ===== CARTES ROUGES ===== */
+.card.border-danger {
+    border: 2px solid #dc3545;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+.card-header.bg-danger {
+    background-color: #dc3545;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.list-group-item {
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+/* ===== BANNIÈRE DRAPEAU ===== */
+.banner-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+marquee {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* ===== SLIDER ===== */
+.slider-section {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.slider {
+    overflow: hidden;
+    width: 100%;
+    border: 2px solid #045f2e;
+    border-radius: 8px;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+.slide img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.slider-controls {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.slider-btn {
+    background: #045f2e;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+}
+.slider-btn:hover {
+    background: #067a3b;
+}
+
+
+/* ===== INFO ===== */
+.general-info {
+    max-width: 900px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.general-info h2 {
+    color: #045f2e;
+    margin-bottom: 20px;
+}
+
+.general-info p {
+    color: #555;
+    line-height: 1.6;
+}
+
+/* ===== FAQ ===== */
+.faq-container {
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.faq-item {
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 15px 20px;
+    cursor: pointer;
+}
+
+.faq-item h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #045f2e;
+}
+
+.faq-item span {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.faq-content {
+    display: none;
+    margin-top: 10px;
+    color: #444;
+}
+
+.faq-active .faq-content {
+    display: block;
+}
+

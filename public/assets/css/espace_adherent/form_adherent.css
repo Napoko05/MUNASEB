@@ -1,6 +1,6 @@
 /* === Body & background === */
 body {
-    background: #f5f7fa;
+    background: #7aa50c;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -177,7 +177,7 @@ button.btn-success:hover {
     background-repeat: no-repeat;
 
     /* Centrer l'image */
-    background-position: center top;
+    background-position : center top;
 
     /* Adapter la taille pour couvrir tout le conteneur */
     background-size: cover;

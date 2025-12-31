@@ -10,16 +10,13 @@ use App\Models\espace_adherant\DossierAdherant;
 use App\Models\espace_adherant\DossierEnfant;
 use App\Models\espace_adherant\DossierConjoint;
 use App\Http\Controllers\Controller;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
 
 class RegieController extends Controller
 {
     // Dashboard principal
     public function dashboard()
     {
-        // Récupère les 5 derniers dossiers adhérents en attente
-        $dossiers = DossierAdherant::with('adherant')  // "profil" = relation vers Adherant
+        $dossiers = DossierAdherant::with('adherant')
             ->where('statut', 'en_attente')
             ->latest()
             ->take(5)
@@ -60,13 +57,18 @@ class RegieController extends Controller
         return redirect()->back()->with('success', 'Dossier adhérent validé.');
     }
 
-    public function rejeterAdherant($id)
+    public function rejeterAdherant(Request $request, $id)
     {
+        $request->validate([
+            'motif_rejet' => 'required|min:5'
+        ]);
+
         $dossier = DossierAdherant::where('adherant_id', $id)->firstOrFail();
         $dossier->statut = 'rejete';
+        $dossier->motif_rejet = $request->motif_rejet;
         $dossier->save();
 
-        return redirect()->back()->with('success', 'Dossier adhérent rejeté.');
+        return redirect()->back()->with('success', 'Dossier adhérent rejeté avec motif.');
     }
 
     /* =========================
@@ -96,10 +98,15 @@ class RegieController extends Controller
         return redirect()->back()->with('success', 'Dossier enfant validé.');
     }
 
-    public function rejeterEnfant($id)
+    public function rejeterEnfant(Request $request, $id)
     {
+        $request->validate([
+            'motif_rejet' => 'required|min:5'
+        ]);
+
         $dossier = DossierEnfant::where('add_enfant_id', $id)->firstOrFail();
         $dossier->statut = 'rejete';
+        $dossier->motif_rejet = $request->motif_rejet;
         $dossier->save();
 
         return redirect()->back()->with('success', 'Dossier enfant rejeté.');
@@ -132,27 +139,30 @@ class RegieController extends Controller
         return redirect()->back()->with('success', 'Dossier conjoint validé.');
     }
 
-    public function rejeterConjoint($id)
+    public function rejeterConjoint(Request $request, $id)
     {
+        $request->validate([
+            'motif_rejet' => 'required|min:5'
+        ]);
+
         $dossier = DossierConjoint::where('add_conjoint_id', $id)->firstOrFail();
         $dossier->statut = 'rejete';
+        $dossier->motif_rejet = $request->motif_rejet;
         $dossier->save();
 
         return redirect()->back()->with('success', 'Dossier conjoint rejeté.');
     }
 
-
     /* =========================
-   ADHESIONS TRAITEES
-   ========================= */
+       ADHERENTS TRAITES
+    ========================= */
     public function adhesionsTraitees()
     {
-        // Récupérer tous les adhérents dont le dossier est valide ou rejeté
-        $adherant = Adherant::with('dossier')
+        $adherants = Adherant::with('dossier')
             ->whereHas('dossier', fn($q) => $q->whereIn('statut', ['valide', 'rejete']))
             ->get();
 
-        return view('dashboard.regie_recette.adherants_traiter', compact('adherant'));
+        return view('dashboard.regie_recette.adherants_traiter', compact('adherants'));
     }
 
     /* Modifier un adhérent traité */
@@ -161,6 +171,4 @@ class RegieController extends Controller
         $adherant = Adherant::with('dossier')->findOrFail($id);
         return view('dashboard.regie_recette.adherant_modifier', compact('adherant'));
     }
-
-    
 }

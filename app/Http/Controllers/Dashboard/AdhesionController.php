@@ -157,7 +157,6 @@ class AdhesionController extends Controller
     }
 
 
-    //Step1 enfant
     
     
 }

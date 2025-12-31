@@ -41,7 +41,7 @@ class RegisterController extends Controller
         //  Ajout automatique du rôle étudiant
         $user->assignRole('etudiant');
 
-        // 3 Retour
+        //  Retour
         return $user;
     }
 

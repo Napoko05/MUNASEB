@@ -55,7 +55,6 @@
         /* Conteneur recto */
         .recto {
             position: relative;
-            /* permet de placer la signature en absolu */
             width: 100%;
             height: 100%;
         }
@@ -63,21 +62,14 @@
         /* Signature collée à droite */
         .recto .signature {
             position: absolute;
-            /* se place par rapport au conteneur .recto */
             bottom: 5px;
-            /* collée en bas */
             right: 0;
-            /* carrément à droite */
         }
 
         .recto .signature img {
             max-width: 50px;
-            /* réduit au maximum la largeur */
             height: auto;
-            /* garde les proportions */
         }
-
-
 
         /* VERSO */
         .card-verso {
@@ -122,33 +114,31 @@
 
     {{-- ======================= RECTO ======================= --}}
     <div class="card card-recto">
-
         <div class="photo">
-            <img src="{{ asset('storage/adherant/photo/'.$adherant->photo) }}" alt="Photo Adhérent">
+           <img src="{{ public_path('storage/'.$adherant->photo) }}" alt="Photo Adhérent">
+
         </div>
 
         <div class="info">
-            <h4>CARTE N° {{ $adherant->numeroCarte }}</h4>
+            <h4>CARTE N° {{ $adherant->carte->numero_carte ?? $adherant->numeroCarte }}</h4>
             <p><b>Nom :</b> {{ $adherant->nom }}</p>
             <p><b>Prénoms :</b> {{ $adherant->prenom }}</p>
             <p><b>Né le :</b> {{ \Carbon\Carbon::parse($adherant->dateNaiss)->format('d/m/Y') }} à {{ $adherant->lieuNaiss }}</p>
 
-            <!-- Dates -->
-            <p><b>Date d'effet :</b> {{ \Carbon\Carbon::parse($adherant->date_effet)->format('d/m/Y') }}</p>
-            <p><b>Date de validité :</b> {{ \Carbon\Carbon::parse($adherant->date_validite)->format('d/m/Y') }}</p>
+            <p><b>Date d'effet :</b> {{ \Carbon\Carbon::parse($adherant->carte->date_creation ?? $adherant->date_effet)->format('d/m/Y') }}</p>
+            <p><b>Date de validité :</b> {{ \Carbon\Carbon::parse($adherant->carte->date_validite ?? $adherant->date_validite)->format('d/m/Y') }}</p>
 
             <p><b>Université :</b> {{ $adherant->universites->nom }}</p>
             <p><b>Filière :</b> {{ $adherant->filieres->nom }} - {{ $adherant->codeNiveau }}</p>
             <p><b>Contact :</b> {{ $adherant->tel1 }}</p>
 
-            <!-- Signature électronique -->
-            @if($adherant->signature_directeur)
+            {{-- Signature électronique du directeur --}}
+            @if($adherant->carte && $adherant->carte->signature_directeur)
             <div class="signature">
-                <img src="{{ asset('storage/agents/signatures/' . $adherant->signature_directeur) }}" alt="Signature Directeur">
+                <img src="{{ asset('storage/' . $adherant->carte->signature_directeur) }}" alt="Signature Directeur">
             </div>
             @endif
         </div>
-
     </div>
 
     {{-- ======================= VERSO ======================= --}}
@@ -175,7 +165,9 @@
         </div>
 
         <div class="qr">
-            <img src="{{ asset('storage/'.$qrPath) }}" alt="QR Code">
+            @if($adherant->carte && $adherant->carte->qr_code_path)
+            <img src="{{ asset('storage/' . $adherant->carte->qr_code_path) }}" alt="QR Code">
+            @endif
         </div>
     </div>
 

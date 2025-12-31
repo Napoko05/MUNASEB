@@ -6,14 +6,14 @@
 
         {{-- Sidebar gauche --}}
         <div class="col-md-3">
-            @include('dashboard.regie_recette.partials.sidebar')
+            @include('dashboard.directeur.partials.sidebar')
         </div>
 
         {{-- Contenu principal --}}
         <div class="col-md-9">
             <div class="card shadow-lg rounded-4">
                 <div class="card-header bg-primary text-white fw-bold">
-                    Détails de l’adhérent : {{ $adherant->nom }} {{ $adherant->prenom }}
+                    Détails de l’adhérent : {{ $dossier->adherant->nom }} {{ $dossier->adherant->prenom }}
                 </div>
                 <div class="card-body">
 
@@ -22,63 +22,57 @@
                     <table class="table table-sm table-bordered">
                         <tr>
                             <th>Nom</th>
-                            <td>{{ $adherant->nom }}</td>
+                            <td>{{ $dossier->adherant->nom }}</td>
                         </tr>
                         <tr>
                             <th>Prénom</th>
-                            <td>{{ $adherant->prenom }}</td>
+                            <td>{{ $dossier->adherant->prenom }}</td>
                         </tr>
                         <tr>
                             <th>INE</th>
-                            <td>{{ $adherant->ine }}</td>
+                            <td>{{ $dossier->adherant->ine }}</td>
                         </tr>
                         <tr>
                             <th>Email</th>
-                            <td>{{ $adherant->email }}</td>
+                            <td>{{ $dossier->adherant->email }}</td>
                         </tr>
                         <tr>
                             <th>Téléphone</th>
-                            <td>{{ $adherant->tel1 }}</td>
+                            <td>{{ $dossier->adherant->tel1 }}</td>
                         </tr>
                         <tr>
                             <th>Filière</th>
-                            <td>{{ $adherant->filiere->nom ?? '' }}</td>
+                            <td>{{ $dossier->adherant->filiere->nom ?? '' }}</td>
                         </tr>
                     </table>
+
+                    {{-- Documents soumis --}}
                     <h5>Documents soumis</h5>
                     <ul>
-                        @if($adherant->dossier->document_cni)
-                        <li>CNIB :
-                            <a href="{{ asset('storage/' . $adherant->dossier->document_cni) }}" target="_blank">Voir</a>
-                        </li>
+                        @if($dossier->document_cni)
+                        <li>CNIB : <a href="{{ asset('storage/' . $dossier->document_cni) }}" target="_blank">Voir</a></li>
                         @endif
-
-                        @if($adherant->dossier->document_attestation)
-                        <li>Attestation :
-                            <a href="{{ asset('storage/' . $adherant->dossier->document_attestation) }}" target="_blank">Voir</a>
-                        </li>
+                        @if($dossier->document_attestation)
+                        <li>Attestation : <a href="{{ asset('storage/' . $dossier->document_attestation) }}" target="_blank">Voir</a></li>
                         @endif
-
-                        @if($adherant->dossier->document_recu)
-                        <li>Reçu :
-                            <a href="{{ asset('storage/' . $adherant->dossier->document_recu) }}" target="_blank">Voir</a>
-                        </li>
+                        @if($dossier->document_recu)
+                        <li>Reçu : <a href="{{ asset('storage/' . $dossier->document_recu) }}" target="_blank">Voir</a></li>
                         @endif
                     </ul>
 
                     {{-- Enfants --}}
-                    @if($adherant->enfants->count() > 0)
+                    @if($dossier->adherant->enfants->count() > 0)
                     <h5>Enfants</h5>
                     <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
                                 <th>Nom</th>
                                 <th>Prénom</th>
-                                <th>Actions</th>
+                                <th>Documents</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($adherant->enfants as $enfant)
+                            @foreach($dossier->adherant->enfants as $enfant)
                             <tr>
                                 <td>{{ $enfant->nom }}</td>
                                 <td>{{ $enfant->prenom }}</td>
@@ -96,18 +90,18 @@
                     @endif
 
                     {{-- Conjoints --}}
-                    @if($adherant->conjoints->count() > 0)
+                    @if($dossier->adherant->conjoints->count() > 0)
                     <h5>Conjoints</h5>
                     <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
                                 <th>Nom</th>
                                 <th>Prénom</th>
-                                <th>Actions</th>
+                                <th>Documents</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($adherant->conjoints as $conjoint)
+                            @foreach($dossier->adherant->conjoints as $conjoint)
                             <tr>
                                 <td>{{ $conjoint->nom }}</td>
                                 <td>{{ $conjoint->prenom }}</td>
@@ -124,17 +118,43 @@
                     </table>
                     @endif
 
-                    {{-- Boutons valider / rejeter --}}
-                    <form action="{{ route('regie.adherant.valider', $adherant->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        <button class="btn btn-success mt-3">Valider l’adhérent</button>
-                    </form>
-                    <form action="{{ route('regie.adherant.rejeter', $adherant->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        <button class="btn btn-danger mt-3"> Rejeter l’adhérent</button>
-                    </form>
+                    {{-- Actions directeur --}}
+                    <div class="mt-4">
+                        {{-- Créer carte --}}
+                        <form action="{{ route('directeur.cartes.creer', $dossier->adherant->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button class="btn btn-success">Créer carte</button>
+                        </form>
 
-                </div>
+                        {{-- Rejeter --}}
+                        <button class="btn btn-danger d-inline" data-bs-toggle="modal" data-bs-target="#rejeterModal{{ $dossier->adherant->id }}">
+                            Rejeter l’adhérent
+                        </button>
+                    </div>
+
+                    {{-- Modal rejet --}}
+                    <div class="modal fade" id="rejeterModal{{ $dossier->adherant->id }}" tabindex="-1" aria-labelledby="rejeterModalLabel{{ $dossier->adherant->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ route('directeur.adherant.rejeter', $dossier->adherant->id) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title" id="rejeterModalLabel{{ $dossier->adherant->id }}">Motif du rejet</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <textarea name="motif_rejet" class="form-control" rows="3" placeholder="Expliquez le motif du rejet..." required></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <button type="submit" class="btn btn-danger">Confirmer le rejet</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> {{-- card-body --}}
             </div>
         </div>
     </div>

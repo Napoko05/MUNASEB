@@ -13,17 +13,19 @@ return new class extends Migration
 
             // 🔗 Relation vers la table adherants
             $table->foreignId('adherant_id')
-                  ->constrained('adherant')
-                  ->cascadeOnDelete();
+                ->constrained('adherant')
+                ->cascadeOnDelete();
 
             $table->string('photo')->nullable();
             $table->string('document_cni')->nullable();
             $table->string('document_attestation')->nullable();
             $table->string('document_recu')->nullable();
+            $table->text('commentaire_rejet')->nullable();
 
-            // 🟢 Ajout direct du statut
+
+            //  Ajout direct du statut
             $table->enum('statut', ['en_attente', 'valide', 'rejete'])
-                  ->default('en_attente');
+                ->default('en_attente');
 
             $table->timestamps();
         });

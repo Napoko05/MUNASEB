@@ -9,7 +9,7 @@
 
         <div class="col-md-9">
             <div class="card shadow-lg rounded-4">
-                <div class="card-header bg-primary text-white fw-bold" style="text-align: center;">
+                <div class="card-header bg-primary text-white fw-bold text-center">
                     Adhérents traités
                 </div>
                 <div class="card-body">
@@ -24,26 +24,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($adherant as $adherant)
+                                @forelse($adherants as $adherant)
                                 <tr>
                                     <td>{{ $adherant->nom }}</td>
                                     <td>{{ $adherant->prenom }}</td>
                                     <td>
-                                        @if($adherant->dossier->statut == 'valide')
+                                        @if(optional($adherant->dossier)->statut === 'valide')
                                         <span class="badge bg-success">Validé</span>
-                                        @elseif($adherant->dossier->statut == 'rejete')
-                                        <span class="badge bg-danger">Rejeté </span>
-
+                                        @elseif(optional($adherant->dossier)->statut === 'rejete')
+                                        <span class="badge bg-danger">Rejeté</span>
+                                        @if(!empty(optional($adherant->dossier)->motif_rejet))
+                                        <div class="mt-1 text-muted small">
+                                            <strong>Motif :</strong> {{ $adherant->dossier->motif_rejet }}
+                                        </div>
+                                        @endif
                                         @endif
                                     </td>
                                     <td>
-                                        {{-- le lien de voir dans la route --}}
-                                        @if($adherant->dossier->statut == 'rejete' || $adherant->dossier->statut == 'valide')
+                                        @if(in_array(optional($adherant->dossier)->statut, ['valide', 'rejete']))
                                         <a href="{{ route('regie.adherant.detail', $adherant->id) }}"
-                                            class="btn btn-sm btn-outline-primary">Modifier</a>
+                                            class="btn btn-sm btn-outline-primary"
+                                            title="Modifier l’adhérent {{ $adherant->nom }} {{ $adherant->prenom }}">
+                                            Modifier
+                                        </a>
                                         @endif
                                     </td>
-
                                 </tr>
                                 @empty
                                 <tr>

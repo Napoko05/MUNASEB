@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form action="{{ route('munaseb.adherant.postEnfantStep2') }}" method="POST">
+                    <form action="{{ route('enfant.step2') }}" method="POST">
                         @csrf
 
                         {{-- Type de document & numéro enfant --}}
@@ -45,12 +45,12 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Numéro du document</label>
-                                <input type="text" name="numdoc" class="form-control" required>
+                                <input type="text" name="numdoc" class="form-control" required placeholder="numero CNIB ou passport parent">
                             </div>
                             {{-- N° Carte parent --}}
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">N° Carte parent</label>
-                                <input type="number" name="numero" class="form-control" placeholder="Numero de carte parent mutualiste" required>
+                                <input type="text" name="numero" class="form-control" placeholder="Numero de carte mutualiste parent" required>
                             </div>
                         </div>
 
@@ -90,7 +90,7 @@
 
                         {{-- Boutons --}}
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ route('munaseb.adherant.adhesionstep1') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('enfant.step1') }}" class="btn btn-outline-secondary">
                                 <i class="fa fa-arrow-left me-1"></i> Précédent
                             </a>
                             <button type="submit" class="btn btn-primary">

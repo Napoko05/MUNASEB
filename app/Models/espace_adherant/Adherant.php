@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\espace_adherant; // convention : majuscule au namespace
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,9 +20,26 @@ class Adherant extends Model
 
     // Colonnes autorisées en écriture
     protected $fillable = [
-        'ine','nom','prenom','sexe','dateNaiss','lieuNaiss','typedoc','numdoc',
-        'tel1','tel2','email','idUniversite','idFiliere','type_adherant','numero_adhesion',
-        'date_adhesion','commentaire','numeroCarte','date_validite','signature_directeur' 
+        'ine',
+        'nom',
+        'prenom',
+        'sexe',
+        'dateNaiss',
+        'lieuNaiss',
+        'typedoc',
+        'numdoc',
+        'tel1',
+        'tel2',
+        'email',
+        'idUniversite',
+        'idFiliere',
+        'type_adherant',
+        'numero_adhesion',
+        'date_adhesion',
+        'commentaire',
+        'numeroCarte',
+        'date_validite',
+        'signature_directeur'
     ];
 
     // Relations
@@ -35,6 +53,10 @@ class Adherant extends Model
     {
         // clé étrangère idFiliere dans adherants → id dans filieres
         return $this->belongsTo(Filiere::class, 'idFiliere', 'id');
+    }
+    public function carte()
+    {
+        return $this->hasOne(Carte::class, 'adherant_id');
     }
 
     public function enfants()
@@ -51,7 +73,7 @@ class Adherant extends Model
     {
         return $this->hasOne(DossierAdherant::class, 'adherant_id', 'id');
     }
-     public function profil()
+    public function profil()
     {
         return $this->hasOne(Profil::class, 'adherant_id');
     }

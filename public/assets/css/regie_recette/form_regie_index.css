@@ -1,0 +1,149 @@
+/* NAVBAR PRINCIPALE */
+.navbar.custom-navbar {
+  padding: 0.3rem 1rem;
+  min-height: 48px;
+  background-color: #343a40;
+  font-size: 0.9rem;
+}
+.navbar-brand {
+  font-size: 1rem;
+  padding: 0;
+}
+.navbar-nav .nav-link {
+  padding: 0.3rem 0.6rem;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  float: left;
+  padding: 2rem;
+  background-color: #1f1cf8;
+  border-right: 1px solid #f40808;
+}
+.sidebar h4 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.sidebar a {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #faf9f9;
+  text-decoration: none;
+}
+.sidebar a:hover {
+  text-decoration: underline;
+}
+.sidebar .submenu {
+  margin-left: 1rem;
+}
+
+/* ZONE DE CONTENU */
+.content-area {
+  margin-left: 240px;
+  padding: 1rem;
+}
+
+/* TABLEAU */
+.table th, .table td {
+  vertical-align: middle;
+  text-align: center;
+}
+.table th {
+  font-weight: 600;
+}
+.badge.bg-warning {
+  font-size: 0.85rem;
+  padding: 0.4em 0.6em;
+}
+
+/* MODAL */
+.modal-header {
+  background-color: #f1f1f1;
+}
+.modal-title {
+  font-size: 1rem;
+}
+.modal-footer .btn {
+  min-width: 100px;
+}
+
+/* BOUTONS */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    float: none;
+    border-right: none;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .content-area {
+    margin-left: 0;
+  }
+  .navbar.custom-navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+/* FOOTER MODERNE */
+
+.footer-modern {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #007bff, #6610f2);
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.9rem;
+  z-index: 1000;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-left h6 {
+  margin: 0;
+}
+
+.footer-links a {
+  color: #f1f1f1;
+  margin: 0 0.8rem;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-links a:hover {
+  color: #fff;
+}
+
+.footer-social a {
+  color: #f1f1f1;
+  margin-left: 0.8rem;
+  font-size: 1.1rem;
+  transition: transform 0.3s, color 0.3s;
+}
+.footer-social a:hover {
+  color: #fff;
+  transform: scale(1.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer-links, .footer-social {
+    margin-top: 0.5rem;
+  }
+}
+
