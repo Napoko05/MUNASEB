@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,20 +12,27 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasRoles;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * Relation vers le profil Agent
+     */
+    public function agent()
+    {
+        return $this->hasOne(Agent::class);
+    }
+
+    /**
+     * Les attributs assignables en masse
      */
     protected $fillable = [
-        'name',
+        'ine',
+        'matricule',
+        'nom',
+        'prenom',
         'email',
         'password',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * Les attributs cachés pour la sérialisation
      */
     protected $hidden = [
         'password',
@@ -34,9 +40,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Casts d'attributs
      */
     protected function casts(): array
     {
@@ -44,5 +48,12 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    /**
+     * Récupérer le nom du rôle principal
+     */
+    public function getRoleNameAttribute()
+    {
+        return $this->roles->first()?->name;
     }
 }

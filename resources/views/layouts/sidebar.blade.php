@@ -1,7 +1,7 @@
 <!-- [ Sidebar Menu ] start -->
 <nav class="pc-sidebar">
   <div class="navbar-wrapper">
-    
+
     <!-- Logo -->
     <div class="m-header">
       <a href="{{ url('/home') }}" class="b-brand text-primary">
@@ -15,58 +15,54 @@
 
         <!-- Si utilisateur non connecté -->
         @guest
-          @if (Route::has('login'))
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-            </li>
-          @endif
-          @if (Route::has('register'))
-            <li class="nav-item">
-              <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-            </li>
-          @endif
+        @if (Route::has('login'))
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+        </li>
+        @endif
+        @if (Route::has('register'))
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+        </li>
+        @endif
         @else
 
-          <!-- Tableau de bord -->
-          <li class="pc-item">
-            <a href="{{ url('/home') }}" class="pc-link">
-              <span class="pc-micon"><i class="ph ph-gauge"></i></span>
-              <span class="pc-mtext">Tableau de bord</span>
-            </a>
-          </li>
-
-          <!-- Mon agenda -->
-          <li class="pc-item">
-            <a href="#" class="pc-link">
-              <span class="pc-micon"><i class="ph ph-calendar"></i></span>
-              <span class="pc-mtext">Mon agenda</span>
-            </a>
-          </li> 
-
-          <!-- Section Administration (visible uniquement Admin) -->
-          @role('Admin')
-            <li class="pc-item pc-hasmenu">
-              <a href="#!" class="pc-link">
-                <span class="pc-micon"><i class="ph ph-gear"></i></span>
-                <span class="pc-mtext">Administration</span>
-                <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+        <!-- Tableau de bord -->
+        <li class="pc-item">
+          <a href="{{ url('/home') }}" class="pc-link">
+            <span class="pc-micon"><i class="ph ph-gauge"></i></span>
+            <span class="pc-mtext">Tableau de bord</span>
+          </a>
+        </li>
+        <!-- Section Administration (visible uniquement Admin) -->
+        <!-- Section Administration (visible uniquement Admin) -->
+        @role('admin')
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link">
+            <span class="pc-micon"><i class="ph ph-gear"></i></span>
+            <span class="pc-mtext">Administration</span>
+            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            <li class="pc-item">
+              <a href="{{ route('users.index') }}" class="pc-link">
+                <i class="ph ph-user"></i> Gestion des utilisateurs
               </a>
-              <ul class="pc-submenu">
-                <li class="pc-item">
-                  <a href="{{ route('users.index') }}" class="pc-link">
-                    <i class="ph ph-user"></i> Gestion des utilisateurs
-                  </a>
-                </li>
-                <li class="pc-item">
-                  <a href="{{ route('roles.index') }}" class="pc-link">
-                    <i class="ph ph-shield"></i> Gestion des rôles
-                  </a>
-                </li>
-              </ul>
             </li>
-          @endrole
+            <li class="pc-item">
+              <a href="{{ route('roles.index') }}" class="pc-link">
+                <i class="ph ph-shield"></i> Gestion des rôles
+              </a>
+            </li>
+            <li class="pc-item">
+              <a href="{{ route('admin.agents.create') }}" class="pc-link">
+                <i class="ph ph-user-plus"></i> Créer un agent
+              </a>
+            </li>
+          </ul>
+        </li>
+        @endrole
 
-          
         @endguest
       </ul>
     </div>
@@ -134,7 +130,7 @@
 
                 <li class="list-group-item">
                   <a href="{{ route('logout') }}" class="dropdown-item"
-                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="ph ph-power me-2"></i> Déconnexion
                   </a>
                   <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">

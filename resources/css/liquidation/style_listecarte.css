@@ -1,0 +1,51 @@
+/* style_liscart.css */
+
+/* Card */
+.liscart-card {
+    border: none;
+}
+
+.liscart-header {
+    background: linear-gradient(90deg, #007bff, #6610f2);
+    font-size: 1.25rem;
+}
+
+/* Table */
+.liscart-table th, 
+.liscart-table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* Responsive: table en "bloc" sur mobile */
+@media (max-width: 768px) {
+    .liscart-table thead {
+        display: none;
+    }
+    .liscart-table, 
+    .liscart-table tbody, 
+    .liscart-table tr, 
+    .liscart-table td {
+        display: block;
+        width: 100%;
+    }
+    .liscart-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+    .liscart-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    .liscart-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        width: calc(50% - 1rem);
+        font-weight: bold;
+        text-align: left;
+    }
+}

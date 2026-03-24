@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Models\espace_adherant;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\AdherentVisa;
 
 class AddConjoint extends Model
 {
@@ -10,44 +12,53 @@ class AddConjoint extends Model
 
     protected $table = 'add_conjoints';
 
+    // Colonnes modifiables
     protected $fillable = [
-        'parent_id',        // ID du parent (adhérent)
+        'parent_id',
+        'ine',
         'nom',
         'prenom',
         'sexe',
         'dateNaiss',
         'lieuNaiss',
-        'ine',              // Optionnel : INE de l’enfant
         'avatar',
         'typedoc',
-        'typedoc_conjointt',
+        'typedoc_conjoint',
         'numact',
         'numero',
         'tel1',
         'tel2',
         'email',
-        'doc_cni',
-        'doc_act',
-        'doc_recu',
-        'doc_carte_conjointt'
     ];
 
-    // 🔗 Relation vers le conjointt
+    // Relation vers le parent (l’adhérent)
     public function parent()
     {
         return $this->belongsTo(Adherant::class, 'parent_id');
     }
 
-    /**
-     * Vérifie si un conjoint existe déjà pour le même mutualiste
-     * selon la combinaison unique : parent_id + nom + prenom + dateNaiss
-     */
-    public static function existePourParent($parentId, $nom, $prenom, $dateNaiss)
+    // Relation vers le dossier des documents
+    public function dossier()
     {
-        return self::where('parent_id', $parentId)
-                    ->where('nom', $nom)
-                    ->where('prenom', $prenom)
-                    ->where('dateNaiss', $dateNaiss)
-                    ->exists();
+        return $this->hasOne(DossierConjoint::class, 'conjoint_id');
+    }
+
+    // Relation vers les visas si nécessaire
+    public function visas()
+    {
+        return $this->morphMany(AdherentVisa::class, 'visaable');
+    }
+
+    /**
+     * Vérifie si le conjoint peut être ajouté.
+     * Un conjoint ne peut être ajouté si le parent est déjà mutualiste.
+     */
+    public static function peutAjouter($parent_id)
+    {
+        $parent = Adherant::find($parent_id);
+        if (!$parent) return false;
+
+        // Si le parent est déjà mutualiste, on ne peut pas ajouter le conjoint
+        return $parent->statut !== 'Mutualiste';
     }
 }

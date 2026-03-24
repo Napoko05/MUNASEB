@@ -1,0 +1,247 @@
+/* =========================
+   GLOBAL
+========================= */
+body {
+    background: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.dashboard-container {
+    padding: 25px;
+}
+
+/* =========================
+   CARD
+========================= */
+.dashboard-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.dashboard-card:hover {
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+}
+
+/* =========================
+   HEADER
+========================= */
+.dashboard-header {
+    background: linear-gradient(90deg, #007bff, #6610f2);
+    color: #fff;
+    padding: 18px;
+    text-align: center;
+}
+
+.dashboard-header h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* =========================
+   BODY
+========================= */
+.dashboard-body {
+    padding: 20px;
+}
+
+/* =========================
+   ALERTES
+========================= */
+.custom-alert {
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* =========================
+   TABLE
+========================= */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.custom-table thead {
+    background: #343a40;
+    color: #fff;
+}
+
+.custom-table th {
+    padding: 14px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.custom-table td {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.custom-table tbody tr {
+    transition: 0.2s;
+}
+
+.custom-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* =========================
+   BADGES
+========================= */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.badge.success {
+    background: #28a745;
+    color: white;
+}
+
+.badge.warning {
+    background: #ffc107;
+    color: black;
+}
+
+.badge.danger {
+    background: #dc3545;
+    color: white;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.85;
+    transform: scale(1.03);
+}
+
+.btn.info {
+    background: #17a2b8;
+}
+
+.btn.success {
+    background: #28a745;
+}
+
+.btn.danger {
+    background: #dc3545;
+}
+
+/* =========================
+   REJET FORM
+========================= */
+.reject-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: stretch;
+}
+
+.reject-input {
+    display: none;
+    resize: none;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 12px;
+}
+
+.confirm-btn {
+    display: none;
+}
+
+/* Active state */
+.reject-form.active .reject-input {
+    display: block;
+}
+
+.reject-form.active .confirm-btn {
+    display: block;
+}
+
+/* =========================
+   TEXTE
+========================= */
+.motif {
+    max-width: 150px;
+    word-wrap: break-word;
+    font-size: 13px;
+}
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+}
+
+.no-action {
+    color: #bbb;
+    font-style: italic;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+
+    .dashboard-container {
+        padding: 10px;
+    }
+
+    .dashboard-header {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .custom-table th,
+    .custom-table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .btn {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+
+    .motif {
+        max-width: 100px;
+    }
+}

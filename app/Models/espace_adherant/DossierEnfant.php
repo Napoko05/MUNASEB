@@ -9,16 +9,21 @@ class DossierEnfant extends Model
 {
     use HasFactory;
 
-    protected $table = 'dossiers_enfants';
+    // ⚠️ Le nom de la table doit correspondre à ta migration
+    protected $table = 'dossier_enfants';
 
+    // Colonnes définies dans la migration et utilisées par ton contrôleur
     protected $fillable = [
-        'adherant_id',
-        'document_extrait_naissance',
-        'document_cni_parent',
+        'enfant_id',
+        'doc_extrait',
+        'doc_cni_parent',
+        'document_recu',
+        'document_carte',
     ];
 
-    public function adherant()
+    // Relation avec l'enfant
+    public function enfant()
     {
-        return $this->belongsTo(Adherant::class);
+        return $this->belongsTo(AddEnfant::class, 'enfant_id');
     }
 }

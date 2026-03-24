@@ -1,0 +1,140 @@
+/* ===============================
+   VARIABLES DE COULEURS
+================================ */
+:root {
+    --regie-blue: #0b2a4a;
+    --regie-light: #143d6b;
+    --regie-orange: #f57c00;
+    --regie-success: #28a745;
+    --regie-danger: #dc3545;
+    --regie-white: #fff;
+    --regie-card-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* ===============================
+   CONTENEUR PRINCIPAL
+================================ */
+.regie-content-area {
+    margin-left: 260px; /* largeur sidebar */
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* ===============================
+   CARDS
+================================ */
+.regie-card {
+    margin-bottom: 25px;
+    border-radius: 16px;
+    box-shadow: var(--regie-card-shadow);
+    overflow: hidden;
+    background-color: var(--regie-white);
+}
+
+.regie-card-header {
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--regie-white);
+}
+
+.regie-card-header.validated { background-color: var(--regie-success); }
+.regie-card-header.rejected { background-color: var(--regie-danger); }
+
+/* ===============================
+   TABLEAUX
+================================ */
+.regie-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.regie-table th, .regie-table td {
+    padding: 10px 8px;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.regie-table thead th {
+    background-color: var(--regie-blue);
+    color: var(--regie-white);
+    font-weight: 600;
+}
+
+.regie-table tbody tr:hover {
+    background-color: rgba(245,124,0,0.05);
+}
+
+/* ===============================
+   BADGES
+================================ */
+.badge-validated {
+    background-color: var(--regie-success);
+    color: var(--regie-white);
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.badge-rejected {
+    background-color: var(--regie-danger);
+    color: var(--regie-white);
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+/* ===============================
+   BOUTONS
+================================ */
+.regie-btn-detail {
+    background-color: var(--regie-light);
+    color: var(--regie-white);
+    padding: 4px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.regie-btn-detail:hover { transform: scale(1.05); }
+
+.regie-btn-modify {
+    background-color: var(--regie-orange);
+    color: #212529;
+    padding: 4px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.regie-btn-modify:hover { transform: scale(1.05); }
+
+/* ===============================
+   ALERTES
+================================ */
+.regie-alert {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 1200px) {
+    .regie-content-area { margin-left: 220px; padding: 15px; }
+}
+
+@media (max-width: 992px) {
+    .regie-content-area { margin-left: 200px; padding: 12px; }
+    .regie-table th, .regie-table td { font-size: 0.8rem; padding: 6px; }
+}
+
+@media (max-width: 768px) {
+    .regie-content-area { margin-left: 0; padding: 10px; }
+    .regie-card-header { font-size: 1rem; }
+}

@@ -1,0 +1,229 @@
+/* ===============================
+   VARIABLES
+================================ */
+:root {
+    --blue: #0b2a4a;
+    --blue-light: #143d6b;
+    --orange: #f57c00;
+}
+
+/* ===============================
+   SIDEBAR NON VALIDE
+================================ */
+.nonvalide-sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, var(--blue), var(--blue-light));
+    color: #fff;
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 4px solid #c00000;
+}
+
+.nonvalide-logo {
+    text-align: center;
+    padding: 15px 0 20px 0;
+}
+
+.nonvalide-logo-img {
+    max-width: 120px;
+    height: auto;
+    border-radius: 20%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease;
+}
+
+.nonvalide-logo-img:hover {
+    transform: scale(1.05);
+}
+
+/* LIENS SIDEBAR */
+.nonvalide-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #dce3ec;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.nonvalide-link:hover {
+    background: var(--orange);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+.nonvalide-link.active {
+    background: var(--orange);
+    font-weight: 600;
+}
+
+/* SOUS-MENU */
+.nonvalide-item .nonvalide-dropdown {
+    display: none;
+    padding-left: 15px;
+}
+
+.nonvalide-item.active .nonvalide-dropdown {
+    display: block;
+}
+
+.nonvalide-sublink {
+    display: block;
+    padding: 8px;
+    color: #cfd8dc;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.nonvalide-sublink:hover,
+.nonvalide-sublink.active {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* FLECHES DROPDOWN */
+.nonvalide-arrow {
+    transition: transform 0.3s;
+}
+
+.nonvalide-item.active .nonvalide-arrow {
+    transform: rotate(180deg);
+}
+
+/* ===============================
+   CONTENT AREA
+================================ */
+.nonvalide-content-area {
+    margin-left: 260px; /* largeur sidebar */
+    padding: 20px;
+}
+
+/* ===============================
+   CARDS
+================================ */
+.nonvalide-card {
+    margin-top: 30px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.nonvalide-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.nonvalide-card-header {
+    color: #fff;
+    background: linear-gradient(90deg, #007bff, #6610f2);
+    padding: 15px 20px;
+    font-weight: bold;
+    text-align: center; /* titre centré */
+}
+
+/* ===============================
+   TABLEAU
+================================ */
+.nonvalide-table {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0;
+    text-align: center;
+}
+
+.nonvalide-table thead {
+    background: var(--blue);
+    color: #fff;
+}
+
+.nonvalide-table tbody tr:hover {
+    background: rgba(245, 124, 0, 0.1);
+}
+
+.nonvalide-table td,
+.nonvalide-table th {
+    padding: 12px;
+    text-align: center;
+}
+
+/* BADGES */
+.nonvalide-badge-warning {
+    background: #ffc107;
+    color: #212529;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.nonvalide-badge-success {
+    background: #28a745;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.nonvalide-badge-danger {
+    background: #dc3545;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* BOUTONS */
+.nonvalide-btn-detail {
+    background: #0d6efd;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+
+.nonvalide-btn-success {
+    background: #198754;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+
+.nonvalide-btn-danger {
+    background: #dc3545;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 992px) {
+    .nonvalide-sidebar { width: 220px; }
+    .nonvalide-content-area { margin-left: 220px; }
+}
+
+@media (max-width: 768px) {
+    .nonvalide-sidebar { width: 200px; }
+    .nonvalide-content-area { margin-left: 200px; padding: 10px; }
+    .nonvalide-table td, .nonvalide-table th { font-size: 0.8rem; padding: 6px; }
+    .nonvalide-card-header { font-size: 1rem; }
+}
+/* Champ commentaire masqué par défaut */
+.motif-rejet-container {
+    display: none; /* caché */
+    margin-top: 10px;
+}
+
+/* Affiché seulement quand la classe 'show' est ajoutée */
+.motif-rejet-container.show {
+    display: block;
+}

@@ -1,95 +1,134 @@
-@extends('layouts.app')
+@extends('layouts.regie')
+
+@section('title', 'Adhérents en attente')
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="row">
+<div class="nonvalide-content-area">
 
-        {{-- Sidebar gauche --}}
-        <div class="col-md-3">
-            @include('dashboard.regie_recette.partials.sidebar')
+    {{-- ALERTES --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <div class="nonvalide-card">
+        <div class="nonvalide-card-header bg-warning text-dark">
+            Adhérents en attente
         </div>
 
-        {{-- Contenu principal --}}
-        <div class="col-md-9">
-            <div class="card shadow-lg rounded-4">
-                <div class="card-header bg-primary text-white fw-bold text-center">
-                    Adhérents non validés
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered align-middle text-center">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th>Nom</th>
-                                    <th>Prénom</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($adherants as $adherant)
-                                    <tr>
-                                        <td>{{ $adherant->nom }}</td>
-                                        <td>{{ $adherant->prenom }}</td>
-                                        <td>
-                                            {{-- Bouton détail --}}
-                                            <a href="{{ route('regie.adherant.detail', $adherant->id) }}" 
-                                               class="btn btn-sm btn-outline-primary me-1">
-                                                📄 Détail
-                                            </a>
+        <div class="table-responsive p-3">
+            <table class="nonvalide-table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
 
-                                            {{-- Formulaire de validation --}}
-                                            <form action="{{ route('regie.adherant.valider', $adherant->id) }}" 
-                                                  method="POST" class="d-inline">
-                                                @csrf
-                                                <button class="btn btn-sm btn-success">✔ Valider</button>
-                                            </form>
+                <tbody>
+                    @forelse($enAttente as $adherant)
+                    <tr>
+                        <td>{{ $adherant->nom }}</td>
+                        <td>{{ $adherant->prenom }}</td>
 
-                                            {{-- Bouton qui ouvre le modal de rejet --}}
-                                            <button type="button" 
-                                                    class="btn btn-sm btn-danger" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#rejeterModal{{ $adherant->id }}">
-                                                ❌ Rejeter
-                                            </button>
+                        <td>
+                            <span class="nonvalide-badge-warning">En attente</span>
+                        </td>
 
-                                            {{-- Modal de rejet --}}
-                                            <div class="modal fade" id="rejeterModal{{ $adherant->id }}" tabindex="-1" aria-labelledby="rejeterModalLabel{{ $adherant->id }}" aria-hidden="true">
-                                              <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                  <form action="{{ route('regie.adherant.rejeter', $adherant->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-header bg-danger text-white">
-                                                      <h5 class="modal-title" id="rejeterModalLabel{{ $adherant->id }}">Motif du rejet</h5>
-                                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                      <textarea name="motif_rejet" 
-                                                                class="form-control" 
-                                                                rows="3" 
-                                                                placeholder="Expliquez le motif du rejet..." 
-                                                                required></textarea>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                                      <button type="submit" class="btn btn-danger">Confirmer le rejet</button>
-                                                    </div>
-                                                  </form>
-                                                </div>
-                                              </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="text-muted">Aucun adhérent non validé.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                        <td>
+                            {{-- DETAIL --}}
+                            <a href="{{ route('regie.adherant.detail', $adherant->id) }}"
+                               class="nonvalide-btn-detail">📄</a>
+
+                            @if($adherant->canAct)
+
+                                {{-- VALIDER --}}
+                                <form action="{{ route('regie.adherant.valider', $adherant->id) }}"
+                                      method="POST"
+                                      class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="nonvalide-btn-success">
+                                        ✔
+                                    </button>
+                                </form>
+
+                                {{-- REJETER --}}
+                                <button type="button"
+                                        class="nonvalide-btn-danger btn-show-reject"
+                                        data-id="{{ $adherant->id }}">
+                                    ❌
+                                </button>
+
+                                {{-- FORMULAIRE CACHE --}}
+                                <form action="{{ route('regie.adherant.rejeter', $adherant->id) }}"
+                                      method="POST"
+                                      class="motif-rejet-container"
+                                      id="reject-form-{{ $adherant->id }}">
+                                    @csrf
+
+                                    <textarea name="motif_rejet"
+                                              class="form-control mt-2"
+                                              placeholder="Motif du rejet..."
+                                              required></textarea>
+
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm mt-1">
+                                        Confirmer
+                                    </button>
+                                </form>
+
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4">Aucun dossier</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.btn-show-reject').forEach(btn => {
+
+        btn.addEventListener('click', function () {
+
+            let id = this.dataset.id;
+
+            // fermer tous les autres
+            document.querySelectorAll('.motif-rejet-container').forEach(f => {
+                if (f.id !== 'reject-form-' + id) {
+                    f.classList.remove('show');
+                }
+            });
+
+            // toggle
+            let form = document.getElementById('reject-form-' + id);
+            form.classList.toggle('show');
+
+        });
+
+    });
+
+});
+</script>
 @endsection

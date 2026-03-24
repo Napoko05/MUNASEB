@@ -12,13 +12,17 @@ class DossierAdherant extends Model
     protected $table = 'dossiers_adherant';
 
     protected $fillable = [
-        'adherant_id',
-        'photo',
-        'document_cni',
-        'document_attestation',
-        'document_recu',
-        'statut', // Ajouté pour gérer le statut du dossier
-    ];
+    'adherant_id',
+    'photo',
+    'document_cni',
+    'document_attestation',
+    'document_recu',
+    'statut',
+    'regie_valide',        // ✅ ajouté
+    'liquidation_valide',  // déjà présent
+    'liquidation_visa',    // pour savoir qui a validé
+    'motif_rejet',         // pour rejets
+];
 
     /**
      * 🔗 Relation inverse vers Adherant

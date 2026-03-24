@@ -3,24 +3,29 @@
 namespace App\Http\Controllers\Dashboard;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
 use App\Models\espace_adherant\Adherant;
-use App\Models\espace_adherant\AddEnfant;
-use App\Models\espace_adherant\AddConjoint;
 use App\Models\espace_adherant\DossierAdherant;
 use App\Models\espace_adherant\DossierEnfant;
 use App\Models\espace_adherant\DossierConjoint;
-use App\Http\Controllers\Controller;
 
 class RegieController extends Controller
 {
-    // Dashboard principal
+    /* ======================================
+        DASHBOARD
+    ====================================== */
     public function dashboard()
     {
-        $dossiers = DossierAdherant::with('adherant')
-            ->where('statut', 'en_attente')
+        $dossiers = DossierAdherant::with('adherant.visas')
             ->latest()
             ->take(5)
             ->get();
+
+        foreach ($dossiers as $dossier) {
+            $this->setVisaState($dossier->adherant, $dossier);
+        }
 
         return view('dashboard.regie_recette.index', [
             'titre' => 'Tableau de bord',
@@ -28,147 +33,219 @@ class RegieController extends Controller
         ]);
     }
 
-    /* =========================
-       ADHERANTS
-    ========================= */
+    /* ======================================
+        LISTE ADHERANTS
+    ====================================== */
     public function adherantsNonValides()
     {
-        $adherants = Adherant::with('dossier')
-            ->whereHas('dossier', fn($q) => $q->where('statut', 'en_attente'))
-            ->get();
+        $adherants = Adherant::with([
+            'dossier',
+            'visas',
+            'universite',
+            'filiere',
+            'enfants.dossier',
+            'conjoints.dossier'
+        ])->get();
 
-        return view('dashboard.regie_recette.adherants_non_valides', compact('adherants'));
+        $enAttente = [];
+        $traitees = [];
+
+        foreach ($adherants as $adherant) {
+            $this->setVisaState($adherant);
+
+            if ($adherant->visaDecision === 'en_attente') {
+                $enAttente[] = $adherant;
+            } else {
+                $traitees[] = $adherant;
+            }
+        }
+
+        return view('dashboard.regie_recette.adherants_non_valides', compact('enAttente', 'traitees'));
     }
 
+    /* ======================================
+        DETAIL ADHERANT
+    ====================================== */
     public function detailAdherant($id)
     {
-        $adherant = Adherant::with(['dossier', 'enfants.dossier', 'conjoints.dossier'])
-            ->findOrFail($id);
+        $dossier = DossierAdherant::with([
+            'adherant',
+            'adherant.universite',
+            'adherant.filiere',
+            'adherant.enfants.dossier',
+            'adherant.conjoints.dossier',
+            'adherant.visas'
+        ])->where('adherant_id', $id)->firstOrFail();
 
-        return view('dashboard.regie_recette.adherant_detail', compact('adherant'));
+        $this->setVisaState($dossier->adherant, $dossier);
+
+        return view('dashboard.regie_recette.adherant_detail', compact('dossier'));
     }
 
+    /* ======================================
+        ACTION ADHERANT
+    ====================================== */
     public function validerAdherant($id)
     {
-        $dossier = DossierAdherant::where('adherant_id', $id)->firstOrFail();
-        $dossier->statut = 'valide';
-        $dossier->save();
-
-        return redirect()->back()->with('success', 'Dossier adhérent validé.');
+        return $this->traiter(
+            DossierAdherant::where('adherant_id', $id)->firstOrFail(),
+            'valide'
+        );
     }
 
     public function rejeterAdherant(Request $request, $id)
     {
-        $request->validate([
-            'motif_rejet' => 'required|min:5'
-        ]);
-
-        $dossier = DossierAdherant::where('adherant_id', $id)->firstOrFail();
-        $dossier->statut = 'rejete';
-        $dossier->motif_rejet = $request->motif_rejet;
-        $dossier->save();
-
-        return redirect()->back()->with('success', 'Dossier adhérent rejeté avec motif.');
+        return $this->traiter(
+            DossierAdherant::where('adherant_id', $id)->firstOrFail(),
+            'rejete',
+            $request
+        );
     }
 
-    /* =========================
-       ENFANTS
-    ========================= */
-    public function enfantsNonValides()
-    {
-        $enfants = AddEnfant::with('dossier', 'parent')
-            ->whereHas('dossier', fn($q) => $q->where('statut', 'en_attente'))
-            ->get();
-
-        return view('dashboard.regie_recette.enfants_non_valides', compact('enfants'));
-    }
-
-    public function detailEnfant($id)
-    {
-        $enfant = AddEnfant::with('dossier', 'parent')->findOrFail($id);
-        return view('dashboard.regie_recette.enfant_detail', compact('enfant'));
-    }
-
+    /* ======================================
+        ACTION ENFANT
+    ====================================== */
     public function validerEnfant($id)
     {
-        $dossier = DossierEnfant::where('add_enfant_id', $id)->firstOrFail();
-        $dossier->statut = 'valide';
-        $dossier->save();
-
-        return redirect()->back()->with('success', 'Dossier enfant validé.');
+        return $this->traiter(
+            DossierEnfant::where('add_enfant_id', $id)->firstOrFail(),
+            'valide'
+        );
     }
 
     public function rejeterEnfant(Request $request, $id)
     {
-        $request->validate([
-            'motif_rejet' => 'required|min:5'
-        ]);
-
-        $dossier = DossierEnfant::where('add_enfant_id', $id)->firstOrFail();
-        $dossier->statut = 'rejete';
-        $dossier->motif_rejet = $request->motif_rejet;
-        $dossier->save();
-
-        return redirect()->back()->with('success', 'Dossier enfant rejeté.');
+        return $this->traiter(
+            DossierEnfant::where('add_enfant_id', $id)->firstOrFail(),
+            'rejete',
+            $request
+        );
     }
 
-    /* =========================
-       CONJOINTS
-    ========================= */
-    public function conjointsNonValides()
-    {
-        $conjoints = AddConjoint::with('dossier', 'parent')
-            ->whereHas('dossier', fn($q) => $q->where('statut', 'en_attente'))
-            ->get();
-
-        return view('dashboard.regie_recette.conjoints_non_valides', compact('conjoints'));
-    }
-
-    public function detailConjoint($id)
-    {
-        $conjoint = AddConjoint::with('dossier', 'parent')->findOrFail($id);
-        return view('dashboard.regie_recette.conjoint_detail', compact('conjoint'));
-    }
-
+    /* ======================================
+        ACTION CONJOINT
+    ====================================== */
     public function validerConjoint($id)
     {
-        $dossier = DossierConjoint::where('add_conjoint_id', $id)->firstOrFail();
-        $dossier->statut = 'valide';
-        $dossier->save();
-
-        return redirect()->back()->with('success', 'Dossier conjoint validé.');
+        return $this->traiter(
+            DossierConjoint::where('add_conjoint_id', $id)->firstOrFail(),
+            'valide'
+        );
     }
 
     public function rejeterConjoint(Request $request, $id)
     {
-        $request->validate([
-            'motif_rejet' => 'required|min:5'
-        ]);
+        return $this->traiter(
+            DossierConjoint::where('add_conjoint_id', $id)->firstOrFail(),
+            'rejete',
+            $request
+        );
+    }
 
-        $dossier = DossierConjoint::where('add_conjoint_id', $id)->firstOrFail();
-        $dossier->statut = 'rejete';
-        $dossier->motif_rejet = $request->motif_rejet;
+    /* ======================================
+        MÉTHODE GÉNÉRIQUE (🔥 COEUR DU SYSTEM)
+    ====================================== */
+    private function traiter($dossier, $action, $request = null)
+    {
+        $visa = $this->getVisa($dossier);
+
+        if (!$visa || $visa->decision !== 'en_attente') {
+            return back()->with('error', 'Action impossible : déjà traité.');
+        }
+
+        if ($action === 'rejete') {
+            $request->validate([
+                'motif_rejet' => 'required|string|min:5|max:500'
+            ]);
+        }
+
+        $dossier->statut = $action;
+
+        if ($action === 'valide') {
+            $dossier->regie_valide = true; // ✅ ajout workflow
+        }
+
+        if ($action === 'rejete') {
+            $dossier->motif_rejet = $request->motif_rejet;
+        }
+
         $dossier->save();
 
-        return redirect()->back()->with('success', 'Dossier conjoint rejeté.');
+        $visa->decision = $action;
+
+        if ($action === 'rejete') {
+            $visa->motif_rejet = $request->motif_rejet;
+        }
+
+        $visa->user_id = Auth::id();
+        $visa->save();
+
+        return back()->with(
+            'success',
+            $action === 'valide'
+                ? 'Dossier validé avec succès.'
+                : 'Dossier rejeté avec succès.'
+        );
+    }
+    //Adhrent traiter
+    public function adherantsTraitees()
+    {
+        $adherants = Adherant::with([
+            'dossier',
+            'visas'
+        ])->get();
+
+        $traitees = $adherants->filter(function ($adherant) {
+
+            $visa = $adherant->visas
+                ->where('etape', 'regie_recette')
+                ->first();
+
+            // Sécurité si null
+            $adherant->visaDecision = $visa->decision ?? 'en_attente';
+
+            // Peut modifier seulement si déjà traité
+            $adherant->canModify = $visa && $visa->decision !== 'en_attente';
+
+            // On ne prend que les traités
+            return $adherant->visaDecision !== 'en_attente';
+        });
+
+        return view('dashboard.regie_recette.adherants_traites', compact('traitees'));
     }
 
-    /* =========================
-       ADHERENTS TRAITES
-    ========================= */
-    public function adhesionsTraitees()
-    {
-        $adherants = Adherant::with('dossier')
-            ->whereHas('dossier', fn($q) => $q->whereIn('statut', ['valide', 'rejete']))
-            ->get();
+    /* ======================================
+        HELPERS
+    ====================================== */
 
-        return view('dashboard.regie_recette.adherants_traiter', compact('adherants'));
+    private function getVisa($dossier)
+    {
+        if (isset($dossier->adherant)) {
+            return $dossier->adherant->visas->where('etape', 'regie_recette')->first();
+        }
+
+        if (isset($dossier->addEnfant)) {
+            return $dossier->addEnfant->parent->visas->where('etape', 'regie_recette')->first();
+        }
+
+        if (isset($dossier->addConjoint)) {
+            return $dossier->addConjoint->parent->visas->where('etape', 'regie_recette')->first();
+        }
+
+        return null;
     }
 
-    /* Modifier un adhérent traité */
-    public function modifierAdherant($id)
+    private function setVisaState($adherant, $dossier = null)
     {
-        $adherant = Adherant::with('dossier')->findOrFail($id);
-        return view('dashboard.regie_recette.adherant_modifier', compact('adherant'));
+        $visa = $adherant->visas->where('etape', 'regie_recette')->first();
+
+        $decision = $visa->decision ?? 'en_attente';
+
+        if ($dossier) {
+            $dossier->canAct = $decision === 'en_attente';
+        }
+
+        $adherant->canAct = $decision === 'en_attente';
+        $adherant->visaDecision = $decision;
     }
 }

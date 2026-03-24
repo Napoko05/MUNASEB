@@ -1,0 +1,122 @@
+/* ===============================
+   VARIABLES COULEUR
+================================ */
+:root {
+    --directeur-blue: #0b2a4a;
+    --directeur-blue-light: #143d6b;
+    --directeur-orange: #f57c00;
+}
+
+/* ===============================
+   SIDEBAR DIRECTEUR
+================================ */
+.directeur-sidebar {
+    width: 260px;
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(180deg, var(--directeur-blue), var(--directeur-blue-light));
+    color: #fff;
+    padding: 0px;
+    overflow-y: auto;
+}
+
+/* ===============================
+   LOGO CENOU PROFESSIONNEL
+================================ */
+.directeur-sidebar .sidebar-logo {
+    padding-top: 15px;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.directeur-sidebar .logo-img {
+    max-width: 120px;          /* taille maximale */
+    height: auto;               /* conserve les proportions */
+    border-radius: 20%;         /* arrondi pro */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* légère ombre */
+    transition: transform 0.3s ease;
+}
+
+.directeur-sidebar .logo-img:hover {
+    transform: scale(1.05);
+}
+
+/* ===============================
+   TITRE UTILISATEUR
+================================ */
+.directeur-sidebar .sidebar-title {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.2rem;
+}
+
+/* ===============================
+   LIENS PRINCIPAUX
+================================ */
+.directeur-sidebar .sidebar-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #dce3ec;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.directeur-sidebar .sidebar-link:hover {
+    background: var(--directeur-orange);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+/* ICONES DANS LES LIENS */
+.directeur-sidebar .sidebar-link i {
+    margin-right: 8px;
+}
+
+/* ===============================
+   DROPDOWN
+================================ */
+.directeur-sidebar .sidebar-dropdown {
+    display: none;
+    padding-left: 15px;
+}
+
+/* SOUS-LIENS */
+.directeur-sidebar .sidebar-sublink {
+    display: block;
+    padding: 8px;
+    color: #cfd8dc;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.directeur-sidebar .sidebar-sublink:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* ===============================
+   ACTIF (DROPDOWN OUVERT)
+================================ */
+.directeur-sidebar .sidebar-item.active .sidebar-dropdown {
+    display: block;
+}
+
+/* ROTATION FLECHE */
+.directeur-sidebar .arrow {
+    transition: transform 0.3s;
+}
+
+.directeur-sidebar .sidebar-item.active .arrow {
+    transform: rotate(180deg);
+}
+
+/* ===============================
+   CONTENU PRINCIPAL
+================================ */
+.content-area {
+    margin-left: 260px; /* décale le contenu à droite de la sidebar */
+}

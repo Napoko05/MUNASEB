@@ -42,10 +42,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
   
-  <!--Styles spécifiques pour la régie recette-->
-  <link rel="stylesheet" href="{{ asset('css/dashboard/regie.css') }}">
-  <!--Styles spécifiques pour l'etudiant-->
-  <link rel="stylesheet" href="{{ asset('css/dashboard/etudiant.css') }}">
+
 
 
 </head>

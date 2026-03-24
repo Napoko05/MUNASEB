@@ -1,0 +1,176 @@
+/* ===============================
+   VARIABLES PRINCIPALES
+================================ */
+:root {
+    --blue: #0b2a4a;
+    --blue-light: #143d6b;
+    --orange: #f57c00;
+    --green: #28a745;
+    --red: #dc3545;
+}
+
+/* ===============================
+   CONTENT AREA
+================================ */
+/* ===============================
+   CONTENT AREA
+================================ */
+.content-area {
+    margin-left: 260px; /* largeur du sidebar */
+    padding: 30px 20px 20px 20px; /* espace en haut pour le titre */
+    max-width: calc(100% - 260px);
+}
+
+/* TITRE TABLEAU DE BORD */
+.content-area h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--blue);
+    margin-bottom: 30px; /* espace avant les cartes */
+}
+
+/* ===============================
+   CARDS
+================================ */
+.regie-card {
+    margin-top: 30px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: #fff;
+}
+
+.regie-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.regie-card-header {
+    color: #fff;
+    background: linear-gradient(90deg, #007bff, #6610f2);
+    padding: 15px 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.regie-card-body {
+    padding: 20px;
+}
+
+/* ===============================
+   TABLE
+================================ */
+.regie-table {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.regie-table thead {
+    background: var(--blue);
+    color: #fff;
+}
+
+.regie-table tbody tr {
+    transition: 0.3s;
+}
+
+.regie-table tbody tr:hover {
+    background: rgba(245, 124, 0, 0.1);
+}
+
+.regie-table td, 
+.regie-table th {
+    padding: 14px;
+    text-align: center;
+}
+
+/* ===============================
+   BADGES
+================================ */
+.regie-badge-warning {
+    background: #ffc107;
+    color: #212529;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* ===============================
+   BOUTONS
+================================ */
+.regie-btn-detail {
+    background: #17a2b8;
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 10px;
+    transition: 0.3s;
+}
+
+.regie-btn-detail:hover {
+    background: #138496;
+}
+
+.regie-btn-success {
+    background: var(--green);
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 10px;
+    transition: 0.3s;
+}
+
+.regie-btn-success:hover {
+    background: #218838;
+}
+
+.regie-btn-danger {
+    background: var(--red);
+    color: #fff;
+    border-radius: 6px;
+    padding: 5px 10px;
+    transition: 0.3s;
+}
+
+.regie-btn-danger:hover {
+    background: #c82333;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 992px) {
+    .content-area {
+        margin-left: 220px;
+        max-width: calc(100% - 220px);
+    }
+}
+
+@media (max-width: 768px) {
+    .content-area {
+        margin-left: 200px;
+        max-width: calc(100% - 200px);
+        padding: 10px;
+    }
+
+    .regie-table td, 
+    .regie-table th {
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+
+    .regie-card-body {
+        padding: 15px;
+    }
+
+    .regie-btn-detail,
+    .regie-btn-success,
+    .regie-btn-danger {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+}

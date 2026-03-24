@@ -1,0 +1,10 @@
+@media (max-width: 576px) {
+    .logo-dashboard {
+        max-height: 35px;
+    }
+
+    .card-header.d-flex {
+        flex-direction: column; /* logo au-dessus du texte */
+        gap: 8px;
+    }
+}

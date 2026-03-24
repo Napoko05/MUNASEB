@@ -1,0 +1,177 @@
+/* ==============================
+   NAVBAR MUNASEB
+============================== */
+.munaseb-navbar {
+    background: #0b2a4a;
+    width: 100%;
+    position: sticky;
+    top: 0;
+     height: 70px;
+    z-index: 1000;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* bande orange */
+.munaseb-navbar::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 10px;
+    background: #f57c00;
+}
+
+/* container */
+.nav-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+}
+
+/* logo */
+.nav-logo a {
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+
+/* ==============================
+   MENU PRINCIPAL
+============================== */
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+}
+
+/* liens menu */
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: 0.3s;
+    padding: 6px 10px;
+}
+
+/* hover liens menu */
+.nav-menu a:hover {
+    color: #f57c00;
+}
+
+/* ==============================
+   DROPDOWN
+============================== */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #0b2a4a;
+    border-radius: 10px;
+    padding: 5px 0;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    min-width: 180px;
+    z-index: 2000;
+    transition: all 0.3s ease;
+}
+
+/* items dropdown */
+.dropdown-item {
+    font-size: 14px;
+    padding: 8px 18px;
+    color: white;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+/* hover dropdown */
+.dropdown-item:hover {
+    background: #f57c00;
+    color: white;
+}
+
+/* afficher dropdown au hover desktop */
+@media (min-width: 769px) {
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+}
+
+/* ==============================
+   BOUTON LOGOUT
+============================== */
+.logout-btn {
+    border: none;
+    background: #c62828;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.logout-btn:hover {
+    background: #a91f1f;
+}
+
+/* ==============================
+   RESPONSIVE TABLETTE
+============================== */
+@media (max-width: 992px) {
+    .nav-container {
+        flex-wrap: wrap;
+    }
+    .nav-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        gap: 15px;
+    }
+}
+
+/* ==============================
+   MOBILE
+============================== */
+@media (max-width: 900px) {
+    .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    /* dropdown mobile */
+    .dropdown-menu {
+        position: relative !important;
+        transform: none !important;
+        box-shadow: none;
+        border-left: 4px solid #f57c00;
+        width: 100%;
+    }
+
+    .dropdown-toggle::after {
+        content: '▼';
+        font-size: 12px;
+        margin-left: 5px;
+        vertical-align: middle;
+    }
+}

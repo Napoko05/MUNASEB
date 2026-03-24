@@ -1,4 +1,4 @@
-@extends($layouts.app)
+@extends($layouts.app_adherent)
 
 @section('toolbar')
 <div class="toolbar py-5 pb-lg-15" id="kt_toolbar">

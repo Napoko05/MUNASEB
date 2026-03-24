@@ -3,7 +3,7 @@
       <div class="footer-wrapper container-fluid">
         <div class="row">
           <div class="col-sm-6 my-1">
-            <p class="m-0">JohnsonTechTeam <a href="#" target="_blank">Codeschool</a></p>
+            <p class="m-0">tout droit reserve<a href="#" target="_blank">MUNASEB</a></p>
           </div>
           <div class="col-sm-6 ms-auto my-1">
             <ul class="list-inline footer-link mb-0 justify-content-sm-end d-flex">

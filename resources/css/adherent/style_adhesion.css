@@ -1,0 +1,226 @@
+:root {
+    --cimaf-blue: #0B4DA2;
+    --cimaf-orange: #F58220;
+    --cimaf-red: #D32F2F;
+    --cimaf-gray-light: #F5F5F5;
+}
+
+/* ===============================
+   CONTENEUR GLOBAL
+================================ */
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+/* ===============================
+   BACKGROUND
+================================ */
+.bg-light {
+    background: var(--cimaf-gray-light) !important;
+}
+
+/* ===============================
+   CARTE FORMULAIRE
+================================ */
+.register-card {
+    width: 100%;
+    max-width: 900px;
+    background: hsl(0, 33%, 98%);
+    border-radius: 14px;
+    padding: 35px;
+    border: 4px solid var(--cimaf-red);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* ===============================
+   HEADER STEP
+================================ */
+.step-header {
+    background: var(--cimaf-blue);
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px 12px 0 0;
+    margin: -35px -35px 30px;
+   
+    text-align: center;
+}
+
+.step-header h2 {
+    margin: 0;
+ font-size: 30px;
+    font-weight: 600;
+}
+
+.step-header p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* ===============================
+   PROGRESS BAR
+================================ */
+.progress {
+    height: 22px;
+    border-radius: 20px;
+    background: #e9ecef;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.progress-bar {
+    background: var(--cimaf-orange);
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width .4s ease;
+}
+
+/* ===============================
+   FORM GROUP
+================================ */
+.mb-3 {
+    margin-bottom: 18px;
+}
+
+.mb-3 label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ===============================
+   INPUTS ARRONDIS
+================================ */
+.form-control,
+.form-select,
+.mb-3 input,
+.mb-3 select {
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    transition: all .25s ease;
+}
+
+.form-control:focus,
+.form-select:focus,
+.mb-3 input:focus,
+.mb-3 select:focus {
+    border-color: var(--cimaf-orange);
+    box-shadow: 0 0 0 .15rem rgba(245, 130, 32, 0.25);
+    outline: none;
+}
+
+/* ===============================
+   PHOTO UPLOAD
+================================ */
+.photo-placeholder {
+    width: 130px;
+    height: 130px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px dashed var(--cimaf-orange);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+}
+
+.photo-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ===============================
+   BOUTONS CIMAF
+================================ */
+.btn-cimaf {
+    background-color: var(--cimaf-orange) !important;
+    color: #fff !important;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: background .3s ease;
+}
+
+.btn-cimaf:hover {
+    background: #d96f1c !important;
+}
+
+.btn-cimaf:active {
+    background: #b85c17 !important;
+}
+
+.btn-warning,
+.btn-secondary {
+    border-radius: 8px;
+}
+
+/* ===============================
+   RECAP LIST
+================================ */
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 12px 0;
+    font-size: 0.95rem;
+}
+
+/* ===============================
+   PHOTO RECAP
+================================ */
+.img-fluid.rounded-circle {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid var(--cimaf-orange);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media(max-width:768px) {
+
+    .register-card {
+        padding: 25px;
+    }
+
+    .step-header {
+        margin: -25px -25px 25px;
+    }
+
+    .photo-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+
+    .progress-bar {
+        font-size: 0.75rem;
+    }
+
+}
+
+/* ===============================
+   NAVIGATION FORMULAIRE
+================================ */
+
+.form-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.form-navigation .nav-btn {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    font-weight: 600;
+}

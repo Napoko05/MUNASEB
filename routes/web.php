@@ -10,14 +10,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Dashboard\EtudiantController;
 use App\Http\Controllers\Dashboard\DirecteurController;
 use App\Http\Controllers\Dashboard\RegieController;
-use App\Http\Controllers\Dashboard\LiquidationController;
-use App\Http\Controllers\Dashboard\TresorierController;
-use App\Http\Controllers\Dashboard\AdhesionController;
-use App\Http\Controllers\Dashboard\ProfileController;
 use App\Http\Controllers\munaseb\AdherantController;
 use App\Http\Controllers\munaseb\ReabonnementController;
 use App\Http\Controllers\Dashboard\CarteController;
-
+use App\Http\Controllers\Admin\AgentController;
+use App\Http\Controllers\Dashboard\AdhesionController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\Dashboard\LiquidationController;
 
 // Page d'accueil
 Route::get('/', fn() => view('espace_munaseb.index'));
@@ -37,10 +36,50 @@ Route::middleware('auth')->group(function () {
     // Dashboards selon les rôles
     Route::get('/dashboard/etudiant', [EtudiantController::class, 'index'])->name('dashboard.etudiant');
     Route::get('/dashboard/directeur', [DirecteurController::class, 'index'])->name('dashboard.directeur');
-    Route::get('/dashboard/regie_recette', [RegieController::class, 'index'])->name('dashboard.regie');
+    Route::get('/dashboard/regie_recette', [RegieController::class, 'dashboard'])->name('dashboard.regie');
 });
 
+
+Route::middleware('auth')->get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
+//creation agent
+Route::prefix('admin/agents')->middleware(['auth'])->group(function () {
+    Route::get('create', [AgentController::class, 'create'])->name('admin.agents.create');
+    Route::post('step2', [AgentController::class, 'step2'])->name('admin.agents.step2');
+    Route::get('step2', [AgentController::class, 'step2View'])->name('admin.agents.step2.view');
+    Route::post('store', [AgentController::class, 'store'])->name('admin.agents.store');
+});
+
+/*=== route directeur
+===*/
 Route::middleware(['auth', 'role:directeur'])
+    ->prefix('directeur')
+    ->name('directeur.')
+    ->group(function () {
+
+        Route::get('/', [DirecteurController::class, 'index'])->name('dashboard');
+
+        // Cartes
+        Route::post('/carte/{id}/signer', [DirecteurController::class, 'signerCarte'])->name('carte.signer');
+        Route::get('/carte/{id}/telecharger', [DirecteurController::class, 'telechargerCarte'])->name('carte.telecharger');
+        Route::get('/cartes', [DirecteurController::class, 'listeCartes'])->name('cartes.liste');
+
+        // Adhérant
+        Route::post('/adherant/{id}/valider', [DirecteurController::class, 'validerAdherant'])->name('adherant.valider');
+        Route::post('/adherant/{id}/rejeter', [DirecteurController::class, 'rejeterAdherant'])->name('adherant.rejeter');
+
+        // Enfant
+        Route::post('/enfant/{id}/valider', [DirecteurController::class, 'validerEnfant'])->name('enfant.valider');
+        Route::post('/enfant/{id}/rejeter', [DirecteurController::class, 'rejeterEnfant'])->name('enfant.rejeter');
+
+        // Conjoint
+        Route::post('/conjoint/{id}/valider', [DirecteurController::class, 'validerConjoint'])->name('conjoint.valider');
+        Route::post('/conjoint/{id}/rejeter', [DirecteurController::class, 'rejeterConjoint'])->name('conjoint.rejeter');
+
+        // Documents
+        Route::get('/dossier/{id}', [DirecteurController::class, 'voirDocument'])->name('dossier.detail');
+    });
+/*
+Route::middleware(['auth', 'role:directeur|admin'])
     ->prefix('directeur')
     ->name('directeur.')
     ->group(function () {
@@ -49,10 +88,6 @@ Route::middleware(['auth', 'role:directeur'])
         Route::get('/', [DirecteurController::class, 'index'])
             ->name('dashboard');
 
-        // ======================
-        // ADHÉSIONS / DOSSIERS
-        // ======================
-
         // Liste des adhésions validées par la régie (à traiter par le directeur)
         Route::get('/adhesion/traitees', [DirecteurController::class, 'adhesionsValidees'])
             ->name('adhesion.traites');
@@ -60,10 +95,6 @@ Route::middleware(['auth', 'role:directeur'])
         // Détail d’un dossier soumis par un adhérent
         Route::get('/adhesion/{id}', [DirecteurController::class, 'detailProfil'])
             ->name('adhesion.detail');
-
-        // ======================
-        // CARTES
-        // ======================
 
         // Liste des adhérents validés mais sans carte (à créer)
         Route::get('/cartes/a-creer', [DirecteurController::class, 'cartesNonTraite'])
@@ -76,15 +107,25 @@ Route::middleware(['auth', 'role:directeur'])
         // Liste des cartes déjà créées
         Route::get('/cartes', [CarteController::class, 'listeCartes'])
             ->name('cartes.listecarte');
+        // Liste cartes en attente de signature
+        Route::get('/directeur/cartes/en-attente', [CarteController::class, 'cartesEnAttente'])
+            ->name('cartes.en_attente');
 
         // Aperçu carte (HTML / PDF)
         Route::get('/cartes/{carte}', [DirecteurController::class, 'voirCarte'])
             ->name('cartes.show');
-
-
         // Rejeter un adhérent avec motif
         Route::post('/adherant/{id}/rejeter', [DirecteurController::class, 'rejeterAdherant'])
             ->name('adherant.rejeter');
+
+        //signer cartes
+        Route::post('/directeur/cartes/signer/{id}', [CarteController::class, 'signer'])
+            ->name('cartes.signer');
+
+        // Télécharger une carte PDF
+        Route::get('/directeur/cartes/telecharger/{adherant}', [CarteController::class, 'telecharger'])
+            ->name('cartes.telecharger');
+
 
         // ======================
         // DOCUMENTS
@@ -94,8 +135,9 @@ Route::middleware(['auth', 'role:directeur'])
             ->name('dossier.voirDocument');
 
         Route::get('/directeur/cartes/{id}', [DirecteurController::class, 'voirCarte'])
-            ->name('cartes.show')
-            ->middleware(['auth', 'role:directeur']);
+            ->name('cartes.show');
+        Route::get('/cartes', [DirecteurController::class, 'index'])->name('cartes');
+        Route::post('/signer/{id}', [DirecteurController::class, 'signerCarte'])->name('signer');
 
         // ======================
         // STATISTIQUES
@@ -104,25 +146,83 @@ Route::middleware(['auth', 'role:directeur'])
         Route::get('/stats', [DirecteurController::class, 'stats'])
             ->name('stats');
     });
-     // Télécharger la carte au format PDF
+// Télécharger la carte au format PDF
 
-        Route::get('/carte/{id}/telecharger', [CarteController::class, 'telecharger'])
-            ->name('carte.telecharger');
+Route::get('/carte/{id}/telecharger', [CarteController::class, 'telecharger'])
+    ->name('carte.telecharger');
 
-
+*/
 // Routes Régie de recette
 
+Route::middleware(['auth', 'role:regie_recette'])->prefix('regie')->name('regie.')->group(function () {
+    Route::get('/dashboard', [RegieController::class, 'dashboard'])->name('dashboard');
+
+
+    // =========================
+    // ADHERENTS
+    // =========================
+
+    // Liste des adhérents non validés (en attente)
+    Route::get('adhesions/non-validees', [RegieController::class, 'adherantsNonValides'])
+        ->name('adherants.nonvalidees');
+
+    // Liste des adhérents déjà traités (validés ou rejetés)
+    Route::get('adhesions/traitees', [RegieController::class, 'adherantsTraitees'])
+        ->name('adherants.traitees');
+
+    // Détails d'un adhérent
+    Route::get('adhesion/{id}', [RegieController::class, 'detailAdherant'])
+        ->name('adherant.detail');
+
+    // Valider un adhérent
+    Route::post('adhesion/{id}/valider', [RegieController::class, 'validerAdherant'])
+        ->name('adherant.valider');
+
+    // Rejeter un adhérent
+    Route::post('adhesion/{id}/rejeter', [RegieController::class, 'rejeterAdherant'])
+        ->name('adherant.rejeter');
+
+    // Modifier un adhérent
+    Route::get('adhesion/{id}/modifier', [RegieController::class, 'modifierAdherant'])
+        ->name('adherant.modifier');
+
+    // =========================
+    // ENFANTS
+    // =========================
+
+    Route::get('enfant/{id}', [RegieController::class, 'detailEnfant'])
+        ->name('enfant.detail');
+
+    Route::post('enfant/{id}/valider', [RegieController::class, 'validerEnfant'])
+        ->name('enfant.valider');
+
+    Route::post('enfant/{id}/rejeter', [RegieController::class, 'rejeterEnfant'])
+        ->name('enfant.rejeter');
+
+    // =========================
+    // CONJOINTS
+    // =========================
+
+    Route::get('conjoint/{id}', [RegieController::class, 'detailConjoint'])
+        ->name('conjoint.detail');
+
+    Route::post('conjoint/{id}/valider', [RegieController::class, 'validerConjoint'])
+        ->name('conjoint.valider');
+
+    Route::post('conjoint/{id}/rejeter', [RegieController::class, 'rejeterConjoint'])
+        ->name('conjoint.rejeter');
+});
+/*
 Route::prefix('regie')
     ->name('regie.')
     ->middleware('auth')
     ->group(function () {
 
         // Dashboard
-        Route::get('/dashboard', [RegieController::class, 'dashboard'])->name('dashboard');
-
-        /* =========================
+      
+        =======================
        ADHÉRANTS
-    ========================= */
+    ========================= 
         Route::get('/adherants/non-valide', [RegieController::class, 'adherantsNonValides'])
             ->name('adherants.non_valide');
 
@@ -134,13 +234,14 @@ Route::prefix('regie')
 
         Route::post('/adherant/{id}/rejeter', [RegieController::class, 'rejeterAdherant'])
             ->name('adherant.rejeter');
+        Route::post('/adherant/{id}/rejeter', [RegieController::class, 'rejeterAdherant'])->name('adherant.rejeter');
 
         Route::get('/dossier/{id}/document', [RegieController::class, 'voirDocument'])
             ->name('dossier.voirDocument');
 
-        /* =========================
+        ======================
        ENFANTS
-    ======================= */
+    ======================= 
         Route::get('/enfants/non-valide', [RegieController::class, 'enfantsNonValides'])
             ->name('enfants.non_valide');
 
@@ -153,9 +254,9 @@ Route::prefix('regie')
         Route::post('/enfant/{id}/rejeter', [RegieController::class, 'rejeterEnfant'])
             ->name('enfant.rejeter');
 
-        /* =========================
+        / =========================
        CONJOINTS
-    ========================= */
+    ========================= /
         Route::get('/conjoints/non-valide', [RegieController::class, 'conjointsNonValides'])
             ->name('conjoints.non_valide');
 
@@ -168,22 +269,58 @@ Route::prefix('regie')
         Route::post('/conjoint/{id}/rejeter', [RegieController::class, 'rejeterConjoint'])
             ->name('conjoint.rejeter');
 
-        /* =========================
+        / =========================
        ADHÉSIONS TRAITÉES
-    ========================= */
+    ========================= 
         Route::get('/adhesions/traitees', [RegieController::class, 'adhesionsTraitees'])
             ->name('adherants.traitees');
 
         Route::get('/adherant/{id}/modifier', [RegieController::class, 'modifierAdherant'])
             ->name('adherant.modifier');
+    });*/
+
+
+Route::middleware(['auth', 'role:liquidation_production'])
+    ->prefix('liquidation')->name('liquidation.')->group(function () {
+        // ======================
+        // DASHBOARD
+        // ======================
+        Route::get('/', [LiquidationController::class, 'index'])
+            ->name('dashboard');
+        //Dashboard
+        Route::get('/adhesions/en-cours', [AdhesionController::class, 'enCours'])
+            ->name('adhesions.en_cours');
+        Route::get('/adhesions/traitees', [LiquidationController::class, 'adhesionsTraitees'])
+            ->name('adhesions.traitees');
+        Route::get('/adhesion/{adherant}', [LiquidationController::class, 'detailProfil'])
+            ->name('adhesion.detail');
+        Route::post('/adhesion/{adherant}/rejeter', [LiquidationController::class, 'rejeterAdherant'])
+            ->name('adhesion.rejeter');
+        Route::get('/cartes/a-creer', [LiquidationController::class, 'cartesNonTraite'])
+            ->name('cartes.a_creer');
+        Route::post('/adherant/{adherant}/creer-carte', [CarteController::class, 'creer'])
+            ->name('cartes.creer');
+        Route::get('/cartes', [CarteController::class, 'listeCartes'])
+            ->name('cartes.liste');
+        Route::get('/cartes/{carte}', [LiquidationController::class, 'voirCarte'])
+            ->name('cartes.show');
+
+        // ====================DOCUMENTS===================
+        Route::get('/dossier/{adherant}/document', [LiquidationController::class, 'voirDocument'])
+            ->name('dossier.voirDocument');
+        Route::post('/creer-carte/{id}', [LiquidationController::class, 'creerCarte'])
+            ->name('creerCarte');
+        Route::post('/rejeter/{id}', [LiquidationController::class, 'rejeterInfos'])
+            ->name('rejeter');
+
+        // ====================== STATS======================
+        Route::get('/stats', [LiquidationController::class, 'stats'])
+            ->name('stats');
     });
 
-// Routes Liquidation
-Route::middleware(['auth', 'role:liquidation_production'])->group(function () {
-    Route::get('/adhesions/en-cours', [AdhesionController::class, 'enCours'])->name('adhesions.en_cours');
-});
-
-// Routes Trésorier
+//============================= 
+//  Routes Trésorier
+//=========================================
 Route::middleware(['auth', 'role:tresorier'])->group(function () {
     Route::get('/etudiants', [EtudiantController::class, 'index'])->name('etudiants.index');
 });
@@ -210,7 +347,9 @@ Route::prefix('adherant')->name('adherant.')->group(function () {
     Route::get('/{id}', [AdhesionController::class, 'show'])->name('show');
 });
 
-// Processus d’adhésion multi-étapes (Parent, Enfant, Conjoint)
+/*========================
+Processus d’adhésion multi-étapes (Parent, Enfant, Conjoint)
+=====*/
 Route::prefix('munaseb/adherant')->name('munaseb.adherant.')->group(function () {
     Route::get('step1', [AdherantController::class, 'step1'])->name('adhesionstep1');
     Route::post('step1', [AdherantController::class, 'postParentStep1'])->name('postParentStep1');
@@ -225,8 +364,8 @@ Route::prefix('munaseb/adherant')->name('munaseb.adherant.')->group(function () 
 
     Route::post('step4', [AdherantController::class, 'soumettre'])->name('soumettre');
 });
-// ← FIN du groupe adhérant
-// ===============================
+Route::get('/filieres/{universite}', [AdherantController::class, 'getFilieres'])->name('filieres.byUniversite');
+
 //   ENFANT - Workflow multi-étapes
 // ===============================z
 Route::prefix('enfant')->name('enfant.')->group(function () {
@@ -258,13 +397,9 @@ Route::prefix('conjoint')->name('conjoint.')->group(function () {
     Route::post('/soumettre', [AdherantController::class, 'conjointSoumettre'])->name('soumettre');
 });
 
-
-// ← FIN du groupe adhérant
-
-
-// ===============================
-//   RÉABONNEMENT (GROUPE DÉTACHÉ)
-// ===============================
+/*===============================
+   RÉABONNEMENT
+ ===============================*/
 Route::prefix('munaseb/reabonnement')->name('munaseb.reabonnement.')->group(function () {
 
     Route::get('step1', [ReabonnementController::class, 'step1'])->name('reabonnementStep1');

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_adherent')
 
 @section('title', 'Adhésion Étudiant - Step 1')
 

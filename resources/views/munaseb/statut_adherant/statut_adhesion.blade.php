@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_adherent')
 
 @section('title', 'Vérification de ma demande')
 

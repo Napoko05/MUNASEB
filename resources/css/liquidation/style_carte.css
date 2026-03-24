@@ -1,0 +1,133 @@
+/* ================= GLOBAL ================= */
+.card {
+    width: 340px;
+    height: 210px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: auto;
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ================= RECTO ================= */
+.card-recto {
+    background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    position: relative;
+}
+
+/* Bande premium */
+.card-recto::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 5px;
+    width: 100%;
+    background: #ffc107;
+}
+
+/* Logo / nom */
+.header {
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* PHOTO EN HAUT */
+.photo {
+    text-align: center;
+    margin: 8px 0;
+}
+
+.photo img {
+    width: 85px;
+    height: 95px;
+    border-radius: 12px;
+    border: 3px solid #ffffff;
+    object-fit: cover;
+}
+
+/* INFOS */
+.info {
+    flex: 1;
+    font-size: 11px;
+}
+
+.info h4 {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Texte infos */
+.info p {
+    margin: 2px 0;
+}
+
+/* SIGNATURE EN BAS */
+.signature {
+    text-align: right;
+    margin-top: 6px;
+}
+
+.signature img {
+    width: 75px;
+}
+
+.signature span {
+    font-size: 9px;
+    display: block;
+    opacity: 0.8;
+}
+
+/* ================= VERSO ================= */
+.card-verso {
+    background: #ffffff;
+    padding: 12px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #eee;
+}
+
+/* Titre */
+.title {
+    text-align: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: #0d6efd;
+    margin-bottom: 6px;
+    border-bottom: 2px solid #ffc107;
+    padding-bottom: 3px;
+}
+
+/* Sections */
+.section {
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+/* QR */
+.qr {
+    text-align: center;
+}
+
+.qr img {
+    width: 75px;
+    border: 2px solid #0d6efd;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+/* ================= PDF ================= */
+.page-break {
+    page-break-before: always;
+}

@@ -1,117 +1,157 @@
-@extends('layouts.app')
+@extends('layouts.app_adherent')
 
 @section('title', 'Adhésion Étudiant - Step 2')
 
 @section('content')
-<div class="container-fluid p-0">
-    <div class="bg-light vh-100 d-flex flex-column justify-content-center align-items-center">
-        <div class="w-100" style="max-width: 900px;">
-            <!-- Progress bar -->
-            <div class="progress mb-4" style="height: 25px;">
-                <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">
-                    Étape 2 sur 3
-                </div>
-            </div>
+<div class="container">
 
-            <div class="card shadow-lg rounded-4">
-                <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
-                    <h2 class="fw-bold mb-0">Étape 2 : Informations Académiques et Contact</h2>
-                    <p class="mb-0">Complétez vos informations</p>
-                </div>
+    <div class="register-card">
 
-                <div class="card-body p-5">
-                    <form action="{{ route('munaseb.adherant.postParentStep2') }}" method="POST">
-                        @csrf
+        <!-- HEADER -->
+        <div class="step-header">
+            <h2>Étape 2 : Informations Académiques et Contact</h2>
+            <p>Complétez vos informations</p>
+        </div>
 
-                        {{-- Type de document & numéro --}}
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Type de document</label>
-                                <select name="typedoc" class="form-select" required>
-                                    <option value="">Sélectionner...</option>
-                                    <option value="CNI">Carte Nationale d’Identité</option>
-                                    <option value="PASSPORT">Passeport</option>
-                                    <option value="AUTRE">Autre</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Numéro du document</label>
-                                <input type="text" name="numdoc" class="form-control" required>
-                            </div>
-                        </div>
-
-                        {{-- Téléphone --}}
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Téléphone 1</label>
-                                <input type="text" name="tel1" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Téléphone 2 (facultatif)</label>
-                                <input type="text" name="tel2" class="form-control">
-                            </div>
-                        </div>
-
-                        {{-- Email --}}
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Adresse Email</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
-
-                        {{-- Université & Filière --}}
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Université</label>
-                                <select name="idUniversite" class="form-select" required>
-                                    <option value="">Sélectionner...</option>
-                                    @foreach(\App\Models\espace_adherant\Universite::all() as $universite)
-                                    <option value="{{ $universite->id }}">{{ $universite->nom }}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Filière</label>
-                                <select name="idFiliere" class="form-select" required>
-                                    <option value="">Sélectionner</option>
-                                    <option value="1">Informatique</option>
-                                    <option value="2">Gestion</option>
-                                    <option value="3">Droit</option>
-                                </select>
-
-                            </div>
-                        </div>
-
-                        {{-- Personne à contacter --}}
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Nom & Prénoms (urgence)</label>
-                                <input type="text" name="nomPrenomscasdebesoin" class="form-control" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Contact</label>
-                                <input type="text" name="contactPersonnecasdebesoin" class="form-control" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Lien</label>
-                                <input type="text" name="lienPersonnecasdebesoin" class="form-control" required>
-                            </div>
-                        </div>
-
-                        {{-- Boutons --}}
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ route('munaseb.adherant.adhesionstep1') }}" class="btn btn-outline-secondary">
-                                <i class="fa fa-arrow-left me-1"></i> Précédent
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                Suivant <i class="fa fa-arrow-right ms-1"></i>
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
+        <!-- PROGRESS BAR -->
+        <div class="progress mb-4">
+            <div class="progress-bar" style="width:66%">
+                Étape 2 sur 3
             </div>
         </div>
+
+        <form action="{{ route('munaseb.adherant.postParentStep2') }}" method="POST">
+            @csrf
+
+            <!-- DOCUMENT -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Type de document</label>
+                    <select name="typedoc" required>
+                        <option value="">Sélectionner...</option>
+                        <option value="CNI">Carte Nationale d’Identité</option>
+                        <option value="PASSPORT">Passeport</option>
+                        <option value="AUTRE">Autre</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Numéro du document</label>
+                    <input type="text" name="numdoc" required>
+                </div>
+            </div>
+
+            <!-- TELEPHONE -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Téléphone 1</label>
+                    <input type="text" name="tel1" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Téléphone 2 (facultatif)</label>
+                    <input type="text" name="tel2">
+                </div>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="mb-3">
+                <label>Adresse Email</label>
+                <input type="email" name="email" required>
+            </div>
+
+            <!-- UNIVERSITE & FILIERE -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Université</label>
+                    <select name="idUniversite" id="universite" class="form-select" required>
+                        <option value="">Sélectionner...</option>
+                        @foreach(\App\Models\espace_adherant\Universite::all() as $universite)
+                            <option value="{{ $universite->id }}">{{ $universite->nom }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Filière</label>
+                    <select name="idFiliere" id="filiere" class="form-select" required>
+                        <option value="">Sélectionner la filière</option>
+                        {{-- Les options seront injectées dynamiquement via JS --}}
+                    </select>
+                </div>
+            </div>
+
+            <!-- PERSONNE CONTACT -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label>Nom & Prénoms (urgence)</label>
+                    <input type="text" name="nomPrenomscasdebesoin" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Contact</label>
+                    <input type="text" name="contactPersonnecasdebesoin" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Lien</label>
+                    <input type="text" name="lienPersonnecasdebesoin" required>
+                </div>
+            </div>
+
+            <!-- NAVIGATION -->
+            <div class="form-navigation">
+                <a href="{{ route('munaseb.adherant.adhesionstep1') }}" class="btn btn-secondary nav-btn">
+                    ← Précédent
+                </a>
+
+                <button type="submit" class="btn btn-cimaf nav-btn">
+                    Suivant →
+                </button>
+            </div>
+
+        </form>
     </div>
 </div>
+
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const universiteSelect = document.getElementById('universite');
+    const filiereSelect = document.getElementById('filiere');
+
+    if (!universiteSelect) {
+        console.error('Select université introuvable');
+        return;
+    }
+
+    universiteSelect.addEventListener('change', function() {
+        const uniId = this.value;
+        filiereSelect.innerHTML = '<option>Chargement...</option>';
+
+        if(!uniId) {
+            filiereSelect.innerHTML = '<option value="">Sélectionner la filière</option>';
+            return;
+        }
+
+        fetch(`/filieres/${uniId}`)
+            .then(res => res.json())
+            .then(data => {
+                filiereSelect.innerHTML = '<option value="">Sélectionner la filière</option>';
+
+                data.forEach(f => {
+                    let option = document.createElement('option');
+                    option.value = f.id;
+                    option.textContent = f.nom;
+                    filiereSelect.appendChild(option);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                filiereSelect.innerHTML = '<option value="">Erreur chargement</option>';
+            });
+    });
+
+});
+</script>
+@endpush

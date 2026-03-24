@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_adherent')
 
 @section('title', 'Adhésion Étudiant - Step 3')
 
@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="card-body p-5">
-                    <form action="{{ route('enfant.step3') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('enfant.post.step3') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         {{-- Documents Parent --}}
@@ -45,19 +45,14 @@
                             <input type="file" name="doc_extrait_naissance" accept=".pdf" class="form-control" required>
                         </div>
 
-                        {{-- Documents Conjoint (optionnel) --}}
-                        <h5 class="mb-3">Documents Conjoint (optionnel)</h5>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Justificatif Conjoint (PDF)</label>
-                            <input type="file" name="doc_conjoint" accept=".pdf" class="form-control">
-                        </div>
+                
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('enfant.step2') }}" class="btn btn-outline-secondary">
                                 <i class="fa fa-arrow-left me-1"></i> Précédent
                             </a>
                             <button type="submit" class="btn btn-success">
-                                Soumettre <i class="fa fa-check ms-1"></i>
+                                Enregistrer <i class="fa fa-check ms-1"></i>
                             </button>
                         </div>
 

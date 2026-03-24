@@ -20,11 +20,12 @@
     <link rel="stylesheet" href="{{ asset('assets/css/regie_recette/form_regie_index.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/etudiant/form_index.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style-app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style_administration.css') }}">
 
     <!-- Font Awesome -->
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-          crossorigin="anonymous" />
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        crossorigin="anonymous" />
 </head>
 
 <body>
@@ -39,7 +40,7 @@
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent">
+                    data-bs-target="#navbarSupportedContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -50,25 +51,26 @@
                     <!-- RIGHT -->
                     <ul class="navbar-nav ms-auto">
                         @guest
-                            {{-- login + register --}}
+                        {{-- login + register --}}
                         @else
-                            <li class="nav-item"><a class="nav-link" href="#">Accueil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Accueil</a></li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                    {{ Auth::user()->name }}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                {{ Auth::user()->prenom }} {{ Auth::user()->nom }}
+
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Déconnexion
                                 </a>
-
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        Déconnexion
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
                         @endguest
                     </ul>
                 </div>
@@ -81,21 +83,21 @@
 
                 {{-- 🔔 Messages flash --}}
                 @if(session('info'))
-                    <div class="alert alert-info text-center fw-bold">
-                        {{ session('info') }}
-                    </div>
+                <div class="alert alert-info text-center fw-bold">
+                    {{ session('info') }}
+                </div>
                 @endif
 
                 @if(session('success'))
-                    <div class="alert alert-success text-center fw-bold">
-                        {{ session('success') }}
-                    </div>
+                <div class="alert alert-success text-center fw-bold">
+                    {{ session('success') }}
+                </div>
                 @endif
 
                 @if(session('error'))
-                    <div class="alert alert-danger text-center fw-bold">
-                        {{ session('error') }}
-                    </div>
+                <div class="alert alert-danger text-center fw-bold">
+                    {{ session('error') }}
+                </div>
                 @endif
 
                 {{-- CONTENU DES PAGES --}}
@@ -106,7 +108,10 @@
 
     {{-- Scripts Bootstrap --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ENjdO4Dr2bkBIFxQpeoYz1Dh1J9l9j7x1Zl+PBkO5y5n1zV+0U5z5n5p5p5p5p5"
-            crossorigin="anonymous"></script>
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoYz1Dh1J9l9j7x1Zl+PBkO5y5n1zV+0U5z5n5p5p5p5p5"
+        crossorigin="anonymous"></script>
+
+    @yield('scripts')
 </body>
+
 </html>

@@ -37,7 +37,7 @@ class AddEnfant extends Model
     // 🔗 Relation vers les documents de l'enfant
     public function dossier()
     {
-        return $this->hasOne(DossierEnfant::class, 'add_enfant_id');
+        return $this->hasOne(DossierEnfant::class, 'adherent_id');
     }
 
     /**
@@ -52,4 +52,5 @@ class AddEnfant extends Model
                     ->where('dateNaiss', $dateNaiss)
                     ->exists();
     }
+    
 }

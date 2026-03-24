@@ -56,10 +56,6 @@ class AdhesionController extends Controller
     {
         $user = Auth::user();
 
-        // Si tu as un modèle "Bon" (par exemple App\Models\Bon)
-        // tu pourrais récupérer les bons ainsi :
-        // $bons = Bon::where('user_id', $user->id)->get();
-
         // Pour l’instant, on fait simple
         $bons = []; // tu remplaceras plus tard par une vraie requête
 
@@ -111,8 +107,8 @@ class AdhesionController extends Controller
 
         // Sauvegarde de la photo (optionnelle)
         $photoPath = null;
-        if ($request->hasFile('avatar')) {
-            $photoPath = $request->file('avatar')->store('avatars', 'public');
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('photo', 'public');
         }
 
         // Validation
@@ -142,7 +138,7 @@ class AdhesionController extends Controller
             'idUniversite' => $request->idUniversite,
             'idFiliere' => $request->idFiliere,
             'photo' => $photoPath,
-            'profil_id' => $profilId, // ✅ affecté automatiquement
+            'profil_id' => $profilId, // 
         ]);
         Log::info('Adhérant enregistré');
 
@@ -155,8 +151,5 @@ class AdhesionController extends Controller
         $adherant = Adherant::findOrFail($id);
         return view('adherant.show', compact('adherant'));
     }
-
-
-    
     
 }

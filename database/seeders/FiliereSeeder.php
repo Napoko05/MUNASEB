@@ -11,9 +11,8 @@ class FiliereSeeder extends Seeder
     {
         $filieres = [
 
-            // ====================================================
-            // UNIVERSITÉ JOSEPH KI-ZERBO
-            // ====================================================
+            //UNIVERSITÉ JOSEPH KI-ZERBO
+            
             ['nom' => 'Médecine', 'idUniversite' => 1],
             ['nom' => 'Pharmacie', 'idUniversite' => 1],
             ['nom' => 'Odontostomatologie', 'idUniversite' => 1],

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_adherent')
 
 @section('title', 'Adhésion Étudiant - Step 2')
 
@@ -23,7 +23,7 @@
                     <form action="{{ route('conjoint.post.step2') }}" method="POST">
                         @csrf
 
-                        {{-- Type de document & numéro enfant --}}
+                        {{-- Type de document  --}}
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Type de document</label>

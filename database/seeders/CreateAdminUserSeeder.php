@@ -4,43 +4,40 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 
 class CreateAdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        // ---------- Admin ----------
+        // Mot de passe admin
+        $password = 'Password1!';
+
+        // Vérifier si le rôle admin existe
+        $role = Role::firstOrCreate(['name' => 'admin']);
+
+        // Création ou récupération de l'admin
         $user = User::firstOrCreate(
-            ['email' => 'johnson@gmail.com'],
-            ['name' => 'Johnson SOMBIE', 'password' => bcrypt('123456')]
+            ['email' => 'napoko@gmail.com'],
+            [
+                'nom' => 'Savadogo',
+                'prenom' => 'Lamine',
+                'matricule' => 'ADM001',
+                'ine' => null,
+                'password' => Hash::make($password),
+            ]
         );
 
-        $role = Role::firstOrCreate(['name' => 'Admin']);
+        // Assigner le rôle admin s'il ne l'a pas
+        if (!$user->hasRole('admin')) {
+            $user->assignRole($role);
+        }
 
-        // Assigner toutes les permissions existantes au rôle Admin
-        $role->syncPermissions(Permission::all());
-
-        // Assigner le rôle à l'utilisateur
-        $user->assignRole($role);
-
-        // ---------- Ragie ----------
-        $ragie = User::firstOrCreate(
-            ['email' => 'ragie@example.com'],
-            ['name' => 'Regie Recette', 'password' => bcrypt('123456')]
-        );
-
-        $ragieRole = Role::firstOrCreate(['name' => 'ragie_recette']);
-        $ragie->assignRole($ragieRole);
-
-        // ---------- Directeur ----------
-        $directeur = User::firstOrCreate(
-            ['email' => 'directeur@example.com'],
-            ['name' => 'Directeur Test', 'password' => bcrypt('123456')]
-        );
-
-        $directeurRole = Role::firstOrCreate(['name' => 'directeur']);
-        $directeur->assignRole($directeurRole);
+        // Message dans la console
+        $this->command->info('Admin créé avec succès :');
+        $this->command->info('Login (matricule) : ADM001');
+        $this->command->info('Email : napoko@gmail.com');
+        $this->command->info("Mot de passe : $password");
     }
 }

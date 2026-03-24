@@ -14,14 +14,20 @@ class DatabaseSeeder extends Seeder
     {
         // Création utilisateur test (facultatif)
         User::factory()->create([
-            'name' => 'Test User',
+            'nom' => 'To',
+            'prenom' => 'Toto',
+            'matricule' => 'TA001',
             'email' => 'test@example.com',
         ]);
 
         // Appel des Seeders
         $this->call([
+            PermissionTableSeeder::class,
+            RolePermissionSeeder::class,
             UniversiteSeeder::class,
             FiliereSeeder::class,
+            CreateAdminUserSeeder::class,
+            
         ]);
     }
 }

@@ -23,11 +23,15 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        // Mot de passe par défaut conforme à la logique : min 8 caractères, majuscule, minuscule, chiffre, symbole
+        $passwordPlain = static::$password ??= 'Test@1234';
+
         return [
-            'name' => fake()->name(),
+            'nom' => fake()->lastName(),
+            'prenom' => fake()->firstName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => Hash::make($passwordPlain),
             'remember_token' => Str::random(10),
         ];
     }

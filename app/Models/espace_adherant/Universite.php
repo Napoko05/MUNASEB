@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\espace_adherant;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,12 +9,10 @@ class Universite extends Model
     use HasFactory;
 
     protected $table = 'universites';
-
     protected $fillable = ['nom'];
-
     public $timestamps = false;
 
-    // 🔗 Relation avec les filières
+    // Relation : une université a plusieurs filières
     public function filieres()
     {
         return $this->hasMany(Filiere::class, 'idUniversite');

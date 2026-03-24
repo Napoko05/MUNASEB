@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Plate-forme EAsante</title>
+  <title>Plate-forme e-CENOU</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -48,8 +48,8 @@
 
       <div class="container position-relative d-flex align-items-center justify-content-between">
         <a href="index-2.html" class="logo d-flex align-items-center me-auto">
-          <img src="theme/munaseb/img/logo1.jpg" alt="image">
-          <h1 class="sitename">EAsante</h1>
+          <img src="theme/munaseb/img/elogo_colore.png" alt="image">
+          <h1 class="sitename">e-CENOU</h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
@@ -82,16 +82,16 @@
       <div class="container position-relative">
 
         <div class="welcome position-relative" data-aos="fade-down" data-aos-delay="100">
-          <h2>BIENVENUE SUR e-MUNASEB</h2>
+          <h2>BIENVENUE SUR e-CENOU</h2>
           <p>Une plate-forme digitalisée pour la mutuelle estidiantine</p>
         </div><!-- End Welcome -->
 
         <div class="content row gy-4">
           <div class="col-lg-4 d-flex align-items-stretch">
             <div class="why-box" data-aos="zoom-out" data-aos-delay="200">
-              <h3>Pourquoi choisir e-MUNASEB?</h3>
+              <h3>Pourquoi choisir e-CENOU?</h3>
               <p>
-                e-MUNASEB est une plateforme moderne de gestion de la santé qui simplifie la vie des étudiants et des familles.
+                e-CENOU est une plateforme moderne de gestion de la santé qui simplifie la vie des étudiants et des familles.
                 Elle permet un suivi centralisé des prestations médicales, une prise en charge rapide et transparente,
                 ainsi qu’un accès facilité aux informations et services de la mutuelle.
 

@@ -1,0 +1,167 @@
+:root {
+    --directeur-blue: #0b2a4a;
+    --directeur-blue-light: #143d6b;
+    --directeur-orange: #f57c00;
+    --directeur-gray: #f4f6f9;
+}
+
+/* ===============================
+   SIDEBAR DIRECTEUR
+=============================== */
+.directeur-sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, var(--directeur-blue), var(--directeur-blue-light));
+    color: #fff;
+    padding: 20px 15px;
+    overflow-y: auto;
+    box-shadow: 4px 0 12px rgba(0,0,0,.15);
+    transition: all 0.3s ease;
+}
+
+/* LOGO */
+.directeur-sidebar .sidebar-logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.directeur-sidebar .sidebar-logo img {
+    max-width: 120px;
+    border-radius: 20%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease;
+}
+
+.directeur-sidebar .sidebar-logo img:hover {
+    transform: scale(1.05);
+}
+
+/* TITRE UTILISATEUR */
+.directeur-sidebar .sidebar-title {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+}
+
+/* LIENS PRINCIPAUX */
+.directeur-sidebar .sidebar-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #dce3ec;
+    padding: 12px 16px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.directeur-sidebar .sidebar-link:hover {
+    background: var(--directeur-orange);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+.directeur-sidebar .sidebar-link i {
+    margin-right: 8px;
+}
+
+/* DROPDOWN */
+.directeur-sidebar .sidebar-item .sidebar-dropdown {
+    display: none;
+    padding-left: 15px;
+}
+
+.directeur-sidebar .sidebar-item.active .sidebar-dropdown {
+    display: block;
+}
+
+.directeur-sidebar .sidebar-sublink {
+    display: block;
+    padding: 8px;
+    color: #cfd8dc;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.directeur-sidebar .sidebar-sublink:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* FLECHE DROPDOWN */
+.directeur-sidebar .arrow {
+    transition: transform 0.3s;
+}
+
+.directeur-sidebar .sidebar-item.active .arrow {
+    transform: rotate(180deg);
+}
+
+/* ===============================
+   CONTENU PRINCIPAL
+=============================== */
+.content-area {
+    margin-left: 260px;
+    padding: 30px;
+    background: var(--directeur-gray);
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+}
+
+/* TABLEAU DIRECTEUR */
+.directeur-card table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.directeur-card table th,
+.directeur-card table td {
+    padding: 10px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.directeur-card table th {
+    background: var(--directeur-blue);
+    color: #fff;
+    font-weight: 600;
+}
+
+.directeur-card table tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.directeur-card table tr:hover {
+    background: rgba(245,124,0,0.2);
+}
+
+.directeur-card .badge {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+}
+
+/* BUTTONS */
+.directeur-card .btn {
+    font-size: 0.85rem;
+    padding: 4px 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .directeur-sidebar {
+        width: 220px;
+    }
+    .content-area {
+        margin-left: 220px;
+        padding: 15px;
+    }
+    .directeur-card table th,
+    .directeur-card table td {
+        font-size: 0.8rem;
+        padding: 6px;
+    }
+}

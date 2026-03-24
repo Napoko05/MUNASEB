@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Table enfants
         Schema::create('add_enfants', function (Blueprint $table) {
-            $table->id(); // ID auto-incrémenté pour l'enfant
+            $table->id();
 
             // Clé étrangère vers le parent
             $table->foreignId('parent_id')
-                  ->constrained('adherant') // référence la table des parents
-                  ->onDelete('cascade');    // suppression en cascade
+                  ->constrained('adherant')
+                  ->cascadeOnDelete();
 
-            // Informations de l'enfant
-            $table->string('ine')->nullable(); // optionnel
+            // Informations enfant
+            $table->string('ine')->nullable();
             $table->string('nom');
             $table->string('prenom');
             $table->enum('sexe', ['M', 'F']);
@@ -25,30 +26,27 @@ return new class extends Migration
             $table->string('lieuNaiss');
             $table->string('avatar')->nullable();
 
-            // Étape 2 : infos documents et contacts
+            // Documents et contacts
             $table->string('typedoc')->nullable();
-            $table->string('typedoc_parent')->nullable();
             $table->string('numdoc')->nullable();
-            $table->string('numero')->nullable();
             $table->string('tel1')->nullable();
-            $table->string('tel2')->nullable();
             $table->string('email')->nullable();
-
-            // Étape 3 : fichiers justificatifs
-            $table->string('doc_cni')->nullable();
-            $table->string('doc_attestation')->nullable();
-            $table->string('doc_recu')->nullable();
-            $table->string('doc_carte_parent')->nullable();
 
             $table->timestamps();
 
-            // Index unique pour éviter qu'un même enfant soit enregistré deux fois pour le même parent
-            $table->unique(['parent_id', 'nom', 'prenom', 'dateNaiss'], 'unique_parent_enfant');
+            // Empêcher doublon enfant pour un parent
+            $table->unique(
+                ['parent_id', 'nom', 'prenom', 'dateNaiss'],
+                'unique_parent_enfant'
+            );
         });
+
+
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('dossiers_enfants');
         Schema::dropIfExists('add_enfants');
     }
 };

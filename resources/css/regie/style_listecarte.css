@@ -1,0 +1,168 @@
+/* ===============================
+   VARIABLES PRINCIPALES
+================================ */
+:root {
+    --blue: #0b2a4a;
+    --blue-light: #143d6b;
+    --orange: #f57c00;
+    --light-gray: #f4f4f4;
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.12);
+}
+
+/* ===============================
+   CONTENU PRINCIPAL
+================================ */
+.content-area {
+    margin-left: 260px; /* largeur sidebar */
+    padding: 30px;
+    min-height: 100vh;
+    background: var(--light-gray);
+    transition: margin-left 0.3s ease;
+}
+
+/* ===============================
+   CARTES DETAIL ADHERENT
+================================ */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--card-shadow);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    font-weight: 600;
+    font-size: 1.2rem;
+    background: linear-gradient(90deg, #007bff, #ff7f00);
+    color: #fff;
+}
+
+.card-body h5 {
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: var(--blue);
+}
+
+/* ===============================
+   TABLEAUX INFO / ENFANTS / CONJOINTS
+================================ */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table th, .table td {
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+
+.table th {
+    background: var(--blue-light);
+    color: #fff;
+    font-weight: 500;
+}
+
+.table td a.btn-sm {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    margin-right: 4px;
+}
+
+/* ===============================
+   BOUTONS ACTION
+================================ */
+.mt-4.d-flex.gap-2 {
+    flex-wrap: wrap;
+}
+
+.mt-4.d-flex.gap-2 button,
+.mt-4.d-flex.gap-2 a.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+}
+
+button.btn-success:hover,
+a.btn-success:hover {
+    background: #28a745;
+    color: #fff;
+}
+
+button.btn-danger:hover,
+a.btn-danger:hover {
+    background: #c00000;
+    color: #fff;
+}
+
+a.btn-secondary:hover {
+    background: #5a6268;
+    color: #fff;
+}
+
+/* ===============================
+   MODAL REJET
+================================ */
+.modal-header {
+    background: var(--orange);
+    color: #fff;
+    font-weight: 600;
+}
+
+.modal-body textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 1200px) {
+    .content-area {
+        margin-left: 240px;
+        padding: 25px;
+    }
+}
+
+@media (max-width: 992px) {
+    .regie-sidebar {
+        width: 220px;
+    }
+    .content-area {
+        margin-left: 220px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .regie-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    .content-area {
+        margin-left: 0;
+        padding: 15px;
+    }
+    .mt-4.d-flex.gap-2 {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-header {
+        font-size: 1rem;
+    }
+    .table th, .table td {
+        font-size: 0.85rem;
+        padding: 6px 8px;
+    }
+    .table td a.btn-sm {
+        padding: 3px 6px;
+        font-size: 0.75rem;
+    }
+}

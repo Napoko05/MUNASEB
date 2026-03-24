@@ -1,122 +1,15 @@
-<!DOCTYPE html>
-<html>
+@extends('layouts.directeur_app')
 
-<head>
-    <style>
-        body {
-            font-family: DejaVu Sans, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+@section('title', 'Carte Adhérent')
 
-        .page-break {
-            page-break-after: always;
-        }
-
-        .card {
-            width: 320px;
-            height: 200px;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            padding: 10px;
-        }
-
-        /* RECTO */
-        .card-recto {
-            background: linear-gradient(135deg, #007bff, #00c851);
-            color: #fff;
-        }
-
-        .photo {
-            width: 80px;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            position: absolute;
-            left: 10px;
-            top: 10px;
-        }
-
-        .photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .info {
-            position: absolute;
-            left: 100px;
-            top: 10px;
-            right: 10px;
-            font-size: 10px;
-        }
-
-        /* Conteneur recto */
-        .recto {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Signature collée à droite */
-        .recto .signature {
-            position: absolute;
-            bottom: 5px;
-            right: 0;
-        }
-
-        .recto .signature img {
-            max-width: 50px;
-            height: auto;
-        }
-
-        /* VERSO */
-        .card-verso {
-            background: linear-gradient(135deg, #007bff, #00c851);
-            color: #fff;
-        }
-
-        .title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 12px;
-            margin-bottom: 6px;
-        }
-
-        .section {
-            margin-bottom: 8px;
-            font-size: 9px;
-        }
-
-        .section-title {
-            font-weight: bold;
-            text-decoration: underline;
-            margin-bottom: 3px;
-        }
-
-        .qr {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 60px;
-            height: 60px;
-        }
-
-        .qr img {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-</head>
-
-<body>
+@section('content')
+    <!-- Inclure le CSS spécifique -->
+    @vite(['resources/css/directeur/style_carte.css'])
 
     {{-- ======================= RECTO ======================= --}}
     <div class="card card-recto">
         <div class="photo">
-           <img src="{{ public_path('storage/'.$adherant->photo) }}" alt="Photo Adhérent">
-
+            <img src="{{ public_path('storage/'.$adherant->photo) }}" alt="Photo Adhérent">
         </div>
 
         <div class="info">
@@ -132,7 +25,6 @@
             <p><b>Filière :</b> {{ $adherant->filieres->nom }} - {{ $adherant->codeNiveau }}</p>
             <p><b>Contact :</b> {{ $adherant->tel1 }}</p>
 
-            {{-- Signature électronique du directeur --}}
             @if($adherant->carte && $adherant->carte->signature_directeur)
             <div class="signature">
                 <img src="{{ asset('storage/' . $adherant->carte->signature_directeur) }}" alt="Signature Directeur">
@@ -143,7 +35,6 @@
 
     {{-- ======================= VERSO ======================= --}}
     <div class="card card-verso page-break">
-
         <div class="title">INFORMATIONS IMPORTANTES</div>
 
         <div class="section">
@@ -166,11 +57,8 @@
 
         <div class="qr">
             @if($adherant->carte && $adherant->carte->qr_code_path)
-            <img src="{{ asset('storage/' . $adherant->carte->qr_code_path) }}" alt="QR Code">
+                <img src="{{ asset('storage/' . $adherant->carte->qr_code_path) }}" alt="QR Code">
             @endif
         </div>
     </div>
-
-</body>
-
-</html>
+@endsection

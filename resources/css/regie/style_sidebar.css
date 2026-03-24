@@ -1,0 +1,160 @@
+/* ===============================
+   VARIABLES PRINCIPALES
+================================ */
+:root {
+    --blue: #0b2a4a;
+    --blue-light: #143d6b;
+    --orange: #f57c00;
+}
+
+/* ===============================
+   SIDEBAR
+================================ */
+.regie-sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, var(--blue), var(--blue-light));
+    color: #fff;
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 4px solid #c00000;
+    z-index: 1000;
+}
+
+.regie-sidebar::after {
+    content: "";
+    display: block;
+    height: 4px;
+    width: 100%;
+    background: var(--orange);
+    margin-top: 15px;
+}
+
+/* LOGO */
+.regie-logo {
+    text-align: center;
+    padding: 15px 0 20px 0;
+}
+
+.regie-logo-img {
+    max-width: 120px;
+    height: auto;
+    border-radius: 20%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease;
+}
+
+.regie-logo-img:hover {
+    transform: scale(1.05);
+}
+
+/* TITRE UTILISATEUR */
+.regie-title {
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+/* LIENS PRINCIPAUX */
+.regie-link {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: #dce3ec;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.regie-link i {
+    margin-right: 8px;
+}
+
+.regie-link:hover {
+    background: var(--orange);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+.regie-link.active {
+    background: var(--orange);
+    font-weight: 600;
+}
+
+/* DROPDOWN */
+.regie-item .regie-dropdown {
+    display: none;
+    padding-left: 15px;
+}
+
+.regie-item.active .regie-dropdown {
+    display: block;
+}
+
+.regie-sublink {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    color: #cfd8dc;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.regie-sublink i {
+    margin-right: 6px;
+}
+
+.regie-sublink:hover, 
+.regie-sublink.active {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* FLECHES DROPDOWN */
+.regie-arrow {
+    margin-left: auto;
+    transition: transform 0.3s;
+}
+
+.regie-item.active .regie-arrow {
+    transform: rotate(180deg);
+}
+
+/* BOUTON DÉCONNEXION */
+.regie-btn-logout {
+    background: #dc3545;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    font-weight: 500;
+    transition: 0.3s;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.regie-btn-logout:hover {
+    background: #c00000;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 992px) {
+    .regie-sidebar {
+        width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .regie-sidebar {
+        width: 200px;
+    }
+}

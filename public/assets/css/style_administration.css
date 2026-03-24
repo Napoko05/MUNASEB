@@ -1,0 +1,189 @@
+.agent-page {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.agent-main-title {
+    background: #c00000;
+    color: #fff;
+    padding: 15px;
+    font-weight: 700;
+    border-radius: 6px;
+    margin-bottom: 25px;
+    position: relative;
+    text-align: center;
+}
+
+/* Ligne décorative */
+.agent-main-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 8px;
+    width: 100%;
+    background: #f37021;
+}
+
+/* Formulaire */
+.agent-form {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    border: 2px solid #c00000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Champs du formulaire */
+.agent-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.agent-field label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.agent-field input,
+.agent-field select,
+.agent-field textarea {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1.5px solid #ddd;
+    transition: 0.3s;
+}
+
+/* Focus rouge */
+.agent-field input:focus,
+.agent-field select:focus,
+.agent-field textarea:focus {
+    border-color: #c00000;
+    outline: none;
+    box-shadow: 0 0 5px rgba(192, 0, 0, 0.3);
+}
+
+/* Readonly */
+.agent-field input[readonly] {
+    background: #f5f5f5;
+}
+
+/* Boutons */
+.agent-btn-submit {
+    background: #21f35d;
+    /* vert/transition possible pour orange */
+    color: #fff;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.agent-btn-submit:hover {
+    background: #d85f15;
+}
+
+.agent-btn-back {
+    background: #c00000;
+    color: #fff;
+    border-radius: 6px;
+}
+
+.agent-btn-back:hover {
+    background: #900000;
+}
+
+/* Alertes */
+.agent-alert {
+    display: none;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    background: #ffe5e5;
+    color: #c00000;
+    border: 1px solid #c00000;
+}
+
+/* Grid responsive pour formulaire */
+.agent-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* Tablettes */
+@media (max-width: 992px) {
+    .agent-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+}
+
+/* Petites tablettes */
+@media (max-width: 768px) {
+    .agent-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .agent-main-title {
+        font-size: 18px;
+        padding: 12px;
+    }
+}
+
+/* Téléphones */
+@media (max-width: 576px) {
+    .agent-page {
+        padding: 10px;
+    }
+
+    .agent-form {
+        padding: 15px;
+    }
+
+    .agent-field input,
+    .agent-field select,
+    .agent-field textarea {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .agent-main-title {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    .agent-btn-submit {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* Très petits téléphones */
+@media (max-width: 400px) {
+    .agent-main-title {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .agent-field label {
+        font-size: 13px;
+    }
+
+    .agent-field input,
+    .agent-field select,
+    .agent-field textarea {
+        font-size: 13px;
+    }
+
+    .agent-btn-submit {
+        font-size: 13px;
+    }
+}

@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Role;
 
 class RegisterController extends Controller
 {
@@ -20,36 +19,61 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Validation des données d'inscription
+     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'ine'      => ['required', 'string', 'max:255', 'unique:users,ine'],
+            'nom'      => ['required', 'string', 'max:255'],
+            'prenom'   => ['required', 'string', 'max:255'],
+            'email'    => ['nullable', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',               // minimum 8 caractères
+                'confirmed',           // doit correspondre à password_confirmation
+                'regex:/[a-z]/',       // au moins une minuscule
+                'regex:/[A-Z]/',       // au moins une majuscule
+                'regex:/[0-9]/',       // au moins un chiffre
+                'regex:/[@$!%*#?&]/'   // au moins un caractère spécial
+            ],
+        ], [
+            'password.regex' => 'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.',
+            'password.min'   => 'Le mot de passe doit contenir au moins 8 caractères.',
         ]);
     }
 
+    /**
+     * Création de l'utilisateur
+     */
     protected function create(array $data)
     {
-        //  Création du user
+        // Création du compte étudiant
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'ine'      => $data['ine'],
+            'nom'      => $data['nom'],
+            'prenom'   => $data['prenom'],
+            'email'    => $data['email'] ?? null,
             'password' => Hash::make($data['password']),
+            'statut_compte' => 'preinscrit',
         ]);
 
-        //  Ajout automatique du rôle étudiant
+        // Assigner le rôle étudiant (doit exister via le seeder)
         $user->assignRole('etudiant');
 
-        //  Retour
         return $user;
     }
 
+    /**
+     * Après l'inscription, déconnexion automatique
+     */
     protected function registered($request, $user)
     {
         auth()->logout();
 
-        return redirect()->route('login')
-            ->with('success', 'Compte créé avec succès. Veuillez vous connecter.');
+        return redirect()->route('home')
+            ->with('success', 'Compte créé avec succès. Veuillez vous connecter avec votre INE.');
     }
 }

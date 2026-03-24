@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app_adherent')
 @section('title', 'Réabonnement - Étape 1')
 @section('content')
 <div class="container py-5">
