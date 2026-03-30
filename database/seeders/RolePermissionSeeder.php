@@ -55,9 +55,11 @@ class RolePermissionSeeder extends Seeder
             'valider_remboursement_medical',
             'rejeter_remboursement',
             'edit-remboursement',
+            
 
             // liquidation
             'creer-autorisation',
+            'telecharger_carte',
 
             // finance
             'verifier_plafond',
@@ -137,6 +139,7 @@ class RolePermissionSeeder extends Seeder
             'supprimer-demande',
             'view-profile',
             'edit-profile',
+            'telecharger_carte',
         ]);
 
         // regie
@@ -158,7 +161,8 @@ class RolePermissionSeeder extends Seeder
             'create-carte',
             'traiter-remboursement',
             'creer-autorisation',
-            'view-statistique'
+            'view-statistique',
+            'telecharger_carte',
         ]);
 
         // medecin

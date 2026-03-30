@@ -35,7 +35,7 @@ class AgentController extends Controller
             'password' => 'required|string|confirmed|min:8'
         ]);
 
-        // Stocker les fichiers temporairement
+        // 🔥 Upload temporaire
         $files = [];
         foreach (['cnib_file', 'attestation_travail_file', 'diplome_file', 'signature_file'] as $file) {
             if ($request->hasFile($file)) {
@@ -43,7 +43,11 @@ class AgentController extends Controller
             }
         }
 
-        session(['agent_data' => $validated, 'agent_files' => $files]);
+        session([
+            'agent_data' => $validated,
+            'agent_files' => $files
+        ]);
+
         return redirect()->route('admin.agents.step2.view');
     }
 
@@ -67,47 +71,71 @@ class AgentController extends Controller
         }
 
         $data = session('agent_data');
-        $files = session('agent_files', []);
+        $sessionFiles = session('agent_files', []);
 
-        // Création de l'utilisateur
-        $user = User::firstOrCreate(
-            ['matricule' => $data['matricule']],
-            [
-                'nom' => $data['nom'],
-                'prenom' => $data['prenom'],
-                'email' => $data['email'],
-                'tel' => $data['tel'] ?? null,
-                'password' => Hash::make($data['password'])
-            ]
-        );
+        // 🔥 Création user
+        $user = User::create([
+            'nom' => $data['nom'],
+            'prenom' => $data['prenom'],
+            'email' => $data['email'],
+            'matricule' => $data['matricule'],
+            'tel' => $data['tel'] ?? null,
+            'password' => Hash::make($data['password']),
+        ]);
 
         if ($request->role) {
             $user->assignRole($request->role);
         }
 
-        // Déplacer les fichiers vers leur dossier final
+        // 🔥 Gestion fichiers robuste
         $finalFiles = [];
-        foreach ($files as $key => $tempPath) {
-            if ($tempPath && Storage::disk('public')->exists($tempPath)) {
-                $destinationFolder = match ($key) {
+
+        $fields = [
+            'cnib_file',
+            'attestation_travail_file',
+            'diplome_file',
+            'signature_file'
+        ];
+
+        foreach ($fields as $field) {
+
+            // ✅ CAS 1 : nouvel upload step2
+            if ($request->hasFile($field)) {
+
+                $destination = match ($field) {
                     'cnib_file' => 'agents/cnib',
                     'attestation_travail_file' => 'agents/attestations',
                     'diplome_file' => 'agents/diplomes',
                     'signature_file' => 'agents/signatures',
-                    default => 'agents/others',
                 };
 
-                // Générer le chemin final
-                $finalPath = $destinationFolder . '/' . basename($tempPath);
+                $finalFiles[$field] = $request->file($field)->store($destination, 'public');
+            }
 
-                // Déplacer le fichier
-                Storage::disk('public')->move($tempPath, $finalPath);
+            // ✅ CAS 2 : fichier venant session (step1)
+            elseif (!empty($sessionFiles[$field])) {
 
-                $finalFiles[$key] = $finalPath;
+                $tempPath = $sessionFiles[$field];
+
+                if (Storage::disk('public')->exists($tempPath)) {
+
+                    $destination = match ($field) {
+                        'cnib_file' => 'agents/cnib',
+                        'attestation_travail_file' => 'agents/attestations',
+                        'diplome_file' => 'agents/diplomes',
+                        'signature_file' => 'agents/signatures',
+                    };
+
+                    $finalPath = $destination . '/' . basename($tempPath);
+
+                    Storage::disk('public')->move($tempPath, $finalPath);
+
+                    $finalFiles[$field] = $finalPath;
+                }
             }
         }
 
-        // Création de l'agent
+        // 🔥 Création agent
         Agent::create([
             'user_id' => $user->id,
             'sexe' => $data['sexe'],
@@ -123,8 +151,10 @@ class AgentController extends Controller
             'signature_file' => $finalFiles['signature_file'] ?? null,
         ]);
 
+        // 🔥 Nettoyage
         session()->forget(['agent_data', 'agent_files']);
 
-        return redirect()->route('dashboard.admin')->with('success', 'Agent créé et connecté avec succès !');
+        return redirect()->route('dashboard.admin')
+            ->with('success', 'Agent créé avec succès !');
     }
 }

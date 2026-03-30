@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use App\Models\espace_adherant\Adherant;
 use App\Models\espace_adherant\DossierAdherant;
-use App\Models\espace_adherant\DossierEnfant;
-use App\Models\espace_adherant\DossierConjoint;
-
 use App\Models\espace_adherant\Carte;
 
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -17,16 +15,16 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class DirecteurController extends Controller
 {
     /* ======================================
-        DASHBOARD (cartes à signer)
+        DASHBOARD CARTES À SIGNER
     ====================================== */
     public function index()
     {
         $cartes = Carte::with('adherant')
-            ->where('statut', 'cree') // 🔥 seulement cartes liquidation
+            ->where('statut', 'cree')
             ->get();
 
         return view('dashboard.directeur.index', [
-            'carte' => $cartes,
+            'cartes' => $cartes,
             'titre' => 'Cartes à signer'
         ]);
     }
@@ -38,37 +36,34 @@ class DirecteurController extends Controller
     {
         $carte = Carte::findOrFail($id);
 
-        // 🔒 sécurité workflow
-        if ($carte->statut !== 'cree') {
-            return back()->with('error', 'Carte non prête.');
+        $agent = auth()->user()->agent;
+
+        if (!$agent || !$agent->signature_file) {
+            return back()->with('error', 'Signature électronique introuvable');
         }
 
-        if ($carte->directeur_valide) {
-            return back()->with('error', 'Carte déjà signée.');
-        }
+        $carte->update([
+            'signature_directeur' => $agent->signature_file,
+            'directeur_visa' => auth()->user()->nom ?? null,
+            'statut' => 'signe',
+        ]);
 
-        $carte->directeur_valide = true;
-        $carte->directeur_visa   = Auth::user()->name;
-        $carte->statut = 'signe';
-        $carte->save();
-
-        return back()->with('success', 'Carte signée avec succès.');
+        return back()->with('success', 'Carte signée avec succès');
     }
-
     /* ======================================
-        TELECHARGER CARTE
+        TÉLÉCHARGER CARTE
     ====================================== */
     public function telechargerCarte($id)
     {
         $carte = Carte::with('adherant')->findOrFail($id);
 
-        if (!$carte->directeur_valide) {
+        if ($carte->statut !== 'signe') {
             return back()->with('error', 'Carte non signée.');
         }
 
         $pdf = Pdf::loadView('dashboard.directeur.carte_pdf', compact('carte'));
 
-        return $pdf->download('carte_' . $carte->numero . '.pdf');
+        return $pdf->download('carte_' . $carte->numero_carte . '.pdf');
     }
 
     /* ======================================
@@ -84,71 +79,13 @@ class DirecteurController extends Controller
     }
 
     /* ======================================
-        VALIDATION ADHERANT (optionnel)
+        MÉTHODE GÉNÉRIQUE (OPTIONNEL)
+    Directeur ne doit PAS rejuger dossier
     ====================================== */
-    public function validerAdherant($id)
-    {
-        return $this->traiter(
-            DossierAdherant::where('adherant_id', $id)->firstOrFail(),
-            'valide'
-        );
-    }
 
-    public function rejeterAdherant(Request $request, $id)
-    {
-        return $this->traiter(
-            DossierAdherant::where('adherant_id', $id)->firstOrFail(),
-            'rejete',
-            $request
-        );
-    }
-
-    /* ======================================
-        VALIDATION ENFANT
-    ====================================== */
-    public function validerEnfant($id)
-    {
-        return $this->traiter(
-            DossierEnfant::where('add_enfant_id', $id)->firstOrFail(),
-            'valide'
-        );
-    }
-
-    public function rejeterEnfant(Request $request, $id)
-    {
-        return $this->traiter(
-            DossierEnfant::where('add_enfant_id', $id)->firstOrFail(),
-            'rejete',
-            $request
-        );
-    }
-
-    /* ======================================
-        VALIDATION CONJOINT
-    ====================================== */
-    public function validerConjoint($id)
-    {
-        return $this->traiter(
-            DossierConjoint::where('add_conjoint_id', $id)->firstOrFail(),
-            'valide'
-        );
-    }
-
-    public function rejeterConjoint(Request $request, $id)
-    {
-        return $this->traiter(
-            DossierConjoint::where('add_conjoint_id', $id)->firstOrFail(),
-            'rejete',
-            $request
-        );
-    }
-
-    /* ======================================
-        MÉTHODE GÉNÉRIQUE (workflow)
-    ====================================== */
     private function traiter($dossier, $action, $request = null)
     {
-        // 🔒 sécurité : liquidation doit avoir validé
+        // 🔒 sécurité workflow
         if (!$dossier->liquidation_valide) {
             return back()->with('error', 'La liquidation doit valider avant.');
         }
@@ -174,26 +111,29 @@ class DirecteurController extends Controller
         return back()->with(
             'success',
             $action === 'valide'
-                ? 'Validé par le directeur.'
-                : 'Rejeté par le directeur.'
+                ? 'Dossier validé par le directeur.'
+                : 'Dossier rejeté par le directeur.'
         );
     }
 
     /* ======================================
-        DETAIL DOSSIER
+        DETAILS DOSSIER
     ====================================== */
     public function voirDocument($id)
     {
-        $dossier = DossierAdherant::findOrFail($id);
+        $dossier = DossierAdherant::with('adherant')
+            ->findOrFail($id);
+
         return view('dashboard.directeur.adherant_detail', compact('dossier'));
     }
 
     /* ======================================
-        VOIR CARTE (PDF)
+        VOIR CARTE PDF
     ====================================== */
     public function voirCarte($id)
     {
-        $adherant = Adherant::with('carte')->findOrFail($id);
+        $adherant = Adherant::with('carte')
+            ->findOrFail($id);
 
         $pdf = Pdf::loadView('dashboard.directeur.carte_adhesion', compact('adherant'));
 

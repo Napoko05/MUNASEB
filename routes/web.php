@@ -59,8 +59,8 @@ Route::middleware(['auth', 'role:directeur'])
         Route::get('/', [DirecteurController::class, 'index'])->name('dashboard');
 
         // Cartes
-        Route::post('/carte/{id}/signer', [DirecteurController::class, 'signerCarte'])->name('carte.signer');
-        Route::get('/carte/{id}/telecharger', [DirecteurController::class, 'telechargerCarte'])->name('carte.telecharger');
+        Route::post('/carte/{id}/signer', [DirecteurController::class, 'signerCarte'])->name('carte_signer');
+        Route::get('/carte/{id}/signer', [DirecteurController::class, 'signerCarte'])->name('cartes.signer');
         Route::get('/cartes', [DirecteurController::class, 'listeCartes'])->name('cartes.liste');
 
         // Adhérant
@@ -78,81 +78,14 @@ Route::middleware(['auth', 'role:directeur'])
         // Documents
         Route::get('/dossier/{id}', [DirecteurController::class, 'voirDocument'])->name('dossier.detail');
     });
-/*
-Route::middleware(['auth', 'role:directeur|admin'])
-    ->prefix('directeur')
-    ->name('directeur.')
-    ->group(function () {
+Route::middleware('auth')->group(function () {
+    Route::get('/carte/{id}/telecharger', [CarteController::class, 'telecharger'])
+        ->name('carte.telecharger');
+});
 
-        // Tableau de bord
-        Route::get('/', [DirecteurController::class, 'index'])
-            ->name('dashboard');
-
-        // Liste des adhésions validées par la régie (à traiter par le directeur)
-        Route::get('/adhesion/traitees', [DirecteurController::class, 'adhesionsValidees'])
-            ->name('adhesion.traites');
-
-        // Détail d’un dossier soumis par un adhérent
-        Route::get('/adhesion/{id}', [DirecteurController::class, 'detailProfil'])
-            ->name('adhesion.detail');
-
-        // Liste des adhérents validés mais sans carte (à créer)
-        Route::get('/cartes/a-creer', [DirecteurController::class, 'cartesNonTraite'])
-            ->name('cartes.a_creer');
-
-        // Création automatique d’une carte (POST)
-        Route::post('/adherant/{adherant}/creer-carte', [CarteController::class, 'creer'])
-            ->name('cartes.creer');
-
-        // Liste des cartes déjà créées
-        Route::get('/cartes', [CarteController::class, 'listeCartes'])
-            ->name('cartes.listecarte');
-        // Liste cartes en attente de signature
-        Route::get('/directeur/cartes/en-attente', [CarteController::class, 'cartesEnAttente'])
-            ->name('cartes.en_attente');
-
-        // Aperçu carte (HTML / PDF)
-        Route::get('/cartes/{carte}', [DirecteurController::class, 'voirCarte'])
-            ->name('cartes.show');
-        // Rejeter un adhérent avec motif
-        Route::post('/adherant/{id}/rejeter', [DirecteurController::class, 'rejeterAdherant'])
-            ->name('adherant.rejeter');
-
-        //signer cartes
-        Route::post('/directeur/cartes/signer/{id}', [CarteController::class, 'signer'])
-            ->name('cartes.signer');
-
-        // Télécharger une carte PDF
-        Route::get('/directeur/cartes/telecharger/{adherant}', [CarteController::class, 'telecharger'])
-            ->name('cartes.telecharger');
-
-
-        // ======================
-        // DOCUMENTS
-        // ======================
-
-        Route::get('/dossier/{id}/document', [DirecteurController::class, 'voirDocument'])
-            ->name('dossier.voirDocument');
-
-        Route::get('/directeur/cartes/{id}', [DirecteurController::class, 'voirCarte'])
-            ->name('cartes.show');
-        Route::get('/cartes', [DirecteurController::class, 'index'])->name('cartes');
-        Route::post('/signer/{id}', [DirecteurController::class, 'signerCarte'])->name('signer');
-
-        // ======================
-        // STATISTIQUES
-        // ======================
-
-        Route::get('/stats', [DirecteurController::class, 'stats'])
-            ->name('stats');
-    });
-// Télécharger la carte au format PDF
-
-Route::get('/carte/{id}/telecharger', [CarteController::class, 'telecharger'])
-    ->name('carte.telecharger');
-
-*/
-// Routes Régie de recette
+/*===========================
+ Routes Régie de recette
+=============================*/
 
 Route::middleware(['auth', 'role:regie_recette'])->prefix('regie')->name('regie.')->group(function () {
     Route::get('/dashboard', [RegieController::class, 'dashboard'])->name('dashboard');
@@ -212,73 +145,9 @@ Route::middleware(['auth', 'role:regie_recette'])->prefix('regie')->name('regie.
     Route::post('conjoint/{id}/rejeter', [RegieController::class, 'rejeterConjoint'])
         ->name('conjoint.rejeter');
 });
-/*
-Route::prefix('regie')
-    ->name('regie.')
-    ->middleware('auth')
-    ->group(function () {
-
-        // Dashboard
-      
-        =======================
-       ADHÉRANTS
-    ========================= 
-        Route::get('/adherants/non-valide', [RegieController::class, 'adherantsNonValides'])
-            ->name('adherants.non_valide');
-
-        Route::get('/adherant/{id}/detail', [RegieController::class, 'detailAdherant'])
-            ->name('adherant.detail');
-
-        Route::post('/adherant/{id}/valider', [RegieController::class, 'validerAdherant'])
-            ->name('adherant.valider');
-
-        Route::post('/adherant/{id}/rejeter', [RegieController::class, 'rejeterAdherant'])
-            ->name('adherant.rejeter');
-        Route::post('/adherant/{id}/rejeter', [RegieController::class, 'rejeterAdherant'])->name('adherant.rejeter');
-
-        Route::get('/dossier/{id}/document', [RegieController::class, 'voirDocument'])
-            ->name('dossier.voirDocument');
-
-        ======================
-       ENFANTS
-    ======================= 
-        Route::get('/enfants/non-valide', [RegieController::class, 'enfantsNonValides'])
-            ->name('enfants.non_valide');
-
-        Route::get('/enfant/{id}/detail', [RegieController::class, 'detailEnfant'])
-            ->name('enfant.detail');
-
-        Route::post('/enfant/{id}/valider', [RegieController::class, 'validerEnfant'])
-            ->name('enfant.valider');
-
-        Route::post('/enfant/{id}/rejeter', [RegieController::class, 'rejeterEnfant'])
-            ->name('enfant.rejeter');
-
-        / =========================
-       CONJOINTS
-    ========================= /
-        Route::get('/conjoints/non-valide', [RegieController::class, 'conjointsNonValides'])
-            ->name('conjoints.non_valide');
-
-        Route::get('/conjoint/{id}/detail', [RegieController::class, 'detailConjoint'])
-            ->name('conjoint.detail');
-
-        Route::post('/conjoint/{id}/valider', [RegieController::class, 'validerConjoint'])
-            ->name('conjoint.valider');
-
-        Route::post('/conjoint/{id}/rejeter', [RegieController::class, 'rejeterConjoint'])
-            ->name('conjoint.rejeter');
-
-        / =========================
-       ADHÉSIONS TRAITÉES
-    ========================= 
-        Route::get('/adhesions/traitees', [RegieController::class, 'adhesionsTraitees'])
-            ->name('adherants.traitees');
-
-        Route::get('/adherant/{id}/modifier', [RegieController::class, 'modifierAdherant'])
-            ->name('adherant.modifier');
-    });*/
-
+/*============================
+   route pour liquidation & production
+   =====================*/
 
 Route::middleware(['auth', 'role:liquidation_production'])
     ->prefix('liquidation')->name('liquidation.')->group(function () {
@@ -288,26 +157,17 @@ Route::middleware(['auth', 'role:liquidation_production'])
         Route::get('/', [LiquidationController::class, 'index'])
             ->name('dashboard');
         //Dashboard
-        Route::get('/adhesions/en-cours', [AdhesionController::class, 'enCours'])
-            ->name('adhesions.en_cours');
-        Route::get('/adhesions/traitees', [LiquidationController::class, 'adhesionsTraitees'])
-            ->name('adhesions.traitees');
-        Route::get('/adhesion/{adherant}', [LiquidationController::class, 'detailProfil'])
-            ->name('adhesion.detail');
-        Route::post('/adhesion/{adherant}/rejeter', [LiquidationController::class, 'rejeterAdherant'])
-            ->name('adhesion.rejeter');
-        Route::get('/cartes/a-creer', [LiquidationController::class, 'cartesNonTraite'])
-            ->name('cartes.a_creer');
-        Route::post('/adherant/{adherant}/creer-carte', [CarteController::class, 'creer'])
-            ->name('cartes.creer');
-        Route::get('/cartes', [CarteController::class, 'listeCartes'])
-            ->name('cartes.liste');
-        Route::get('/cartes/{carte}', [LiquidationController::class, 'voirCarte'])
-            ->name('cartes.show');
+        Route::get('/adhesions/en-cours', [AdhesionController::class, 'enCours'])->name('adhesions.en_cours');
+        Route::get('/adhesions/traitees', [LiquidationController::class, 'adhesionsTraitees'])->name('adhesions.traitees');
+        Route::get('/adhesion/{adherant}', [LiquidationController::class, 'detailProfil'])->name('adhesion.detail');
+        Route::post('/adhesion/{adherant}/rejeter', [LiquidationController::class, 'rejeterAdherant'])->name('adhesion.rejeter');
+        Route::get('/cartes/a-creer', [LiquidationController::class, 'cartesNonTraite'])->name('cartes.a_creer');
+        Route::post('/adherant/{adherant}/creer-carte', [CarteController::class, 'creer'])->name('cartes.creer');
+        Route::get('/cartes', [CarteController::class, 'listeCartes'])->name('cartes.liste');
+        Route::get('/cartes/{carte}', [LiquidationController::class, 'voirCarte'])->name('cartes.show');
 
         // ====================DOCUMENTS===================
-        Route::get('/dossier/{adherant}/document', [LiquidationController::class, 'voirDocument'])
-            ->name('dossier.voirDocument');
+        Route::get('/dossier/{adherant}/document', [LiquidationController::class, 'voirDocument'])->name('dossier.voirDocument');
         Route::post('/creer-carte/{id}', [LiquidationController::class, 'creerCarte'])
             ->name('creerCarte');
         Route::post('/rejeter/{id}', [LiquidationController::class, 'rejeterInfos'])
@@ -316,6 +176,11 @@ Route::middleware(['auth', 'role:liquidation_production'])
         // ====================== STATS======================
         Route::get('/stats', [LiquidationController::class, 'stats'])
             ->name('stats');
+        Route::get('/liquidation/carte/{id}/edit', [LiquidationController::class, 'editCarte'])
+            ->name('carte.edit');
+        // Mettre à jour une carte (la route qui manquait)
+        Route::put('carte/{adherant}', [LiquidationController::class, 'updateCarte'])
+            ->name('carte.update');
     });
 
 //============================= 
@@ -417,3 +282,6 @@ Route::get('/demande/verifier', [AdherantController::class, 'formVerifierDemande
 
 // Vérification et affichage du statut
 Route::post('/demande/verifier', [AdherantController::class, 'verifierDemande'])->name('demande.verifier');
+Route::get('/carte/verification/{numero}', function ($numero) {
+    return "CARTE VALIDE : " . $numero;
+})->name('carte.verification');

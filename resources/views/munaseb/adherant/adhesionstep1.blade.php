@@ -65,7 +65,8 @@
                         <label>INE</label>
                         <input type="text"
                             name="ine"
-                            placeholder="Ex : 2025000123"
+                            value="{{ old('ine', Auth::user()->ine) }}"
+                            placeholder="Ex : N0025000123"
                             required>
                     </div>
 
@@ -82,30 +83,28 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label>Nom</label>
-                            <input type="text" name="nom" required>
+                            <input type="text" name="nom"
+                                value="{{ old('nom', Auth::user()->nom) }}" required>
                         </div>
 
                         <div class="col-md-6">
                             <label>Prénoms</label>
-                            <input type="text" name="prenom" required>
+                            <input type="text" name="prenom"
+                                value="{{ old('prenom', Auth::user()->prenom) }}" required>
                         </div>
                     </div>
-
                     <!-- SEXE -->
-                    <div class="mb-3 d-flex gap-4 align-items-center">
-                        <label class="mb-0">Sexe :</label>
+                    <div class="mb-3">
+                        <label for="sexe" class="form-label">Sexe :</label>
 
-                        <div class="form-check">
-                            <input type="radio" name="sexe" value="M" id="masculin" checked>
-                            <label for="masculin">Masculin</label>
-                        </div>
+                        <select name="sexe" id="sexe" class="form-select">
+                            <option value="#">selectionné</option>
+                            <option value="M" {{ old('sexe') == 'M' ? 'selected' : '' }}>Masculin</option>
+                            <option value="F" {{ old('sexe') == 'F' ? 'selected' : '' }}>Féminin</option>
+                            <option value="NA" {{ old('sexe') == 'NA' ? 'selected' : '' }}>Autres</option>
 
-                        <div class="form-check">
-                            <input type="radio" name="sexe" value="F" id="feminin">
-                            <label for="feminin">Féminin</label>
-                        </div>
+                        </select>
                     </div>
-
                     <!-- DATE NAISSANCE -->
                     <div class="row mb-3">
 

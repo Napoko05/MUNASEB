@@ -9,17 +9,17 @@
 
             {{-- ALERTES --}}
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-success alert-dismissible fade show">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert alert-danger alert-dismissible fade show">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             {{-- =======================
@@ -33,15 +33,16 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered align-middle text-center">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>INE</th>
-                                    <th>Nom</th>
-                                    <th>Prénom</th>
-                                    <th>Statut</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
+                            
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>INE</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Statut</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
 
                             <tbody>
                                 @forelse($traitees->where('visaDecision', 'valide') as $adherant)
@@ -56,15 +57,15 @@
 
                                     <td>
                                         <a href="{{ route('regie.adherant.detail', $adherant->id) }}"
-                                           class="btn btn-sm btn-info">
-                                           📄 Détail
+                                            class="btn btn-sm btn-info">
+                                            📄 Détail
                                         </a>
 
                                         @if($adherant->canModify ?? false)
-                                            <a href="{{ route('regie.adherant.modifier', $adherant->id) }}"
-                                               class="btn btn-sm btn-warning">
-                                               ✏️ Modifier
-                                            </a>
+                                        <a href="{{ route('regie.adherant.modifier', $adherant->id) }}"
+                                            class="btn btn-sm btn-warning">
+                                            ✏️ Modifier
+                                        </a>
                                         @endif
                                     </td>
                                 </tr>
@@ -118,15 +119,15 @@
 
                                     <td>
                                         <a href="{{ route('regie.adherant.detail', $adherant->id) }}"
-                                           class="btn btn-sm btn-info">
-                                           📄 Détail
+                                            class="btn btn-sm btn-info">
+                                            📄 Détail
                                         </a>
 
                                         @if($adherant->canModify ?? false)
-                                            <a href="{{ route('regie.adherant.modifier', $adherant->id) }}"
-                                               class="btn btn-sm btn-warning">
-                                               ✏️ Modifier
-                                            </a>
+                                        <a href="{{ route('regie.adherant.modifier', $adherant->id) }}"
+                                            class="btn btn-sm btn-warning">
+                                            ✏️ Modifier
+                                        </a>
                                         @endif
                                     </td>
                                 </tr>

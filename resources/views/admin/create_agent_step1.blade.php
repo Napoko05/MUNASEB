@@ -49,7 +49,7 @@
             </div>
 
             <div class="agent-field">
-                <label>Num CNIB</label>
+                <label>N° CNIB</label>
                 <input type="text" name="num_cnib" value="{{ old('num_cnib') }}" required>
             </div>
 

@@ -1,215 +1,245 @@
-/* ===================================
-   CONTAINER DASHBOARD
-=================================== */
-
-.limit-900 {
-    width: 100%;
-    max-width: 100%;
+/* =========================
+   VARIABLES DASHBOARD
+========================= */
+:root {
+    --dash-red: #ef4444;
+    --dash-blue: #1E3A8A;
+    --dash-orange: #F97316;
+    --dash-green: #22c55e;
+    --dash-gray: #F3F4F6;
+    --dash-dark: #111827;
+    --dash-white: #ffffff;
 }
 
-/* Conteneur des cartes centré et flexible */
-.page-wrapper {
-    display: flex;             
-    flex-direction: column;    
-    align-items: center;       /* centre horizontalement */
-    align-items: stretch;
-    gap: 20px;                 /* espace entre cartes */
-    padding: 30px 15px;        
-    margin: 20px 0;            /* espace en haut et en bas */
+/* =========================
+   BIENVENUE CENTRÉ
+========================= */
+.welcome-section {
+    text-align: center;
+    margin: 60px auto 40px auto;
 }
 
-/* ===================================
-   CARTE MUNASEB
-=================================== */
+.welcome-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--dash-blue);
+    margin-bottom: 15px;
+}
 
-.card, .accordion-card {
-    border: 2px solid #c62828;
-    border-radius: 14px;
-    overflow: hidden;
-    background: white;
+.welcome-section p {
+    font-size: 1.3rem;
+    color: #6b7280; /* gris secondaire */
+    margin-bottom: 0;
+}
+
+/* =========================
+   CARTES DASHBOARD
+========================= */
+.dashboard-card {
+    border: 2px solid var(--dash-red);
+    border-radius: 16px;
+    background-color: var(--dash-white);
     position: relative;
-    transition: all 0.35s ease;
-    margin-bottom: 15px; /* espace entre cartes */
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
 }
 
-/* bande orange en bas */
-.card::after, .accordion-card::after {
+.dashboard-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
+
+/* Bandeau supérieur rouge */
+.dashboard-card::before {
     content: "";
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
+    height: 4px;
     width: 100%;
-    height: 6px;
-    background: #f57c00;
+    background: var(--dash-red);
+    z-index: 1;
 }
 
-/* animation carte */
-.card:hover, .accordion-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 25px hsla(180, 20%, 97%, 0.149);
-}
-
-/* apparition animation */
-.card {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.6s ease;
-}
-
-.card-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ===================================
-   HEADER CARTE
-=================================== */
-
-.card-header, .accordion-card-header {
-    background: hsl(180, 27%, 96%) !important;
-    color: #d44b0b !important;
-    font-size: 18px;
-    letter-spacing: 0.5px;
-    padding: 14px 20px;
-    font-weight: 600;
+.dashboard-card .card-body {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
     text-align: center;
-    transition: background 0.3s, color 0.3s;
 }
 
-.accordion-card-header:hover {
-    color: #f57c00;
+.dashboard-card .card-title {
+    font-weight: 700;
+    color: var(--dash-blue);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 10px;
 }
 
-/* ===================================
-   BODY CARTE
-=================================== */
-
-.card-body, .accordion-card-body {
-    padding: 16px 20px;
-    font-size: 15px;
-    color: #444;
+.dashboard-card .card-text {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--dash-dark);
+    margin: 10px 0;
 }
 
-/* contenu caché pour accordion */
-.accordion-card-body {
-    display: none;
-    text-align: left;
+.dashboard-card .badge {
+    font-size: 0.85rem;
+    padding: 0.5em 0.8em;
+    border-radius: 20px;
 }
 
-.accordion-card.active .accordion-card-body {
-    display: block;
+/* Statut badges */
+.badge-info { background-color: #0dcaf0; color: #fff; }
+.badge-success { background-color: var(--dash-green); color: #fff; }
+.badge-danger { background-color: var(--dash-red); color: #fff; }
+
+/* =========================
+   RESPONSIVE CARTES
+========================= */
+.row.dashboard-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-/* ===================================
-   IMAGE BANNER
-=================================== */
-
-.banner-img {
-    width: 100%;
-    border-radius: 10px;
-    transition: 0.4s;
+.row.dashboard-row > .col-card {
+  flex: 1;
+  min-width: 250px; 
+}
+/* Styles des numéros et des boutons */
+.accordion-button {
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 1rem 1.25rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.banner-img:hover {
-    transform: scale(1.03);
+.accordion-button:hover {
+    background-color: #f0f8ff;
+    color: #0d6efd; /* couleur principale */
 }
 
-/* ===================================
-   TEXTE GENERAL
-=================================== */
+.accordion-button .display-4 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
 
-.general-info {
+/* Corps de l'accordion */
+.accordion-body {
+    line-height: 1.6;
+    font-size: 0.95rem;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+/* Ombres pour les cartes */
+.accordion-item {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Animation de rotation pour l’icône si nécessaire */
+.accordion-button::after {
+    transition: transform 0.3s ease;
+}
+
+.accordion-button.collapsed::after {
+    transform: rotate(0deg);
+}
+
+.accordion-button:not(.collapsed)::after {
+    transform: rotate(180deg);
+}
+
+/* Tablette: 2 cartes par ligne */
+@media (max-width: 991px) {
+    .row.dashboard-row > .col-card {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* Mobile: 1 carte par ligne */
+@media (max-width: 767px) {
+    .row.dashboard-row > .col-card {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* =========================
+   SECTIONS DASHBOARD
+========================= */
+.dashboard-section {
+    border: 2px solid var(--dash-red);
+    border-radius: 16px;
+    background-color: var(--dash-white);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.dashboard-section .card-header {
+    background-color: var(--dash-red);
+    color: var(--dash-white);
+    font-weight: 700;
     text-align: center;
-    margin-top: 40px;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+.dashboard-section .card-body {
     padding: 20px;
 }
 
+/* =========================
+   GENERAL INFO
+========================= */
+.general-info {
+    background-color: var(--dash-gray);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
 .general-info h2 {
-    color: #0b2a4a;
-    font-weight: 700;
-    margin-bottom: 10px;
+    color: var(--dash-red);
+    margin-bottom: 15px;
 }
 
-.general-info p {
-    color: #444;
-    max-width: 700px;
-    margin: auto;
-}
-
-/* ===================================
-   LISTE ETAPES
-=================================== */
-
-.list-group-item {
-    border: none;
-    border-bottom: 1px solid #eee;
-    padding: 12px 15px;
-    font-size: 15px;
-}
-
-.list-group-item:hover {
-    background: #f8f9fa;
-    padding-left: 18px;
-    transition: 0.3s;
-}
-
-/* ===================================
-   FAQ
-=================================== */
-
-.faq {
-    max-width: 900px;
-}
-
-.faq .accordion-item {
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    border: 1px solid #eee;
-}
-
-.faq .accordion-button {
+/* =========================
+   BOUTONS DASHBOARD
+========================= */
+.btn-dash {
     font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 14px;
+    transition: all 0.3s ease;
 }
 
-.faq .accordion-button:not(.collapsed) {
-    background: #0b2a4a;
-    color: white;
+.btn-primary { background-color: var(--dash-blue); border: none; color: var(--dash-white); }
+.btn-primary:hover { background-color: var(--dash-orange); }
+
+.btn-success { background-color: var(--dash-green); border: none; color: #fff; }
+.btn-success:hover { background-color: #166534; }
+
+.btn-danger { background-color: var(--dash-red); border: none; color: #fff; }
+.btn-danger:hover { background-color: #B91C1C; }
+
+/* =========================
+   RESPONSIVE GLOBAL
+========================= */
+@media (max-width: 992px) {
+    .dashboard-section, .dashboard-row { padding: 15px; }
+    .dashboard-card .card-text { font-size: 2rem; }
+    .welcome-section h1 { font-size: 2.5rem; }
 }
 
-.faq-active {
-    background: #0b2a4a !important;
-    color: white !important;
-}
-
-/* ===================================
-   RESPONSIVE
-=================================== */
-
-@media (max-width:992px) {
-    .limit-900 {
-        max-width: 95%;
-    }
-
-    .card-body, .accordion-card-body {
-        padding: 18px;
-    }
-}
-
-@media (max-width:768px) {
-    .page-wrapper {
-        padding: 15px;
-    }
-
-    .card-header, .accordion-card-header {
-        font-size: 16px;
-    }
-
-    .card-body, .accordion-card-body {
-        font-size: 14px;
-    }
-
-    .banner-img {
-        border-radius: 6px;
-    }
+@media (max-width: 768px) {
+    .dashboard-card .card-text { font-size: 1.6rem; }
+    .welcome-section h1 { font-size: 2rem; }
+    .welcome-section p { font-size: 1.1rem; }
 }

@@ -166,3 +166,41 @@ a.btn-secondary:hover {
         font-size: 0.75rem;
     }
 }
+
+/* =========================================
+   FOOTER FIX (IMPORTANT)
+========================================= */
+footer,
+.munaseb-footer {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    margin-top: auto;
+    background: #0b2a4a;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 768px) {
+
+    .dashboard-content {
+        margin-left: 0;
+    }
+
+    footer,
+    .munaseb-footer {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .row.g-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .content-area {
+        padding: 1rem;
+    }
+}

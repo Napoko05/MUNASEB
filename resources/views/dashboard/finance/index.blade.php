@@ -36,41 +36,27 @@
                         @forelse($cartes as $index => $item)
                         <tr>
                             <td>{{ $index + 1 }}</td>
+
                             <td>{{ $item->adherant->ine ?? '---' }}</td>
                             <td>{{ $item->adherant->nom ?? 'N/A' }}</td>
                             <td>{{ $item->adherant->prenom ?? 'N/A' }}</td>
-                            <td class="card-number">{{ $item->numero }}</td>
-                            <td>
-                                @if($item->statut == 'cree')
-                                <span class="badge warning">⏳ En attente</span>
-                                @elseif($item->statut == 'signe')
-                                <span class="badge success">✅ Signé</span>
-                                @elseif($item->statut == 'rejete')
-                                <span class="badge danger">❌ Rejeté</span>
-                                @endif
-                            </td>
-                            <td class="d-flex gap-2">
 
-                                <a href="{{ route('directeur.dossier.detail', $item->adherant->id) }}"
-                                    class="btn btn-sm btn-primary">
+                            <td class="card-number">{{ $item->numero }}</td>
+
+                            <td>
+                                <span class="badge warning">
+                                    ⏳ En attente
+                                </span>
+                            </td>
+
+                            <td class="d-flex gap-2">
+                                <a href="{{ route('directeur.dossier.detail', $item->adherant->id) }}"class="btn btn-sm btn-primary">
                                     👁️ Voir
                                 </a>
 
-                                @if($item->statut == 'cree')
-                                <form action="{{ route('directeur.carte_signer', $item->id) }}"
-                                    method="POST"
-                                    onsubmit="return confirm('Confirmer la signature ?');">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-success">
-                                        ✍️ Signer
-                                    </button>
-                                </form>
-                                @else
-                                <button class="btn btn-sm btn-secondary" disabled>
-                                    ✔ Déjà traité
-                                </button>
-                                @endif
-
+                                <a href="{{ route('directeur.carte.signer', $item->id) }}" class="btn btn-sm btn-success">
+                                    ✍️ Signer
+                                </a>
                             </td>
                         </tr>
                         @empty

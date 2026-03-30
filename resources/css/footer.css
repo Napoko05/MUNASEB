@@ -105,3 +105,30 @@
         justify-content: center;
     }
 }
+/* PAGE FULL HEIGHT */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* WRAPPER GLOBAL */
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* CONTENU PRINCIPAL */
+.main-content {
+    flex: 1;
+}
+/* FOOTER FIXÉ EN BAS */
+.nonvalide-footer {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    margin-top: auto; /* clé du système */
+    background: var(--blue);
+    color: white;
+    text-align: center;
+    padding: 15px;
+}

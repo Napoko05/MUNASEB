@@ -20,14 +20,14 @@
     {{-- ADHESION --}}
     <div class="sidebar-item">
         <a href="#" class="sidebar-link sidebar-toggle">
-            <span><i class="bi bi-person-plus"></i>Carte d'Adhesion</span>
+            <span><i class="bi bi-person-plus"></i>Etat de paiement</span>
             <i class="bi bi-chevron-down arrow"></i>
         </a>
         <div class="sidebar-dropdown">
             <a href="{{ route('directeur.dashboard') }}" class="sidebar-sublink">
                 En attente
             </a>
-            <a href="{{ route('directeur.cartes.liste') }}" class="sidebar-sublink">liste carte</a>
+            <a href="{{ route('directeur.cartes.liste') }}" class="sidebar-sublink">liste etat</a>
         </div>
     </div>
 

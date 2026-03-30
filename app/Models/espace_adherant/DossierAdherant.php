@@ -12,17 +12,18 @@ class DossierAdherant extends Model
     protected $table = 'dossiers_adherant';
 
     protected $fillable = [
-    'adherant_id',
-    'photo',
-    'document_cni',
-    'document_attestation',
-    'document_recu',
-    'statut',
-    'regie_valide',        // ✅ ajouté
-    'liquidation_valide',  // déjà présent
-    'liquidation_visa',    // pour savoir qui a validé
-    'motif_rejet',         // pour rejets
-];
+        'adherant_id',
+        'photo',
+        'document_cni',
+        'document_attestation',
+        'document_recu',
+        'statut',
+        'regie_valide',
+        'liquidation_valide',
+        'liquidation_visa',
+        'motif_rejet',
+        'statut_global',
+    ];
 
     /**
      * 🔗 Relation inverse vers Adherant
@@ -31,5 +32,19 @@ class DossierAdherant extends Model
     public function adherant()
     {
         return $this->belongsTo(Adherant::class);
+    }
+    public function syncStatutGlobal()
+    {
+        if ($this->statut === 'rejete') {
+            $this->statut_global = 'rejete';
+        } elseif ($this->regie_valide && !$this->liquidation_valide) {
+            $this->statut_global = 'regie_valide';
+        } elseif ($this->liquidation_valide && !$this->liquidation_visa) {
+            $this->statut_global = 'liquidation_en_cours';
+        } elseif ($this->liquidation_visa && $this->statut !== 'rejete') {
+            $this->statut_global = 'carte_creee';
+        }
+
+        $this->save();
     }
 }

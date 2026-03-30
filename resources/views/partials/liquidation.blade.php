@@ -17,7 +17,7 @@
     {{-- ADHESION --}}
     <div class="sidebar-item">
         <a href="#" class="sidebar-link sidebar-toggle">
-            <span><i class="bi bi-person-plus"></i> Demande adhésion</span>
+            <span><i class="bi bi-person-plus"></i> Demandes Adhesion</span>
             <i class="bi bi-chevron-down arrow"></i>
         </a>
 

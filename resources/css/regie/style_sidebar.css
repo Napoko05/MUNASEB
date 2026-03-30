@@ -158,3 +158,29 @@
         width: 200px;
     }
 }
+/* ALIGNEMENT ICÔNES SIDEBAR */
+.regie-link,
+.regie-sublink,
+.sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* TAILLE ICÔNES */
+.regie-link i,
+.regie-sublink i,
+.sidebar-title i {
+    font-size: 16px;
+}
+
+/* ICÔNE FLECHE */
+.regie-arrow {
+    margin-left: auto;
+    transition: 0.3s;
+}
+
+/* ROTATION */
+.regie-item.active .regie-arrow {
+    transform: rotate(180deg);
+}

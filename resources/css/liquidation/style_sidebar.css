@@ -25,8 +25,8 @@
 /* LIENS */
 .sidebar-link {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 10px; /* Remplace justify-content: space-between */
     color: #dce3ec;
     padding: 12px;
     border-radius: 8px;

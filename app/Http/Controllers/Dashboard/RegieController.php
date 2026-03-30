@@ -143,7 +143,7 @@ class RegieController extends Controller
     }
 
     /* ======================================
-        MÉTHODE GÉNÉRIQUE (🔥 COEUR DU SYSTEM)
+        MÉTHODE GÉNÉRIQUE CORRIGÉE
     ====================================== */
     private function traiter($dossier, $action, $request = null)
     {
@@ -153,31 +153,47 @@ class RegieController extends Controller
             return back()->with('error', 'Action impossible : déjà traité.');
         }
 
+        // validation rejet
         if ($action === 'rejete') {
             $request->validate([
                 'motif_rejet' => 'required|string|min:5|max:500'
             ]);
         }
 
-        $dossier->statut = $action;
+        /*
+    =========================================
+    🔥 WORKFLOW DOSSIER
+    =========================================
+    */
 
         if ($action === 'valide') {
-            $dossier->regie_valide = true; // ✅ ajout workflow
+            $dossier->statut = 'valide';
+            $dossier->regie_valide = true;
         }
 
         if ($action === 'rejete') {
+            $dossier->statut = 'rejete';
             $dossier->motif_rejet = $request->motif_rejet;
+
+            $dossier->regie_valide = false;
+            $dossier->liquidation_valide = false;
         }
 
         $dossier->save();
 
+        /*
+    =========================================
+    🔥 VISA (historique)
+    =========================================
+    */
+
         $visa->decision = $action;
+        $visa->user_id = Auth::id();
 
         if ($action === 'rejete') {
             $visa->motif_rejet = $request->motif_rejet;
         }
 
-        $visa->user_id = Auth::id();
         $visa->save();
 
         return back()->with(
@@ -187,13 +203,13 @@ class RegieController extends Controller
                 : 'Dossier rejeté avec succès.'
         );
     }
-    //Adhrent traiter
+
+    /* ======================================
+        ADHERANTS TRAITES
+    ====================================== */
     public function adherantsTraitees()
     {
-        $adherants = Adherant::with([
-            'dossier',
-            'visas'
-        ])->get();
+        $adherants = Adherant::with(['dossier', 'visas'])->get();
 
         $traitees = $adherants->filter(function ($adherant) {
 
@@ -201,13 +217,9 @@ class RegieController extends Controller
                 ->where('etape', 'regie_recette')
                 ->first();
 
-            // Sécurité si null
             $adherant->visaDecision = $visa->decision ?? 'en_attente';
-
-            // Peut modifier seulement si déjà traité
             $adherant->canModify = $visa && $visa->decision !== 'en_attente';
 
-            // On ne prend que les traités
             return $adherant->visaDecision !== 'en_attente';
         });
 
@@ -221,15 +233,21 @@ class RegieController extends Controller
     private function getVisa($dossier)
     {
         if (isset($dossier->adherant)) {
-            return $dossier->adherant->visas->where('etape', 'regie_recette')->first();
+            return $dossier->adherant->visas
+                ->where('etape', 'regie_recette')
+                ->first();
         }
 
-        if (isset($dossier->addEnfant)) {
-            return $dossier->addEnfant->parent->visas->where('etape', 'regie_recette')->first();
+        if (isset($dossier->add_enfant)) {
+            return $dossier->add_enfant->parent->visas
+                ->where('etape', 'regie_recette')
+                ->first();
         }
 
-        if (isset($dossier->addConjoint)) {
-            return $dossier->addConjoint->parent->visas->where('etape', 'regie_recette')->first();
+        if (isset($dossier->add_conjoint)) {
+            return $dossier->add_conjoint->parent->visas
+                ->where('etape', 'regie_recette')
+                ->first();
         }
 
         return null;
@@ -237,7 +255,9 @@ class RegieController extends Controller
 
     private function setVisaState($adherant, $dossier = null)
     {
-        $visa = $adherant->visas->where('etape', 'regie_recette')->first();
+        $visa = $adherant->visas
+            ->where('etape', 'regie_recette')
+            ->first();
 
         $decision = $visa->decision ?? 'en_attente';
 

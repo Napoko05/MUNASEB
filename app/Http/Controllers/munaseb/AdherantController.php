@@ -13,6 +13,7 @@ use App\Models\espace_adherant\AddEnfant;
 use App\Models\AdherentVisa;
 use App\Models\espace_adherant\AddConjoint;
 use App\Models\espace_adherant\Filiere;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdherantController extends Controller
 {
@@ -191,7 +192,7 @@ class AdherantController extends Controller
          5. REDIRECTION
          ===============================*/
         return redirect()->route('dashboard.etudiant')
-            ->with('success', 'Adhésion parent soumise avec succès !');
+            ->with('success', 'Adhésion soumise avec succès !');
     }
     /* =======================================================
    ====================== ENFANT =========================
@@ -630,6 +631,7 @@ class AdherantController extends Controller
     }
 
     // Vérifie la demande via INE + année de naissance
+
     public function verifierDemande(Request $request)
     {
         $request->validate([
@@ -646,9 +648,37 @@ class AdherantController extends Controller
             return redirect()->back()->with('error', 'Aucune demande trouvée avec ces informations.');
         }
 
+        /*
+    =========================================
+    🔥 STATUT GLOBAL
+    =========================================
+    */
+
+        $rejet = false;
+
+        if ($adherant->dossier && $adherant->dossier->statut === 'rejete') {
+            $rejet = true;
+        }
+
+        // 🔥 SAFE CHECK (IMPORTANT)
+        $directeurValide = !empty(optional($adherant->carte)->signature_directeur);
+
+        /*
+    =========================================
+    💾 STATUT FINAL
+    =========================================
+    */
+
+        if ($rejet) {
+            $adherant->statut_global = 'rejete';
+        } elseif ($directeurValide) {
+            $adherant->statut_global = 'valide';
+        } else {
+            $adherant->statut_global = 'en_attente';
+        }
+
         return view('munaseb.statut_adherant.statut_adhesion', compact('adherant'));
     }
-
     /*====================================
       mes historique de trairement
       ====================================

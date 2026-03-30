@@ -8,31 +8,30 @@ use App\Models\espace_adherant\Adherant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\espace_adherant\DossierAdherant;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CarteController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-
-        // ❌ liquidation ne crée PLUS
-        // ✅ seul directeur crée
+        // seul directeur crée
         $this->middleware('role:directeur|admin')
             ->only(['creer', 'signer']);
 
         // consultation
-        $this->middleware('role:liquidation_production|directeur|admin')
+        $this->middleware('role:liquidation_production|directeur|etudiant|admin')
             ->only(['listeCartes', 'telecharger', 'cartesEnAttente']);
     }
 
     /**
-     * 🔥 CREATION PAR LE DIRECTEUR
+     * CRÉER CARTE (DIRECTEUR)
      */
     public function creer(Adherant $adherant)
     {
         $dossier = $adherant->dossier;
 
-        // ✅ doit être validé par liquidation
+        //  doit être validé par liquidation
         if (!$dossier || !$dossier->liquidation_valide) {
             abort(403, 'La liquidation doit valider avant.');
         }
@@ -57,8 +56,8 @@ class CarteController extends Controller
     }
 
     /**
-     * 🔥 LISTE POUR DIRECTEUR
-     */
+     *  LISTE POUR DIRECTEUR
+     
     public function cartesEnAttente()
     {
         // cartes à signer
@@ -74,31 +73,36 @@ class CarteController extends Controller
 
         return view('dashboard.directeur.index', compact('cartes', 'dossiers'));
     }
-
+     */
     /**
      * 🔥 SIGNATURE DIRECTEUR = VALIDATION FINALE
      */
     public function signer($id)
     {
+
         $carte = Carte::with('adherant.dossier')->findOrFail($id);
 
         if ($carte->signature_directeur) {
             return back()->with('info', 'Carte déjà signée.');
         }
 
-        // signature
+        $user = auth()->user();
+
+        if (!$user->signature_path) {
+            return back()->with('error', 'Aucune signature électronique trouvée.');
+        }
+
         $carte->update([
-            'signature_directeur' => 'signatures/directeur.png',
+            'signature_directeur' => $user->signature_path,
         ]);
 
-        // 🔥 VALIDATION FINALE
+        // validation dossier
         $dossier = $carte->adherant->dossier;
         $dossier->statut = 'valide';
         $dossier->save();
 
-        return back()->with('success', 'Carte signée et validée.');
+        return back()->with('success', 'Carte signée avec succès.');
     }
-
     /**
      * LISTE CARTES
      */
@@ -113,15 +117,31 @@ class CarteController extends Controller
      */
     public function telecharger($id)
     {
-        $adherant = Adherant::with('dossier')->findOrFail($id);
+        $dossier = DossierAdherant::with([
+            'adherant.carte',
+            'adherant.universite',
+            'adherant.filiere'
+        ])->where('adherant_id', $id)->firstOrFail();
 
-        // 🔥 sécurité
-        if ($adherant->dossier->statut !== 'valide') {
+        // 🔐 sécurité
+        if ($dossier->statut !== 'valide') {
             return back()->with('error', 'Carte non encore validée.');
         }
 
-        $pdf = \PDF::loadView('dashboard.liquidation.carte_adhesion', compact('adherant'));
+        $pdf = \PDF::loadView('cartes.carte_adhesion', compact('dossier'));
 
-        return $pdf->download('carte_' . $adherant->id . '.pdf');
+        return $pdf->download('carte_' . $dossier->adherant->id . '.pdf');
+    }
+    public function verification($numero)
+    {
+        $carte = Carte::with('adherant.dossier')
+            ->where('numero_carte', $numero)
+            ->first();
+
+        if (!$carte) {
+            abort(404, 'Carte introuvable');
+        }
+
+        return view('cartes.verification', compact('carte'));
     }
 }

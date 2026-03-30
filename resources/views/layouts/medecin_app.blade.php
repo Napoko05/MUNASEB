@@ -14,6 +14,7 @@
     @vite(['resources/css/medecin/style_sidebar.css'])
     @vite(['resources/css/medecin/style_carte.css'])
     @vite(['resources/css/medecin/style_index.css'])
+     @vite('resources/css/footer.css')
 
 
     @stack('styles')
@@ -32,12 +33,7 @@
             @yield('content')
         </div>
 
-        <!-- FOOTER -->
-        <footer class="footer mt-auto">
-            <div class="container text-center text-white">
-                © {{ date('Y') }} Mutuelle de santé e_cenou — Tous droits réservés
-            </div>
-        </footer>
+        
 
     </main>
 
@@ -48,7 +44,7 @@
     @vite(['resources/js/script_medecin.js'])
 
     @stack('scripts')
-
+ @include('partials.footer')
 </body>
 
 </html>

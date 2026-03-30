@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'MUNASEB')</title>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- CSS adherent --}}
@@ -12,7 +12,9 @@
     @vite('resources/css/adherent/style_partials.css')
     @vite('resources/css/adherent/style_faq.css')
     @vite('resources/css/footer.css')
-      @vite('resources/css/adherent/style_adhesion.css')
+    @vite('resources/css/adherent/style_adhesion.css')
+    @vite('resources/css/adherent/style_index_adherent.css')
+    @vite('resources/css/adherent/style_statut.css')
 
     @stack('styles')
 
@@ -28,7 +30,13 @@
 
 
     <div class="page-wrapper">
-        @yield('content')
+
+        <main class="content-wrapper">
+            @yield('content')
+        </main>
+
+        @include('partials.footer')
+
     </div>
     {{-- JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -38,7 +46,7 @@
 
     @stack('scripts')
 
-    @include('partials.footer')
+
 </body>
 
 </html>

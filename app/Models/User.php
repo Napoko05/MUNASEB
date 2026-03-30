@@ -14,10 +14,11 @@ class User extends Authenticatable
     /**
      * Relation vers le profil Agent
      */
+   
     public function agent()
-    {
-        return $this->hasOne(Agent::class);
-    }
+{
+    return $this->hasOne(\App\Models\Agent::class);
+}
 
     /**
      * Les attributs assignables en masse
@@ -56,4 +57,5 @@ class User extends Authenticatable
     {
         return $this->roles->first()?->name;
     }
+    
 }

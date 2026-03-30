@@ -138,3 +138,63 @@
     .regie-content-area { margin-left: 0; padding: 10px; }
     .regie-card-header { font-size: 1rem; }
 }
+/* TITRE PRINCIPAL */
+.page-title h2 {
+    font-size: 26px;
+    color: #2c3e50;
+}
+
+.page-title p {
+    font-size: 14px;
+}
+
+/* TITRE DES TABLEAUX */
+.table-title h5 {
+    font-weight: 600;
+    color: #444;
+}
+
+/* HEADER CARD CENTRÉ */
+.card-header {
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* =========================================
+   FOOTER FIX (IMPORTANT)
+========================================= */
+footer,
+.munaseb-footer {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    margin-top: auto;
+    background: #0b2a4a;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 768px) {
+
+    .dashboard-content {
+        margin-left: 0;
+    }
+
+    footer,
+    .munaseb-footer {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .row.g-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .content-area {
+        padding: 1rem;
+    }
+}

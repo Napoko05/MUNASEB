@@ -24,6 +24,10 @@ class Carte extends Model
         'date_effet',
         'date_validite',
         'signature_directeur',
+        'directeur_visa',
+        'liquidation_visa',
+        'regie_visa',
+        'regie_valide',
         'qr_code_path',
         'statut',
     ];

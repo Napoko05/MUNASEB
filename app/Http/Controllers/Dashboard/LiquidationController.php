@@ -4,109 +4,115 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use App\Models\espace_adherant\Adherant;
 use App\Models\Dashboard\Regie\Profil;
-use App\Models\Dashboard\Regie\Adhesion;
 use App\Models\espace_adherant\DossierAdherant;
-use App\Models\Dashboard\Regie\Dossier;
 use App\Models\espace_adherant\Carte;
+use App\Models\espace_adherant\Universite;
+use App\Models\espace_adherant\Filiere;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class LiquidationController extends Controller
 {
     /**
-     * Tableau de bord : dossiers validés par la régie
+     * Dossiers validés par la régie
      */
     public function index()
     {
         $dossiers = DossierAdherant::with('adherant')
-            ->where('statut', 'valide')
+            ->where('regie_valide', true)
+            ->where('liquidation_valide', false)
             ->get();
 
         return view('dashboard.liquidation.index', [
-            'titre'    => 'Dossiers validés par la régie',
+            'titre' => 'Dossiers validés par la régie',
             'dossiers' => $dossiers
         ]);
     }
-    //Validation des information de la carte
+
+    /**
+     * CREATION CARTE + VALIDATION LIQUIDATION
+     */
     public function creerCarte($id)
     {
-        // 🔍 Récupération du dossier
-        $dossier = DossierAdherant::findOrFail($id);
+        $dossier = DossierAdherant::with([
+            'adherant.carte',
+            'adherant.universite',
+            'adherant.filiere'
+        ])->findOrFail($id);
 
-        // 🔒 Sécurité : validation régie obligatoire
-        if (!$dossier->regie_valide) {
-            return back()->with('error', 'Le dossier doit être validé par la régie.');
+        // rejet global
+        if ($dossier->statut === 'rejete') {
+            return back()->with('error', 'Dossier rejeté.');
         }
 
-        // 🔒 Empêcher double création
+        // validation régie obligatoire
+        if (!$dossier->regie_valide) {
+            return back()->with('error', 'Dossier non validé par la régie.');
+        }
+
+        // déjà traité liquidation
         if ($dossier->liquidation_valide) {
             return back()->with('error', 'Carte déjà créée.');
         }
 
-        // 🔢 Génération numéro carte unique
-        $annee = date('y'); // ex: 26
+        // génération numéro carte
+        $annee = date('y');
+
         do {
-            $aleatoire = rand(1000, 9999);
-            $numero_carte = "A-{$annee}-{$aleatoire}";
+            $numero_carte = "A-{$annee}-" . rand(1000, 9999);
         } while (Carte::where('numero_carte', $numero_carte)->exists());
 
-        // 📅 Dates
-        $date_effet = now();
-        $date_validite = now()->addYear();
-
-        // ✅ Création carte
+        // création carte
         $carte = Carte::create([
-            'adherant_id'  => $dossier->adherant_id,
+            'adherant_id' => $dossier->adherant_id,
             'numero_carte' => $numero_carte,
-            'statut'       => 'cree',
-            'date_effet'   => $date_effet,
-            'date_creation' => $date_effet,
-            'date_validite' => $date_validite,
+            'statut' => 'cree',
+            'date_effet' => now(),
+            'date_creation' => now(),
+            'date_validite' => now()->addYear(),
             'signature_directeur' => null,
             'qr_code_path' => null,
         ]);
 
-        // ✅ Mise à jour dossier
-        $dossier->liquidation_valide = true;
-        $dossier->liquidation_visa = auth()->user()->name;
-        $dossier->save();
+        // update dossier workflow
+        $dossier->update([
+            'liquidation_valide' => true,
+            'liquidation_visa' => auth()->user()->name,
+            'statut' => 'valide'
+        ]);
 
-        // 📥 Charger adhérant + relations
-        $adherant = Adherant::with([
-            'carte',
-            'universite',
-            'filiere'
-        ])->findOrFail($dossier->adherant_id);
+        $dossier->load('adherant.carte');
 
-        // 🧾 Générer PDF (RECTO/VERSO)
-        $pdf = Pdf::loadView('dashboard.liquidation.carte_adhesion', compact('adherant'));
+        $pdf = Pdf::loadView('cartes.carte_adhesion', compact('dossier'));
 
-        // 👉 Affichage direct
         return $pdf->stream('carte_' . $numero_carte . '.pdf');
-
-        // 👉 OU téléchargement
-        // return $pdf->download('carte_'.$numero_carte.'.pdf');
     }
+
+    /**
+     * REJET GLOBAL
+     */
     public function rejeter(Request $request, $id)
     {
-        if (!$request->isMethod('post')) {
-            return back()->with('error', 'Méthode non autorisée.');
-        }
-
         $request->validate([
             'motif_rejet' => 'required|string|max:500',
         ]);
 
         $dossier = DossierAdherant::findOrFail($id);
-        $dossier->statut = 'rejete';
-        $dossier->motif_rejet = $request->motif_rejet;
-        $dossier->save();
 
-        return back()->with('success', 'Rejet effectué avec succès.');
+        $dossier->update([
+            'statut' => 'rejete',
+            'motif_rejet' => $request->motif_rejet,
+            'liquidation_valide' => false,
+        ]);
+
+        return back()->with('success', 'Dossier rejeté avec succès.');
     }
+
     /**
-     * Détail du profil d’un adhérent
+     * DETAIL PROFIL
      */
     public function detailProfil($id)
     {
@@ -120,43 +126,48 @@ class LiquidationController extends Controller
     }
 
     /**
-     * Liste des adhésions validées (traitées par la régie)
+     * Adhésions traitées
      */
     public function adhesionsTraitees()
     {
         $adherants = Adherant::with('dossier')
-            ->whereHas('dossier', fn($q) => $q->where('statut', 'valide'))
+            ->whereHas('dossier', function ($q) {
+                $q->where('regie_valide', true);
+            })
             ->get();
 
         return view('dashboard.liquidation.index', [
             'adherants' => $adherants,
-            'titre'     => 'Adhésions validées'
+            'titre' => 'Adhésions validées'
         ]);
     }
 
     /**
-     * Adhérents validés mais sans carte
+     * dossiers sans carte
      */
     public function cartesNonTraite()
     {
         $dossiers = DossierAdherant::with('adherant')
-            ->where('statut', 'valide')
-            ->whereDoesntHave('adherant.carte') // exclut ceux qui ont déjà une carte
+            ->where('regie_valide', true)
+            ->where('liquidation_valide', false)
             ->get();
 
-        return view('dashboard.liquidation.cartes_valider', compact('dossiers', 'adherent'))
+        return view('dashboard.liquidation.cartes_valider', compact('dossiers'))
             ->with('titre', 'Adhérents validés sans carte');
     }
+
     /**
-     * Liste des cartes déjà créées
+     * liste cartes
      */
     public function listeCartes()
     {
         $cartes = Carte::with('adherant')->get();
+
         return view('dashboard.liquidation.listecarte', compact('cartes'));
     }
+
     /**
-     * Rejeter un adhérent avec motif
+     * rejet par adhérent
      */
     public function rejeterAdherant(Request $request, $id)
     {
@@ -165,55 +176,112 @@ class LiquidationController extends Controller
         ]);
 
         $dossier = DossierAdherant::where('adherant_id', $id)->firstOrFail();
-        $dossier->statut = 'rejete';
-        $dossier->motif_rejet = $request->motif_rejet;
-        $dossier->save();
 
-        // Migration automatique vers la liste des rejetés
+        $dossier->update([
+            'statut' => 'rejete',
+            'motif_rejet' => $request->motif_rejet,
+            'liquidation_valide' => false,
+        ]);
+
         return redirect()->route('liquidation.cartes.liste')
-            ->with('success', 'Dossier adhérent rejeté avec motif.');
+            ->with('success', 'Dossier rejeté.');
     }
+
     /**
-     * Voir la carte d’un adhérent au format PDF
+     * voir carte PDF
      */
     public function voirCarte($id)
     {
-        $adherant = Adherant::with(['carte', 'universites', 'filieres'])->findOrFail($id);
+        $adherant = Adherant::with(['carte', 'universite', 'filiere'])
+            ->findOrFail($id);
 
-        // Générer le PDF à partir de la vue Blade
-        $pdf = Pdf::loadView('dashboard.liquidation.carte_adhesion ', compact('adherant'));
+        $pdf = Pdf::loadView('dashboard.liquidation.carte_adhesion', compact('adherant'));
 
-        // Afficher directement dans le navigateur
         return $pdf->stream('carte_' . $adherant->nom . '.pdf');
     }
+
     /**
-     * Statistiques
+     * STATS
      */
     public function stats()
     {
-        $total      = DossierAdherant::count();
-        $valide     = DossierAdherant::where('statut', 'valide')->count();
-        $rejete     = DossierAdherant::where('statut', 'rejete')->count();
-        $enAttente  = DossierAdherant::where('statut', 'en_attente')->count();
+        $total = DossierAdherant::count();
 
-        $pourcentageValide = $total ? round(($valide / $total) * 100, 2) : 0;
-        $pourcentageRejete = $total ? round(($rejete / $total) * 100, 2) : 0;
+        $valide = DossierAdherant::where('liquidation_valide', true)->count();
+
+        $rejete = DossierAdherant::where('statut', 'rejete')->count();
+
+        $enAttente = DossierAdherant::where('regie_valide', true)
+            ->where('liquidation_valide', false)
+            ->count();
 
         return view('dashboard.liquidation.stats', compact(
             'total',
             'valide',
             'rejete',
-            'enAttente',
-            'pourcentageValide',
-            'pourcentageRejete'
+            'enAttente'
         ));
     }
+
     /**
-     * Voir les documents liés à un dossier
+     * voir documents
      */
     public function voirDocument($id)
     {
         $dossier = DossierAdherant::findOrFail($id);
+
         return view('dashboard.liquidation.adherant_detail', compact('dossier'));
+    }
+
+    /**
+     * edit carte
+     */
+    public function editCarte($id)
+    {
+        $dossier = DossierAdherant::with('adherant.carte')->findOrFail($id);
+
+        $universites = Universite::all();
+        $filieres = Filiere::all();
+
+        return view('dashboard.liquidation.edit', compact('dossier', 'universites', 'filieres'));
+    }
+
+    /**
+     * update carte
+     */
+    public function updateCarte(Request $request, $adherantId)
+    {
+        $adherant = Adherant::findOrFail($adherantId);
+
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255',
+            'prenom' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'tel1' => 'nullable|string|max:20',
+            'numero_carte' => 'nullable|string|max:50',
+            'date_effet' => 'nullable|date',
+            'date_validite' => 'nullable|date',
+            'photo' => 'nullable|image|max:2048',
+            'universite_id' => 'nullable|exists:universites,id',
+            'filiere_id' => 'nullable|exists:filieres,id',
+        ]);
+
+        $adherant->update($validated);
+
+        if ($adherant->carte) {
+            $adherant->carte->update([
+                'numero_carte' => $request->numero_carte,
+                'date_effet' => $request->date_effet,
+                'date_validite' => $request->date_validite,
+            ]);
+        }
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $adherant->update(['photo' => $path]);
+        }
+
+        return redirect()->back()
+            ->with('success', 'Adhérent mis à jour.');
     }
 }

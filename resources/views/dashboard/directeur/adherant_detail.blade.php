@@ -84,7 +84,7 @@
 
                         {{-- SIGNER --}}
                         @if(!$dossier->directeur_valide)
-                            <form action="{{ route('directeur.carte.signer', $dossier->id) }}"
+                            <form action="{{ route('directeur.carte_signer', $dossier->id) }}"
                                   method="POST">
                                 @csrf
 

@@ -227,3 +227,24 @@
 .motif-rejet-container.show {
     display: block;
 }
+/* ===============================
+   STICKY FOOTER SYSTEM
+================================ */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ton contenu principal */
+.nonvalide-content-area {
+    margin-left: 260px;
+    padding: 20px;
+    flex: 1; /* IMPORTANT : pousse le footer vers le bas */
+    display: flex;
+    flex-direction: column;
+}

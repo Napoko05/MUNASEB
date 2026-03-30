@@ -55,6 +55,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+          session()->flash('success', 'Connexion réussie !');
         // Map roles => routes
         $rolesDashboard = [
             'etudiant' => 'dashboard.etudiant',

@@ -15,8 +15,8 @@
     @vite(['resources/css/liquidation/style_carte.css'])
     @vite(['resources/css/liquidation/style_index.css'])
     @vite(['resources/css/liquidation/style_listecarte.css'])
-
-
+    @vite(['resources/css/liquidation/style_detaill.css'])
+    @vite('resources/css/footer.css')
 
     @stack('styles')
 </head>
@@ -34,12 +34,7 @@
             @yield('content')
         </div>
 
-        <!-- FOOTER -->
-        <footer class="footer mt-auto">
-            <div class="container text-center text-white">
-                © {{ date('Y') }} Mutuelle de santé e_cenou — Tous droits réservés
-            </div>
-        </footer>
+      
 
     </main>
 
@@ -52,7 +47,7 @@
     
 
     @stack('scripts')
-
+ @include('partials.footer')
 </body>
 
 </html>

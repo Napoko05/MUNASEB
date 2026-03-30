@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -14,19 +15,44 @@ class AdherentVisa extends Model
         'user_id',
         'decision',
         'commentaire',
+        'motif_rejet', // ✅ AJOUT IMPORTANT
         'date_decision'
     ];
 
-    // 🔗 utilisateur
+    protected $casts = [
+        'date_decision' => 'datetime',
+    ];
+
+    /* ===============================
+       RELATIONS
+    =============================== */
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // 🔗 adhérant
     public function adherant()
     {
         return $this->belongsTo(Adherant::class);
+    }
+
+    /* ===============================
+       BOOT (AUTO GESTION)
+    =============================== */
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($visa) {
+            // ✅ sécuriser les décisions
+            $allowed = ['valide', 'rejete', 'en_attente'];
+
+            if (!in_array($visa->decision, $allowed)) {
+                throw new \Exception("Décision invalide");
+            }
+        });
     }
 
     /* ===============================
@@ -46,5 +72,24 @@ class AdherentVisa extends Model
     public function isEnAttente()
     {
         return $this->decision === 'en_attente';
+    }
+
+    /* ===============================
+       SCOPES (PUISSANT)
+    =============================== */
+
+    public function scopeValide($query)
+    {
+        return $query->where('decision', 'valide');
+    }
+
+    public function scopeRejete($query)
+    {
+        return $query->where('decision', 'rejete');
+    }
+
+    public function scopeEnAttente($query)
+    {
+        return $query->where('decision', 'en_attente');
     }
 }

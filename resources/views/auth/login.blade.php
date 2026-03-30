@@ -15,7 +15,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0b2a4a, #f57c00);
+            background:  #6e8cf7;
             height: 100vh;
             display: flex;
             align-items: center;
@@ -38,7 +38,7 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            height: 5px;
+            height: 7px;
             width: 100%;
             background: #f57c00;
             border-radius: 0 0 16px 16px;
@@ -79,7 +79,7 @@
         .logo {
             display: block;
             margin: 0 auto 15px;
-            max-width: 100px;
+            max-width: 200px;
         }
 
         .extra-links {

@@ -1,0 +1,179 @@
+/* CARD PRINCIPAL */
+.adh-card {
+    background-color: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.2);
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.adh-card-header {
+    background: linear-gradient(90deg, #007bff, #ff7f00);
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid #c62828;
+    text-align: center;
+}
+
+/* BODY */
+.adh-card-body {
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+}
+
+/* TITRES DE SECTION */
+.adh-section-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    display: inline-block;
+    padding-bottom: 0.2rem;
+}
+
+/* TABLES */
+.adh-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.adh-table th, .adh-table td {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #dee2e6;
+}
+
+.adh-table th {
+    background-color: #e9ecef;
+    font-weight: 600;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* LIENS DOCUMENTS */
+.adh-doc-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.adh-doc-list li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.adh-doc-list li a:hover {
+    text-decoration: underline;
+}
+
+/* BOUTONS */
+.adh-btn-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.adh-btn-success {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+}
+
+.adh-btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+}
+
+.adh-btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+}
+
+.adh-btn-doc {
+    display: inline-block;
+    margin: 0.1rem 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #007bff;
+    border-radius: 0.3rem;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.adh-btn-doc:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* MODAL HEADER */
+.modal-header-danger {
+    background-color: #dc3545;
+    color: #fff;
+    font-weight: 600;
+}
+/* Limiter la largeur de la carte et centrer */
+.adh-card-narrow {
+    max-width: 900px; /* largeur maximale souhaitée */
+    margin: 1rem auto; /* centrer horizontalement */
+}
+
+/* Pour les tables à l’intérieur, elles prendront la largeur disponible */
+.adh-card-narrow .adh-table {
+    width: 100%;
+}
+
+/* =========================================
+   FOOTER FIX (IMPORTANT)
+========================================= */
+footer,
+.munaseb-footer {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    margin-top: auto;
+    background: #0b2a4a;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media (max-width: 768px) {
+
+    .dashboard-content {
+        margin-left: 0;
+    }
+
+    footer,
+    .munaseb-footer {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .row.g-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .content-area {
+        padding: 1rem;
+    }
+}

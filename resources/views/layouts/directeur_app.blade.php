@@ -14,32 +14,32 @@
     @vite(['resources/css/directeur/style_sidebar.css'])
     @vite(['resources/css/directeur/style_carte.css'])
     @vite(['resources/css/directeur/style_index.css'])
-
+    @vite('resources/css/footer.css')
 
     @stack('styles')
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
-    @include('partials.directeur')
+    <div class="app-layout">
 
-    <!-- MAIN -->
-    <main class="content-area">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            @include('partials.directeur')
+        </aside>
 
-        <!-- CONTENU -->
-        <div class="container-fluid py-3">
-            @yield('content')
-        </div>
+        <!-- MAIN -->
+        <main class="main-content">
 
-        <!-- FOOTER -->
-        <footer class="footer mt-auto">
-            <div class="container text-center text-white">
-                © {{ date('Y') }} Mutuelle de santé e_cenou — Tous droits réservés
+            <!-- CONTENU -->
+            <div class="container-fluid py-3">
+                @yield('content')
             </div>
-        </footer>
 
-    </main>
+
+        </main>
+
+    </div>
 
     {{-- JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -48,7 +48,7 @@
     @vite(['resources/js/directeur/script_sidebar.js'])
 
     @stack('scripts')
-
+ @include('partials.footer')
 </body>
 
 </html>

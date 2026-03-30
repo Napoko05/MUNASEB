@@ -1,74 +1,62 @@
-/* ==============================
-   NAVBAR MUNASEB
-============================== */
+/* NAVBAR */
 .munaseb-navbar {
     background: #0b2a4a;
-    width: 100%;
-    position: sticky;
-    top: 0;
-     height: 70px;
-    z-index: 1000;
-    font-family: 'Segoe UI', sans-serif;
+    border-bottom: 5px solid #f7941d;
+    padding: 15px 20px;
 }
 
-/* bande orange */
-.munaseb-navbar::after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 10px;
-    background: #f57c00;
-}
-
-/* container */
+/* CONTAINER */
 .nav-container {
-    max-width: 1200px;
-    margin: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 20px;
 }
 
-/* logo */
-.nav-logo a {
-    color: white;
-    font-weight: 700;
-    font-size: 20px;
-    text-decoration: none;
-    letter-spacing: 1px;
-}
-
-/* ==============================
-   MENU PRINCIPAL
-============================== */
-.nav-menu {
-    list-style: none;
+/* LOGO */
+.munaseb-brand {
     display: flex;
-    gap: 22px;
-    margin: 0;
-    padding: 0;
     align-items: center;
+    gap: 10px;
 }
 
-/* liens menu */
-.nav-menu a {
-    color: white;
+.navbar-logo {
+    height: 45px;
+}
+
+.brand-text {
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* MENU */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+}
+
+/* LIENS */
+.nav-menu li a {
+    color: #fff;
     text-decoration: none;
-    font-weight: 500;
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 6px;
     transition: 0.3s;
-    padding: 6px 10px;
 }
 
-/* hover liens menu */
-.nav-menu a:hover {
-    color: #f57c00;
+/* HOVER */
+.nav-menu li a:hover {
+    background: rgba(255,255,255,0.1);
+    color: #ffd166;
 }
 
-/* ==============================
-   DROPDOWN
-============================== */
+/* DROPDOWN */
 .dropdown {
     position: relative;
 }
@@ -76,102 +64,94 @@
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 100%;
+    top: 110%;
     left: 0;
-    background: #0b2a4a;
+    background: #fff;
+    min-width: 230px;
     border-radius: 10px;
-    padding: 5px 0;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-    min-width: 180px;
-    z-index: 2000;
-    transition: all 0.3s ease;
+    padding: 8px 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-/* items dropdown */
-.dropdown-item {
-    font-size: 14px;
-    padding: 8px 18px;
-    color: white;
+.dropdown-menu.show {
     display: block;
-    transition: all 0.3s ease;
+    animation: fadeIn 0.25s ease;
 }
 
-/* hover dropdown */
-.dropdown-item:hover {
-    background: #f57c00;
-    color: white;
+.dropdown-menu a {
+    color: #333 !important;
+    padding: 10px 15px;
 }
 
-/* afficher dropdown au hover desktop */
-@media (min-width: 769px) {
-    .dropdown:hover .dropdown-menu {
+/* FLECHE */
+.arrow {
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.dropdown.open .arrow {
+    transform: rotate(180deg);
+}
+
+/* DECONNEXION */
+.logout-btn {
+    background: #dc3545;
+    border: none;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* TOGGLE MOBILE */
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    color: #fff;
+    background: none;
+    border: none;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(8px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* RESPONSIVE */
+@media (max-width: 991px) {
+
+    .menu-toggle {
         display: block;
     }
-}
 
-/* ==============================
-   BOUTON LOGOUT
-============================== */
-.logout-btn {
-    border: none;
-    background: #c62828;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.logout-btn:hover {
-    background: #a91f1f;
-}
-
-/* ==============================
-   RESPONSIVE TABLETTE
-============================== */
-@media (max-width: 992px) {
-    .nav-container {
-        flex-wrap: wrap;
-    }
     .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 15px;
+        gap: 12px;
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav-menu li {
+        width: 100%;
+    }
+
+    .nav-menu li a,
+    .logout-btn {
         width: 100%;
         justify-content: center;
-        flex-wrap: wrap;
-        margin-top: 10px;
-        gap: 15px;
-    }
-}
-
-/* ==============================
-   MOBILE
-============================== */
-@media (max-width: 900px) {
-    .nav-container {
-        flex-direction: column;
-        align-items: flex-start;
     }
 
-    .nav-menu {
-        flex-direction: column;
-        width: 100%;
-        align-items: flex-start;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    /* dropdown mobile */
     .dropdown-menu {
-        position: relative !important;
-        transform: none !important;
+        position: static;
         box-shadow: none;
-        border-left: 4px solid #f57c00;
-        width: 100%;
-    }
-
-    .dropdown-toggle::after {
-        content: '▼';
-        font-size: 12px;
-        margin-left: 5px;
-        vertical-align: middle;
     }
 }

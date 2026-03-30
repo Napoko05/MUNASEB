@@ -12,6 +12,20 @@
             </div>
 
             <div class="card-body p-5">
+                {{-- Messages --}}
+                @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show mb-3">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mb-3">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                @endif
                 <div class="row mb-4">
                     <div class="col-md-3 text-center">
                         @if($data['avatar'])

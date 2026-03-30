@@ -16,13 +16,19 @@
                 {{-- Body --}}
                 <div class="card-body liscart-body">
 
+                    {{-- Titre du tableau --}}
+                    <div class="text-center fw-bold mb-3 text-white"
+                        style="background-color:#0b2a4a; padding:10px; border-radius:6px; font-size:1.2rem;">
+                        Tableau des cartes  traitées
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered text-center align-middle liscart-table">
                             <thead>
                                 <tr>
+                                    <th>#</th>
                                     <th>N° Carte</th>
                                     <th>Nom</th>
-                                     <th>Prénom</th>
+                                    <th>Prénom</th>
                                     <th>Statut</th>
                                     <th>Date effet</th>
                                     <th>Date validité</th>
@@ -30,41 +36,48 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($cartes as $carte)
+                                @forelse($cartes as $index => $carte)
                                 <tr>
+                                    <td>{{ $index + 1 }}</td>
                                     <td data-label="Numéro">{{ $carte->numero_carte }}</td>
-                                     <td data-label="Nom">{{ $carte->adherant->nom }}</td>
+                                    <td data-label="Nom">{{ $carte->adherant->nom }}</td>
                                     <td data-label="Prenom">
                                         @if($carte->adherant)
-                                             {{ $carte->adherant->prenom }}
+                                        {{ $carte->adherant->prenom }}
                                         @else
-                                            <span class="text-muted">Adhérent inconnu</span>
+                                        <span class="text-muted">Adhérent inconnu</span>
                                         @endif
                                     </td>
                                     <td data-label="Statut">
                                         @if($carte->adherant && $carte->adherant->dossier)
-                                            @if($carte->adherant->dossier->statut === 'valide')
-                                                <span class="badge bg-success">Validé</span>
-                                            @elseif($carte->adherant->dossier->statut === 'rejete')
-                                                <span class="badge bg-danger">Rejeté</span>
-                                            @else
-                                                <span class="badge bg-secondary">En attente</span>
-                                            @endif
+                                        @if($carte->adherant->dossier->statut === 'valide')
+                                        <span class="badge bg-success">signée</span>
+                                        @elseif($carte->adherant->dossier->statut === 'rejete')
+                                        <span class="badge bg-danger">Rejeté</span>
                                         @else
-                                            <span class="badge bg-secondary">Inconnu</span>
+                                        <span class="badge bg-secondary">En attente</span>
+                                        @endif
+                                        @else
+                                        <span class="badge bg-secondary">Inconnu</span>
                                         @endif
                                     </td>
                                     <td data-label="Date effet">{{ $carte->date_effet ? \Carbon\Carbon::parse($carte->date_effet)->format('d/m/Y') : '-' }}</td>
                                     <td data-label="Date validité">{{ $carte->date_validite ? \Carbon\Carbon::parse($carte->date_validite)->format('d/m/Y') : '-' }}</td>
-                                        
-                                         <td data-label="Actions">
+
+                                    <td data-label="Actions">
                                         @if(!$carte->signature_directeur)
-                                            <a href="{{ route('directeur.cartes.liste', $carte->id) }}" class="btn btn-sm btn-outline-primary mb-1">
+                                        <a href="{{ route('directeur.cartes.liste', $carte->id) }}" class="btn btn-sm btn-outline-primary mb-1">
                                             Voir carte
                                         </a>
                                         @endif
-                                        <a href="{{ route('directeur.carte.telecharger', $carte->adherant->id) }}" class="btn btn-sm btn-primary mt-1">Télécharger</a>
-                                    </td>
+
+                                        {{-- Afficher Télécharger seulement si la carte n’est pas rejetée --}}
+                                        @if($carte->adherant && $carte->adherant->dossier && $carte->adherant->dossier->statut !== 'rejete')
+                                        <a href="{{ route('carte.telecharger', $carte->adherant->id) }}"
+                                            class="btn btn-sm btn-primary mt-1">
+                                            Télécharger
+                                        </a>
+                                        @endif
                                 </tr>
                                 @empty
                                 <tr>
